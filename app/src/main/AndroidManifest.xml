@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lanyuan.picking">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".application.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_apaya"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".pattern.MM131.MM131Activity"
+            android:theme="@style/NotitleFullScreen" />
+        <activity
+            android:name=".pattern.XiuMM.XiuMMActivity"
+            android:theme="@style/NotitleFullScreen" />
+        <activity
+            android:name=".pattern.RoseMM.RosiMMActivity"
+            android:theme="@style/NotitleFullScreen" />
+        <activity
+            android:name=".pattern.MM131.MM131DetailActivity"
+            android:theme="@style/NotitleFullScreen" />
+        <activity
+            android:name=".pattern.XiuMM.XiuMMDetailActivity"
+            android:theme="@style/NotitleFullScreen" />
+        <activity
+            android:name=".pattern.RoseMM.RosiMMDetailActivity"
+            android:theme="@style/NotitleFullScreen" />
+    </application>
+
+</manifest>
