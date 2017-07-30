@@ -12,19 +12,19 @@ import com.lanyuan.picking.util.FrescoUtil;
 
 import java.util.List;
 
-public class BaseContentsAdapter extends RecyclerView.Adapter<BaseContentsAdapter.MyViewHolder> {
-    private List<BaseInfo> data;
+public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyViewHolder> {
+    private List<AlbumInfo> data;
     private int width;
     private Context context;
     private OnItemClickListener mListener;
 
-    public BaseContentsAdapter(Context context, List<BaseInfo> data, int width) {
+    public ContentsAdapter(Context context, List<AlbumInfo> data, int width) {
         this.context = context;
         this.data = data;
         this.width = width;
     }
 
-    public void addMore(List<BaseInfo> data) {
+    public void addMore(List<AlbumInfo> data) {
         this.data.addAll(data);
         notifyDataSetChanged();
     }
@@ -35,7 +35,7 @@ public class BaseContentsAdapter extends RecyclerView.Adapter<BaseContentsAdapte
     }
 
     public interface OnItemClickListener {
-        void ItemClickListener(View view, int position, BaseInfo baseInfo);
+        void ItemClickListener(View view, int position, AlbumInfo albumInfo);
 
         void ItemLongClickListener(View view, int position);
     }

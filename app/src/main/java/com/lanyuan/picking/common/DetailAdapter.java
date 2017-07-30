@@ -12,13 +12,13 @@ import com.lanyuan.picking.util.FrescoUtil;
 
 import java.util.List;
 
-public class BaseDetailAdapter extends RecyclerView.Adapter<BaseDetailAdapter.MyViewHolder> {
+public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHolder> {
     private List<String> lists;
     private int width;
     private Context context;
     private OnItemClickListener itemClickListener;
 
-    public BaseDetailAdapter(Context context, List<String> lists, int width) {
+    public DetailAdapter(Context context, List<String> lists, int width) {
         this.context = context;
         this.lists = lists;
         this.width = width;

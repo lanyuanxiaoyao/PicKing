@@ -1,6 +1,6 @@
 package com.lanyuan.picking.common;
 
-public class BaseInfo {
+public class AlbumInfo {
 
     private String coverUrl;
     private String albumUrl;

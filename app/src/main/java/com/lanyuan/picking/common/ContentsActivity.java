@@ -13,6 +13,7 @@ import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
 
@@ -23,7 +24,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public abstract class BaseContentsActivity extends BaseActivity {
+public class ContentsActivity extends BaseActivity {
 
     @BindView(R.id.swipe_target)
     RecyclerView recyclerView;
@@ -38,9 +39,11 @@ public abstract class BaseContentsActivity extends BaseActivity {
     private boolean isRunnable = true;
     private boolean hasMore = true;
 
-    private BaseContentsAdapter adapter;
+    private ContentsAdapter adapter;
 
     private List<Menu> menuList;
+
+    private BasePattern pattern;
 
     public enum parameter {
         RESULT, CURRENT_URL
@@ -52,6 +55,9 @@ public abstract class BaseContentsActivity extends BaseActivity {
         setContentView(R.layout.activity_contents);
 
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        pattern = (BasePattern) intent.getSerializableExtra("pattern");
 
         menuList = getMenuList() == null ? new ArrayList<Menu>() : getMenuList();
         MenuAdapter menuAdapter = new MenuAdapter(this, menuList);
@@ -76,13 +82,16 @@ public abstract class BaseContentsActivity extends BaseActivity {
         baseUrl = getBaseUrl(menuList, 0);
         currentUrl = menuList.get(0).getUrl();
 
-        adapter = new BaseContentsAdapter(this, new ArrayList<BaseInfo>(), ScreenUtil.getScreenWidth(this) / 2);
-        adapter.setOnClickListener(new BaseContentsAdapter.OnItemClickListener() {
+        adapter = new ContentsAdapter(this, new ArrayList<AlbumInfo>(), ScreenUtil.getScreenWidth(this) / 2);
+        adapter.setOnClickListener(new ContentsAdapter.OnItemClickListener() {
             @Override
-            public void ItemClickListener(View view, int position, BaseInfo baseInfo) {
-                Intent intent = new Intent(BaseContentsActivity.this, getTargetDetailActivity());
-                intent.putExtra("currentUrl", baseInfo.getAlbumUrl());
-                intent.putExtra("baseUrl", baseUrl);
+            public void ItemClickListener(View view, int position, AlbumInfo albumInfo) {
+                Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("currentUrl", albumInfo.getAlbumUrl());
+                bundle.putString("baseUrl", baseUrl);
+                bundle.putSerializable("pattern", pattern);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
 
@@ -113,15 +122,25 @@ public abstract class BaseContentsActivity extends BaseActivity {
         new GetContent().execute(currentUrl);
     }
 
-    public abstract String getBaseUrl(List<Menu> menuList, int position);
+    public String getBaseUrl(List<Menu> menuList, int position) {
+        return pattern.getBaseUrl(menuList, position);
+    }
 
-    public abstract Class getTargetDetailActivity();
+    public Class getTargetDetailActivity() {
+        return null;
+    }
 
-    public abstract List<Menu> getMenuList();
+    public List<Menu> getMenuList() {
+        return pattern.getMenuList();
+    }
 
-    public abstract Map<parameter, Object> getContent(String baseUrl, String currentUrl);
+    public Map<parameter, Object> getContent(String baseUrl, String currentUrl) {
+        return pattern.getContent(baseUrl, currentUrl);
+    }
 
-    public abstract String getNext(String baseUrl, String currentUrl);
+    public String getNext(String baseUrl, String currentUrl) {
+        return pattern.getNext(baseUrl, currentUrl);
+    }
 
     private class GetContent extends AsyncTask<String, Integer, Map<parameter, Object>> {
 
@@ -139,7 +158,7 @@ public abstract class BaseContentsActivity extends BaseActivity {
 
             currentUrl = (String) resultMap.get(parameter.CURRENT_URL);
 
-            List<BaseInfo> urls = (List<BaseInfo>) resultMap.get(parameter.RESULT);
+            List<AlbumInfo> urls = (List<AlbumInfo>) resultMap.get(parameter.RESULT);
             adapter.addMore(urls);
         }
     }

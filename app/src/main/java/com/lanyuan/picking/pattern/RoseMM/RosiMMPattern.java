@@ -1,8 +1,10 @@
 package com.lanyuan.picking.pattern.RoseMM;
 
-import com.lanyuan.picking.common.BaseContentsActivity;
-import com.lanyuan.picking.common.BaseInfo;
+import com.lanyuan.picking.common.ContentsActivity;
+import com.lanyuan.picking.common.DetailActivity;
+import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.common.Menu;
+import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
@@ -18,18 +20,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RosiMMActivity extends BaseContentsActivity {
+public class RosiMMPattern implements BasePattern {
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
         return "http://www.rosmm.com/";
-    }
-
-    @Override
-    public Class getTargetDetailActivity() {
-        return RosiMMDetailActivity.class;
     }
 
     @Override
@@ -40,9 +38,9 @@ public class RosiMMActivity extends BaseContentsActivity {
     }
 
     @Override
-    public Map<parameter, Object> getContent(String baseUrl, String currentUrl) {
-        Map<parameter, Object> resultMap = new HashMap<>();
-        List<BaseInfo> urls = new ArrayList<>();
+    public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl) {
+        Map<ContentsActivity.parameter, Object> resultMap = new HashMap<>();
+        List<AlbumInfo> urls = new ArrayList<>();
 
         try {
             Request request = new Request.Builder()
@@ -53,7 +51,7 @@ public class RosiMMActivity extends BaseContentsActivity {
             Document document = Jsoup.parse(new String(result, "gbk"));
             Elements elements = document.select("#sliding li a:has(img)");
             for (Element element : elements) {
-                BaseInfo temp = new BaseInfo();
+                AlbumInfo temp = new AlbumInfo();
                 temp.setAlbumUrl(baseUrl + element.attr("href"));
                 Elements elements1 = element.select("img");
                 if (elements1.size() > 0)
@@ -64,8 +62,8 @@ public class RosiMMActivity extends BaseContentsActivity {
             e.printStackTrace();
         }
 
-        resultMap.put(parameter.CURRENT_URL, currentUrl);
-        resultMap.put(parameter.RESULT, urls);
+        resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
+        resultMap.put(ContentsActivity.parameter.RESULT, urls);
         return resultMap;
     }
 
@@ -89,6 +87,58 @@ public class RosiMMActivity extends BaseContentsActivity {
                         String temp = matcher.group();
                         return baseUrl + "rosimm/" + temp.substring(0, temp.length() - 5);
                     }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @Override
+    public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl) {
+        Map<DetailActivity.parameter, Object> resultMap = new HashMap<>();
+        List<String> urls = new ArrayList<>();
+        Request request = new Request.Builder()
+                .url(currentUrl)
+                .build();
+
+        try {
+            Call call = OkHttpClientUtil.getInstance().newCall(request);
+            Response response = call.execute();
+            byte[] result = response.body().bytes();
+            Document document = Jsoup.parse(new String(result, "gbk"));
+            Elements elements = document.select("#imgString img");
+            for (Element element : elements) {
+                urls.add(element.attr("src"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
+        resultMap.put(DetailActivity.parameter.RESULT, urls);
+        return resultMap;
+    }
+
+    @Override
+    public String getDetailNext(String baseUrl, String currentUrl) {
+        Request request = new Request.Builder()
+                .url(currentUrl)
+                .build();
+
+        try {
+            Call call = OkHttpClientUtil.getInstance().newCall(request);
+            Response response = call.execute();
+            byte[] result = response.body().bytes();
+            Document document = Jsoup.parse(new String(result, "gbk"));
+            Elements elements = document.select(".page_c a:containsOwn(下一页)");
+            if (elements.size() > 0) {
+                Pattern pattern = Pattern.compile("http://.*/");
+                Matcher matcher = pattern.matcher(currentUrl);
+                if (matcher.find()) {
+                    String prefix = matcher.group();
+                    return prefix + elements.get(0).attr("href");
                 }
             }
         } catch (IOException e) {

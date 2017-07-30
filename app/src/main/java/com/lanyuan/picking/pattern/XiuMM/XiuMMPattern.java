@@ -1,8 +1,10 @@
 package com.lanyuan.picking.pattern.XiuMM;
 
-import com.lanyuan.picking.common.BaseContentsActivity;
-import com.lanyuan.picking.common.BaseInfo;
+import com.lanyuan.picking.common.ContentsActivity;
+import com.lanyuan.picking.common.DetailActivity;
+import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.common.Menu;
+import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
@@ -16,19 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class XiuMMActivity extends BaseContentsActivity {
-
+public class XiuMMPattern implements BasePattern {
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
         return "http://www.xiumm.org/";
-    }
-
-    @Override
-    public Class getTargetDetailActivity() {
-        return XiuMMDetailActivity.class;
     }
 
     @Override
@@ -57,9 +54,9 @@ public class XiuMMActivity extends BaseContentsActivity {
     }
 
     @Override
-    public Map<parameter, Object> getContent(String baseUrl, String currentUrl) {
-        Map<parameter, Object> resultMap = new HashMap<>();
-        List<BaseInfo> urls = new ArrayList<>();
+    public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl) {
+        Map<ContentsActivity.parameter, Object> resultMap = new HashMap<>();
+        List<AlbumInfo> urls = new ArrayList<>();
 
         Request request = new Request.Builder()
                 .url(currentUrl)
@@ -70,7 +67,7 @@ public class XiuMMActivity extends BaseContentsActivity {
             Document document = Jsoup.parse(new String(result, "utf-8"));
             Elements elements = document.select(".pic_box a");
             for (Element element : elements) {
-                BaseInfo temp = new BaseInfo();
+                AlbumInfo temp = new AlbumInfo();
                 temp.setAlbumUrl(element.attr("href"));
                 Elements elements1 = element.select("img");
                 if (elements1.size() > 0)
@@ -81,8 +78,8 @@ public class XiuMMActivity extends BaseContentsActivity {
             e.printStackTrace();
         }
 
-        resultMap.put(parameter.CURRENT_URL, currentUrl);
-        resultMap.put(parameter.RESULT, urls);
+        resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
+        resultMap.put(ContentsActivity.parameter.RESULT, urls);
         return resultMap;
     }
 
@@ -105,4 +102,49 @@ public class XiuMMActivity extends BaseContentsActivity {
         return "";
     }
 
+    @Override
+    public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl) {
+        Map<DetailActivity.parameter, Object> resultMap = new HashMap<>();
+        List<String> urls = new ArrayList<>();
+        Request request = new Request.Builder()
+                .url(currentUrl)
+                .build();
+
+        try {
+            Call call = OkHttpClientUtil.getInstance().newCall(request);
+            Response response = call.execute();
+            byte[] result = response.body().bytes();
+            Document document = Jsoup.parse(new String(result, "utf-8"));
+            Elements elements = document.select(".gallary_item .pic_box img");
+            for (Element element : elements) {
+                urls.add(baseUrl + element.attr("src"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
+        resultMap.put(DetailActivity.parameter.RESULT, urls);
+        return resultMap;
+    }
+
+    @Override
+    public String getDetailNext(String baseUrl, String currentUrl) {
+        Request request = new Request.Builder()
+                .url(currentUrl)
+                .build();
+
+        try {
+            Call call = OkHttpClientUtil.getInstance().newCall(request);
+            Response response = call.execute();
+            byte[] result = response.body().bytes();
+            Document document = Jsoup.parse(new String(result, "utf-8"));
+            Elements elements = document.select(".paginator span.next a");
+            if (elements.size() > 0)
+                return baseUrl + elements.get(0).attr("href");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

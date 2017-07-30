@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.lanyuan.picking.pattern.MM131.MM131Activity;
-import com.lanyuan.picking.pattern.RoseMM.RosiMMActivity;
-import com.lanyuan.picking.pattern.XiuMM.XiuMMActivity;
+import com.lanyuan.picking.common.ContentsActivity;
+import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.MM131.MM131Pattern;
+import com.lanyuan.picking.pattern.RoseMM.RosiMMPattern;
+import com.lanyuan.picking.pattern.XiuMM.XiuMMPattern;
 
 import java.util.List;
 
@@ -34,13 +36,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.mm131:
-                startActivity(new Intent(MainActivity.this, MM131Activity.class));
+                startActivity(new MM131Pattern());
                 break;
             case R.id.xiumm:
-                startActivity(new Intent(MainActivity.this, XiuMMActivity.class));
+                startActivity(new XiuMMPattern());
                 break;
             case R.id.rosimm:
-                startActivity(new Intent(MainActivity.this, RosiMMActivity.class));
+                startActivity(new RosiMMPattern());
+                break;
         }
+    }
+
+    private void startActivity(BasePattern pattern) {
+        Intent intent = new Intent(MainActivity.this, ContentsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("pattern", pattern);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

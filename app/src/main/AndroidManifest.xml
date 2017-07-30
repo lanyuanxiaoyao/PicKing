@@ -19,22 +19,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".pattern.MM131.MM131Activity"
+            android:name=".common.ContentsActivity"
             android:theme="@style/NotitleFullScreen" />
         <activity
-            android:name=".pattern.XiuMM.XiuMMActivity"
-            android:theme="@style/NotitleFullScreen" />
-        <activity
-            android:name=".pattern.RoseMM.RosiMMActivity"
-            android:theme="@style/NotitleFullScreen" />
-        <activity
-            android:name=".pattern.MM131.MM131DetailActivity"
-            android:theme="@style/NotitleFullScreen" />
-        <activity
-            android:name=".pattern.XiuMM.XiuMMDetailActivity"
-            android:theme="@style/NotitleFullScreen" />
-        <activity
-            android:name=".pattern.RoseMM.RosiMMDetailActivity"
+            android:name=".common.DetailActivity"
             android:theme="@style/NotitleFullScreen" />
     </application>
 

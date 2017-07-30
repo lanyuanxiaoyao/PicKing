@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
 
@@ -21,12 +22,12 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public abstract class BaseDetailActivity extends BaseActivity {
+public class DetailActivity extends BaseActivity {
 
     @BindView(R.id.detail_recycle_view)
     RecyclerView recyclerView;
 
-    private BaseDetailAdapter adapter;
+    private DetailAdapter adapter;
 
     private String baseUrl;
     private String currentUrl;
@@ -35,6 +36,8 @@ public abstract class BaseDetailActivity extends BaseActivity {
 
     private boolean isRunnable = true;
     private boolean hasMore = true;
+
+    private BasePattern pattern;
 
     public enum parameter {
         RESULT, CURRENT_URL
@@ -48,6 +51,7 @@ public abstract class BaseDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
+        pattern = (BasePattern) intent.getSerializableExtra("pattern");
         baseUrl = intent.getStringExtra("baseUrl");
         currentUrl = intent.getStringExtra("currentUrl");
 
@@ -62,8 +66,8 @@ public abstract class BaseDetailActivity extends BaseActivity {
                     Fresco.getImagePipeline().resume();
             }
         });
-        adapter = new BaseDetailAdapter(this, new ArrayList<String>(), ScreenUtil.getScreenWidth(this));
-        adapter.setOnClickListener(new BaseDetailAdapter.OnItemClickListener() {
+        adapter = new DetailAdapter(this, new ArrayList<String>(), ScreenUtil.getScreenWidth(this));
+        adapter.setOnClickListener(new DetailAdapter.OnItemClickListener() {
             @Override
             public void ItemClickListener(View view, int position) {
 
@@ -79,9 +83,13 @@ public abstract class BaseDetailActivity extends BaseActivity {
         new GetContent().execute(currentUrl);
     }
 
-    public abstract Map<parameter, Object> getContent(String baseUrl, String currentUrl);
+    public Map<parameter, Object> getContent(String baseUrl, String currentUrl) {
+        return pattern.getDetailContent(baseUrl, currentUrl);
+    }
 
-    public abstract String getNext(String baseUrl, String currentUrl);
+    public String getNext(String baseUrl, String currentUrl) {
+        return pattern.getDetailNext(baseUrl, currentUrl);
+    }
 
     private class GetContent extends AsyncTask<String, Integer, Map<parameter, Object>> {
 
