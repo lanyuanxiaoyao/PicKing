@@ -13,24 +13,24 @@ import com.lanyuan.picking.util.FrescoUtil;
 import java.util.List;
 
 public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyViewHolder> {
-    private List<AlbumInfo> data;
+    private List<AlbumInfo> lists;
     private int width;
     private Context context;
-    private OnItemClickListener mListener;
+    private OnItemClickListener itemClickListener;
 
-    public ContentsAdapter(Context context, List<AlbumInfo> data, int width) {
+    public ContentsAdapter(Context context, List<AlbumInfo> lists, int width) {
         this.context = context;
-        this.data = data;
+        this.lists = lists;
         this.width = width;
     }
 
     public void addMore(List<AlbumInfo> data) {
-        this.data.addAll(data);
+        this.lists.addAll(data);
         notifyDataSetChanged();
     }
 
     public void removeAll() {
-        this.data.removeAll(data);
+        this.lists.removeAll(lists);
         notifyDataSetChanged();
     }
 
@@ -41,7 +41,7 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
-        this.mListener = listener;
+        this.itemClickListener = listener;
     }
 
     @Override
@@ -62,28 +62,30 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        FrescoUtil.setControllerListener(holder.simpleDraweeView, data.get(position).getCoverUrl(), width);
-        if (mListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    mListener.ItemClickListener(holder.itemView, pos, data.get(pos));
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    mListener.ItemLongClickListener(holder.itemView, pos);
-                    return true;
-                }
-            });
+        if (!lists.get(position).equals(holder.simpleDraweeView.getTag())) {
+            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getCoverUrl(), width);
+            if (itemClickListener != null) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        itemClickListener.ItemClickListener(holder.itemView, pos, lists.get(pos));
+                    }
+                });
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        itemClickListener.ItemLongClickListener(holder.itemView, pos);
+                        return true;
+                    }
+                });
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return lists.size();
     }
 }

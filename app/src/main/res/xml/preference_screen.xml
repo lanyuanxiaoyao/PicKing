@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="全局设置">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/load_pic_swipe"
+            android:title="滑动时加载图片" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="大图浏览设置">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="clickToBack"
+            android:title="单击返回" />
+    </PreferenceCategory>
+</PreferenceScreen>

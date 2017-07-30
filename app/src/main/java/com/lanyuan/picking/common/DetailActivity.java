@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
@@ -39,6 +40,8 @@ public class DetailActivity extends BaseActivity {
 
     private BasePattern pattern;
 
+    private PicDialog picDialog;
+
     public enum parameter {
         RESULT, CURRENT_URL
     }
@@ -50,27 +53,30 @@ public class DetailActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        picDialog = new PicDialog(this);
+
         Intent intent = getIntent();
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
         baseUrl = intent.getStringExtra("baseUrl");
         currentUrl = intent.getStringExtra("currentUrl");
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState > 0)
-                    Fresco.getImagePipeline().pause();
-                else
-                    Fresco.getImagePipeline().resume();
-            }
-        });
+        if (!(boolean) AppConfig.getByResourceId(this, R.string.load_pic_swipe, false))
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState > 0)
+                        Fresco.getImagePipeline().pause();
+                    else
+                        Fresco.getImagePipeline().resume();
+                }
+            });
         adapter = new DetailAdapter(this, new ArrayList<String>(), ScreenUtil.getScreenWidth(this));
         adapter.setOnClickListener(new DetailAdapter.OnItemClickListener() {
             @Override
-            public void ItemClickListener(View view, int position) {
-
+            public void ItemClickListener(View view, int position, String url) {
+                picDialog.show(url);
             }
 
             @Override

@@ -1,4 +1,4 @@
-package com.lanyuan.picking;
+package com.lanyuan.picking.common;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;

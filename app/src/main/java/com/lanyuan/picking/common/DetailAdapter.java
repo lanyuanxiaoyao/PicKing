@@ -30,7 +30,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
     }
 
     public interface OnItemClickListener {
-        void ItemClickListener(View view, int position);
+        void ItemClickListener(View view, int position, String url);
 
         void ItemLongClickListener(View view, int position);
     }
@@ -57,23 +57,25 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position), width);
-        if (itemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    itemClickListener.ItemClickListener(holder.itemView, pos);
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    itemClickListener.ItemLongClickListener(holder.itemView, pos);
-                    return true;
-                }
-            });
+        if (!lists.get(position).equals(holder.simpleDraweeView.getTag())) {
+            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position), width);
+            if (itemClickListener != null) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        itemClickListener.ItemClickListener(holder.itemView, pos, lists.get(pos));
+                    }
+                });
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        itemClickListener.ItemLongClickListener(holder.itemView, pos);
+                        return true;
+                    }
+                });
+            }
         }
     }
 

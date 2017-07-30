@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:padding="15dp"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
 </LinearLayout>

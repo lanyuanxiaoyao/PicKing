@@ -25,7 +25,7 @@ public class FrescoUtil {
      * @param imagePath
      * @param imageWidth
      */
-    public static void setControllerListener(final SimpleDraweeView simpleDraweeView, String imagePath, final int imageWidth) {
+    public static void setControllerListener(final SimpleDraweeView simpleDraweeView, final String imagePath, final int imageWidth) {
         final ViewGroup.LayoutParams layoutParams = simpleDraweeView.getLayoutParams();
         ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
@@ -38,6 +38,7 @@ public class FrescoUtil {
                 layoutParams.width = imageWidth;
                 layoutParams.height = (int) ((float) (imageWidth * height) / (float) width);
                 simpleDraweeView.setLayoutParams(layoutParams);
+                simpleDraweeView.setTag(imagePath);
             }
 
             @Override

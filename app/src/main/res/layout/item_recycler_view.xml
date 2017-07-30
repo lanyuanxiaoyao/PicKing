@@ -10,7 +10,6 @@
         android:id="@+id/fresco"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        fresco:actualImageScaleType="focusCrop"
         fresco:placeholderImage="@mipmap/ic_apaya"></com.facebook.drawee.view.SimpleDraweeView>
 
 </LinearLayout>

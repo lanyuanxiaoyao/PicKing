@@ -10,7 +10,7 @@
         android:icon="@mipmap/ic_apaya"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppNoActionBarTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +24,10 @@
         <activity
             android:name=".common.DetailActivity"
             android:theme="@style/NotitleFullScreen" />
+        <activity
+            android:name=".setting.SettingActivity"
+            android:theme="@style/AppNoActionBarTheme" />
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

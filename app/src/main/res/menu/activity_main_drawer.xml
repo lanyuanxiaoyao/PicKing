@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@mipmap/setting"
+            android:title="设置" />
+    </group>
+
+    <item android:title="更多">
+        <menu>
+            <item
+                android:id="@+id/nav_donate"
+                android:icon="@mipmap/donate"
+                android:title="捐赠" />
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@mipmap/share"
+                android:title="分享"></item>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@mipmap/about"
+                android:title="关于" />
+        </menu>
+    </item>
+
+</menu>

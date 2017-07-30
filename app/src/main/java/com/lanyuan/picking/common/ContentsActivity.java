@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -12,7 +15,9 @@ import android.view.View;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
@@ -32,6 +37,8 @@ public class ContentsActivity extends BaseActivity {
     RecyclerView menuRecycleView;
     @BindView(R.id.swipe_layout)
     SwipeToLoadLayout refreshLayout;
+    @BindView(R.id.content_drawer)
+    DrawerLayout drawerLayout;
 
     private String baseUrl;
     private String currentUrl;
@@ -69,6 +76,7 @@ public class ContentsActivity extends BaseActivity {
                 baseUrl = getBaseUrl(menuList, position);
                 currentUrl = menuList.get(position).getUrl();
                 new GetContent().execute(currentUrl);
+                drawerLayout.closeDrawer(GravityCompat.END);
             }
 
             @Override
@@ -81,6 +89,18 @@ public class ContentsActivity extends BaseActivity {
 
         baseUrl = getBaseUrl(menuList, 0);
         currentUrl = menuList.get(0).getUrl();
+
+        if (!(boolean) AppConfig.getByResourceId(this, R.string.load_pic_swipe, false))
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState > 0)
+                        Fresco.getImagePipeline().pause();
+                    else
+                        Fresco.getImagePipeline().resume();
+                }
+            });
 
         adapter = new ContentsAdapter(this, new ArrayList<AlbumInfo>(), ScreenUtil.getScreenWidth(this) / 2);
         adapter.setOnClickListener(new ContentsAdapter.OnItemClickListener() {
@@ -126,10 +146,6 @@ public class ContentsActivity extends BaseActivity {
         return pattern.getBaseUrl(menuList, position);
     }
 
-    public Class getTargetDetailActivity() {
-        return null;
-    }
-
     public List<Menu> getMenuList() {
         return pattern.getMenuList();
     }
@@ -140,6 +156,15 @@ public class ContentsActivity extends BaseActivity {
 
     public String getNext(String baseUrl, String currentUrl) {
         return pattern.getNext(baseUrl, currentUrl);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private class GetContent extends AsyncTask<String, Integer, Map<parameter, Object>> {
