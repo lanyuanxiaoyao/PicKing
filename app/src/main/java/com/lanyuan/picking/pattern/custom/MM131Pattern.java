@@ -1,10 +1,12 @@
-package com.lanyuan.picking.pattern.RoseMM;
+package com.lanyuan.picking.pattern.custom;
 
+import android.graphics.Color;
+
+import com.lanyuan.picking.R;
 import com.lanyuan.picking.common.ContentsActivity;
 import com.lanyuan.picking.common.DetailActivity;
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.common.Menu;
-import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
@@ -24,46 +26,62 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RosiMMPattern implements BasePattern {
+public class MM131Pattern implements BasePattern {
+    @Override
+    public int getResourceId() {
+        return R.mipmap.mm131;
+    }
+
+    @Override
+    public int getBackgroundColor() {
+        return Color.WHITE;
+    }
+
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
-        return "http://www.rosmm.com/";
+        return menuList.get(position).getUrl();
     }
 
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
-        menuList.add(new Menu("ROSI写真", "http://www.rosmm.com/rosimm"));
+        menuList.add(new Menu("性感美女", "http://www.mm131.com/xinggan/"));
+        menuList.add(new Menu("清纯美眉", "http://www.mm131.com/qingchun/"));
+        menuList.add(new Menu("美女校花", "http://www.mm131.com/xiaohua/"));
+        menuList.add(new Menu("性感车模", "http://www.mm131.com/chemo/"));
+        menuList.add(new Menu("旗袍美女", "http://www.mm131.com/qipao/"));
+        menuList.add(new Menu("明星写真", "http://www.mm131.com/mingxing/"));
         return menuList;
     }
 
     @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl) {
         Map<ContentsActivity.parameter, Object> resultMap = new HashMap<>();
-        List<AlbumInfo> urls = new ArrayList<>();
+        List<AlbumInfo> data = new ArrayList<>();
 
+        Request request = new Request.Builder()
+                .url(currentUrl)
+                .build();
         try {
-            Request request = new Request.Builder()
-                    .url(currentUrl)
-                    .build();
             Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
             byte[] result = response.body().bytes();
             Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("#sliding li a:has(img)");
+            Elements elements = document.select("dd a img:not([border])");
             for (Element element : elements) {
                 AlbumInfo temp = new AlbumInfo();
-                temp.setAlbumUrl(baseUrl + element.attr("href"));
-                Elements elements1 = element.select("img");
-                if (elements1.size() > 0)
-                    temp.setCoverUrl(elements1.get(0).attr("src"));
-                urls.add(temp);
+                temp.setCoverUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
+                Pattern pattern = Pattern.compile("/\\d{3,4}");
+                Matcher matcher = pattern.matcher(element.attr("src"));
+                if (matcher.find())
+                    temp.setAlbumUrl(baseUrl + matcher.group().substring(1) + ".html");
+                data.add(temp);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
-        resultMap.put(ContentsActivity.parameter.RESULT, urls);
+        resultMap.put(ContentsActivity.parameter.RESULT, data);
         return resultMap;
     }
 
@@ -77,18 +95,9 @@ public class RosiMMPattern implements BasePattern {
             Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
             byte[] result = response.body().bytes();
             Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("script");
-            for (Element element : elements) {
-                String code = element.html();
-                if (!element.html().equals("")) {
-                    Pattern pattern = Pattern.compile("index_\\d*.htm\">下一页");
-                    Matcher matcher = pattern.matcher(code);
-                    if (matcher.find()) {
-                        String temp = matcher.group();
-                        return baseUrl + "rosimm/" + temp.substring(0, temp.length() - 5);
-                    }
-                }
-            }
+            Elements elements = document.select("dd.page a:containsOwn(下一页)");
+            if (elements.size() > 0)
+                return baseUrl + elements.get(0).attr("href");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,10 +117,9 @@ public class RosiMMPattern implements BasePattern {
             Response response = call.execute();
             byte[] result = response.body().bytes();
             Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("#imgString img");
-            for (Element element : elements) {
-                urls.add(element.attr("src"));
-            }
+            Elements elements = document.select("div.content-pic img");
+            if (elements.size() > 0)
+                urls.add(elements.get(0).attr("src"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,15 +140,9 @@ public class RosiMMPattern implements BasePattern {
             Response response = call.execute();
             byte[] result = response.body().bytes();
             Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select(".page_c a:containsOwn(下一页)");
-            if (elements.size() > 0) {
-                Pattern pattern = Pattern.compile("http://.*/");
-                Matcher matcher = pattern.matcher(currentUrl);
-                if (matcher.find()) {
-                    String prefix = matcher.group();
-                    return prefix + elements.get(0).attr("href");
-                }
-            }
+            Elements elements = document.select("div.content-page a:containsOwn(下一页)");
+            if (elements.size() > 0)
+                return baseUrl + elements.get(0).attr("href");
         } catch (IOException e) {
             e.printStackTrace();
         }

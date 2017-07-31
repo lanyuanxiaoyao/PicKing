@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.custom.BasePattern;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
 
@@ -80,8 +80,8 @@ public class DetailActivity extends BaseActivity {
             }
 
             @Override
-            public void ItemLongClickListener(View view, int position) {
-
+            public void ItemLongClickListener(View view, int position, String url) {
+                toast(url);
             }
         });
         recyclerView.setAdapter(adapter);

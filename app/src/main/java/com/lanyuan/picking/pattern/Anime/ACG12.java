@@ -1,10 +1,13 @@
-package com.lanyuan.picking.pattern.MM131;
+package com.lanyuan.picking.pattern.Anime;
 
+import android.graphics.Color;
+
+import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.common.ContentsActivity;
 import com.lanyuan.picking.common.DetailActivity;
-import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.common.Menu;
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.custom.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
@@ -20,25 +23,29 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MM131Pattern implements BasePattern {
+public class ACG12 implements BasePattern {
+    @Override
+    public int getResourceId() {
+        return R.mipmap.acg12;
+    }
+
+    @Override
+    public int getBackgroundColor() {
+        return Color.rgb(236, 227, 191);
+    }
+
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
-        return menuList.get(position).getUrl();
+        return null;
     }
 
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
-        menuList.add(new Menu("性感美女", "http://www.mm131.com/xinggan/"));
-        menuList.add(new Menu("清纯美眉", "http://www.mm131.com/qingchun/"));
-        menuList.add(new Menu("美女校花", "http://www.mm131.com/xiaohua/"));
-        menuList.add(new Menu("性感车模", "http://www.mm131.com/chemo/"));
-        menuList.add(new Menu("旗袍美女", "http://www.mm131.com/qipao/"));
-        menuList.add(new Menu("明星写真", "http://www.mm131.com/mingxing/"));
+        menuList.add(new Menu("动漫杂志", "https://acg12.com/category/acg-gallery/acg-magazine/"));
         return menuList;
     }
 
@@ -53,15 +60,14 @@ public class MM131Pattern implements BasePattern {
         try {
             Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
             byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("dd a img:not([border])");
+            Document document = Jsoup.parse(new String(result, "utf-8"));
+            Elements elements = document.select("section .card-bg > a");
             for (Element element : elements) {
                 AlbumInfo temp = new AlbumInfo();
-                temp.setCoverUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
-                Pattern pattern = Pattern.compile("/\\d{3,4}");
-                Matcher matcher = pattern.matcher(element.attr("src"));
-                if (matcher.find())
-                    temp.setAlbumUrl(baseUrl + matcher.group().substring(1) + ".html");
+                temp.setAlbumUrl(element.attr("href"));
+                Elements elements1 = element.select("img");
+                if (elements1.size() > 0)
+                    temp.setCoverUrl(elements1.get(0).attr("data-src"));
                 data.add(temp);
             }
         } catch (IOException e) {
@@ -82,10 +88,10 @@ public class MM131Pattern implements BasePattern {
         try {
             Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
             byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("dd.page a:containsOwn(下一页)");
+            Document document = Jsoup.parse(new String(result, "utf-8"));
+            Elements elements = document.select(".pager a.next");
             if (elements.size() > 0)
-                return baseUrl + elements.get(0).attr("href");
+                return elements.get(0).attr("href");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,13 +107,21 @@ public class MM131Pattern implements BasePattern {
                 .build();
 
         try {
-            Call call = OkHttpClientUtil.getInstance().newCall(request);
-            Response response = call.execute();
+            Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
             byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("div.content-pic img");
-            if (elements.size() > 0)
-                urls.add(elements.get(0).attr("src"));
+            Document document = Jsoup.parse(new String(result, "utf-8"));
+            Elements elements = document.select(".entry-content a:has(img)");
+            for (Element element : elements) {
+                String url = element.attr("href");
+                if (url == null || url.equals("") || !Pattern.matches("https:.*.jpg", url)) {
+                    Elements elements1 = element.select("img");
+                    if (elements1.size() > 0)
+                        url = elements1.get(0).attr("src");
+                }
+                if (!Pattern.matches("https:.*.jpg", url))
+                    url = "https:" + url;
+                urls.add(url);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -119,21 +133,6 @@ public class MM131Pattern implements BasePattern {
 
     @Override
     public String getDetailNext(String baseUrl, String currentUrl) {
-        Request request = new Request.Builder()
-                .url(currentUrl)
-                .build();
-
-        try {
-            Call call = OkHttpClientUtil.getInstance().newCall(request);
-            Response response = call.execute();
-            byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("div.content-page a:containsOwn(下一页)");
-            if (elements.size() > 0)
-                return baseUrl + elements.get(0).attr("href");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return "";
     }
 }

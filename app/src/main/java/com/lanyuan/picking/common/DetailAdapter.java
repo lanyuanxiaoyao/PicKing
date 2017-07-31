@@ -32,7 +32,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
     public interface OnItemClickListener {
         void ItemClickListener(View view, int position, String url);
 
-        void ItemLongClickListener(View view, int position);
+        void ItemLongClickListener(View view, int position, String url);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -71,7 +71,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
                     @Override
                     public boolean onLongClick(View v) {
                         int pos = holder.getLayoutPosition();
-                        itemClickListener.ItemLongClickListener(holder.itemView, pos);
+                        itemClickListener.ItemLongClickListener(holder.itemView, pos, lists.get(pos));
                         return true;
                     }
                 });

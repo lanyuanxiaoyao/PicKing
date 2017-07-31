@@ -1,54 +1,49 @@
 package com.lanyuan.picking;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.lanyuan.picking.common.BaseActivity;
-import com.lanyuan.picking.common.ContentsActivity;
-import com.lanyuan.picking.common.PicDialog;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.pattern.BasePattern;
-import com.lanyuan.picking.pattern.MM131.MM131Pattern;
-import com.lanyuan.picking.pattern.RoseMM.RosiMMPattern;
+import com.lanyuan.picking.pattern.Anime.ACG12;
+import com.lanyuan.picking.pattern.Anime.ApicPattern;
+import com.lanyuan.picking.pattern.custom.BasePattern;
+import com.lanyuan.picking.pattern.custom.MM131Pattern;
+import com.lanyuan.picking.pattern.custom.RosiMMPattern;
 import com.lanyuan.picking.pattern.XiuMM.XiuMMPattern;
 import com.lanyuan.picking.setting.SettingActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
-import me.relex.photodraweeview.OnPhotoTapListener;
-import me.relex.photodraweeview.OnViewTapListener;
-import me.relex.photodraweeview.PhotoDraweeView;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindViews({R.id.mm131, R.id.xiumm, R.id.rosimm})
-    List<ImageView> imageViews;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,31 +73,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        for (ImageView imageView : imageViews)
-            imageView.setOnClickListener(this);
+        CategoryPagerAdapter categoryPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), getFragmentList(), getTitleList());
+        viewPager.setAdapter(categoryPagerAdapter);
+        viewPager.setOffscreenPageLimit(1);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.mm131:
-                startActivity(new MM131Pattern());
-                break;
-            case R.id.xiumm:
-                startActivity(new XiuMMPattern());
-                break;
-            case R.id.rosimm:
-                startActivity(new RosiMMPattern());
-                break;
-        }
+    private List<Fragment> getFragmentList() {
+        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
+            add(new MM131Pattern());
+            add(new XiuMMPattern());
+            add(new RosiMMPattern());
+        }}));
+        fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
+            add(new ApicPattern());
+            add(new ACG12());
+        }}));
+        return fragmentList;
     }
 
-    private void startActivity(BasePattern pattern) {
-        Intent intent = new Intent(MainActivity.this, ContentsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("pattern", pattern);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    private List<String> getTitleList() {
+        List<String> titleList = new ArrayList<>();
+        titleList.add("风俗区");
+        titleList.add("二次元区");
+        return titleList;
     }
 
     @Override
@@ -129,6 +124,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 intent.setData(qrcode_url);
                 intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity");
                 startActivity(intent);
+                break;
+            case R.id.nav_share:
                 break;
             case R.id.nav_about:
                 startActivity(new Intent(MainActivity.this, AboutActivity.class));

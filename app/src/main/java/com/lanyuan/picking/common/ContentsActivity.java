@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -18,7 +17,7 @@ import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.custom.BasePattern;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
 
@@ -116,8 +115,8 @@ public class ContentsActivity extends BaseActivity {
             }
 
             @Override
-            public void ItemLongClickListener(View view, int position) {
-
+            public void ItemLongClickListener(View view, int position, AlbumInfo albumInfo) {
+                toast(albumInfo.getCoverUrl());
             }
         });
 

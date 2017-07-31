@@ -37,7 +37,7 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
     public interface OnItemClickListener {
         void ItemClickListener(View view, int position, AlbumInfo albumInfo);
 
-        void ItemLongClickListener(View view, int position);
+        void ItemLongClickListener(View view, int position, AlbumInfo albumInfo);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -76,7 +76,7 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
                     @Override
                     public boolean onLongClick(View v) {
                         int pos = holder.getLayoutPosition();
-                        itemClickListener.ItemLongClickListener(holder.itemView, pos);
+                        itemClickListener.ItemLongClickListener(holder.itemView, pos, lists.get(pos));
                         return true;
                     }
                 });
