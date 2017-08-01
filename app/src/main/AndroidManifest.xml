@@ -3,6 +3,8 @@
     package="com.lanyuan.picking">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".application.MyApplication"
@@ -14,20 +16,21 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".common.ContentsActivity"
-            android:theme="@style/NotitleFullScreen" />
+            android:name=".ui.contents.ContentsActivity"
+            android:theme="@style/AppNoActionBarDarkTheme" />
         <activity
-            android:name=".common.DetailActivity"
-            android:theme="@style/NotitleFullScreen" />
+            android:name=".ui.detail.DetailActivity"
+            android:theme="@style/AppNoActionBarDarkTheme" />
         <activity
-            android:name=".setting.SettingActivity"
+            android:name=".ui.setting.SettingActivity"
             android:theme="@style/AppNoActionBarTheme" />
-        <activity android:name=".AboutActivity" />
+        <activity
+            android:name=".ui.AboutActivity"
+            android:theme="@style/AppNoActionBarTheme" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.lanyuan.picking.common;
+package com.lanyuan.picking.ui.contents;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.util.FrescoUtil;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.lanyuan.picking.common;
+package com.lanyuan.picking.ui;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
@@ -7,17 +7,17 @@ import android.util.AttributeSet;
 import com.aspsine.swipetoloadlayout.SwipeRefreshTrigger;
 import com.aspsine.swipetoloadlayout.SwipeTrigger;
 
-public class RefreshHeadView extends AppCompatTextView implements SwipeRefreshTrigger, SwipeTrigger {
+public class RefreshView extends AppCompatTextView implements SwipeRefreshTrigger, SwipeTrigger {
 
-    public RefreshHeadView(Context context) {
+    public RefreshView(Context context) {
         super(context);
     }
 
-    public RefreshHeadView(Context context, AttributeSet attrs) {
+    public RefreshView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public RefreshHeadView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RefreshView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

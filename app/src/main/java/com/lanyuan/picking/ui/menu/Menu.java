@@ -1,4 +1,4 @@
-package com.lanyuan.picking.common;
+package com.lanyuan.picking.ui.menu;
 
 public class Menu {
     private String name;

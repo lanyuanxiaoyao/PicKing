@@ -2,11 +2,11 @@ package com.lanyuan.picking.pattern.custom;
 
 import android.graphics.Color;
 
-import com.lanyuan.picking.R;
-import com.lanyuan.picking.common.ContentsActivity;
-import com.lanyuan.picking.common.DetailActivity;
+import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.ui.contents.ContentsActivity;
+import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.common.AlbumInfo;
-import com.lanyuan.picking.common.Menu;
+import com.lanyuan.picking.ui.menu.Menu;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
@@ -15,8 +15,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -28,8 +28,8 @@ import okhttp3.Response;
 
 public class MM131Pattern implements BasePattern {
     @Override
-    public int getResourceId() {
-        return R.mipmap.mm131;
+    public String getCategoryCoverUrl() {
+        return "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=50538304,1525126075&fm=58&s=7C00763384B06D8210E8B5CE03004021&bpow=200&bpoh=75";
     }
 
     @Override
@@ -55,97 +55,51 @@ public class MM131Pattern implements BasePattern {
     }
 
     @Override
-    public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl) {
-        Map<ContentsActivity.parameter, Object> resultMap = new HashMap<>();
+    public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
-
-        Request request = new Request.Builder()
-                .url(currentUrl)
-                .build();
-        try {
-            Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
-            byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("dd a img:not([border])");
-            for (Element element : elements) {
-                AlbumInfo temp = new AlbumInfo();
-                temp.setCoverUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
-                Pattern pattern = Pattern.compile("/\\d{3,4}");
-                Matcher matcher = pattern.matcher(element.attr("src"));
-                if (matcher.find())
-                    temp.setAlbumUrl(baseUrl + matcher.group().substring(1) + ".html");
-                data.add(temp);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        Document document = Jsoup.parse(new String(result, "gbk"));
+        Elements elements = document.select("dd a img:not([border])");
+        for (Element element : elements) {
+            AlbumInfo temp = new AlbumInfo();
+            temp.setCoverUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
+            Pattern pattern = Pattern.compile("/\\d{3,4}");
+            Matcher matcher = pattern.matcher(element.attr("src"));
+            if (matcher.find())
+                temp.setAlbumUrl(baseUrl + matcher.group().substring(1) + ".html");
+            data.add(temp);
         }
-
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(ContentsActivity.parameter.RESULT, data);
         return resultMap;
     }
 
     @Override
-    public String getNext(String baseUrl, String currentUrl) {
-        Request request = new Request.Builder()
-                .url(currentUrl)
-                .build();
-
-        try {
-            Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
-            byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("dd.page a:containsOwn(下一页)");
-            if (elements.size() > 0)
-                return baseUrl + elements.get(0).attr("href");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+        Document document = Jsoup.parse(new String(result, "gbk"));
+        Elements elements = document.select("dd.page a:containsOwn(下一页)");
+        if (elements.size() > 0)
+            return baseUrl + elements.get(0).attr("href");
         return "";
     }
 
     @Override
-    public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl) {
-        Map<DetailActivity.parameter, Object> resultMap = new HashMap<>();
+    public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<String> urls = new ArrayList<>();
-        Request request = new Request.Builder()
-                .url(currentUrl)
-                .build();
-
-        try {
-            Call call = OkHttpClientUtil.getInstance().newCall(request);
-            Response response = call.execute();
-            byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("div.content-pic img");
-            if (elements.size() > 0)
-                urls.add(elements.get(0).attr("src"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        Document document = Jsoup.parse(new String(result, "gbk"));
+        Elements elements = document.select("div.content-pic img");
+        if (elements.size() > 0)
+            urls.add(elements.get(0).attr("src"));
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);
         return resultMap;
     }
 
     @Override
-    public String getDetailNext(String baseUrl, String currentUrl) {
-        Request request = new Request.Builder()
-                .url(currentUrl)
-                .build();
-
-        try {
-            Call call = OkHttpClientUtil.getInstance().newCall(request);
-            Response response = call.execute();
-            byte[] result = response.body().bytes();
-            Document document = Jsoup.parse(new String(result, "gbk"));
-            Elements elements = document.select("div.content-page a:containsOwn(下一页)");
-            if (elements.size() > 0)
-                return baseUrl + elements.get(0).attr("href");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public String getDetailNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+        Document document = Jsoup.parse(new String(result, "gbk"));
+        Elements elements = document.select("div.content-page a:containsOwn(下一页)");
+        if (elements.size() > 0)
+            return baseUrl + elements.get(0).attr("href");
         return "";
     }
 }

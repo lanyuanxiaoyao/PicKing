@@ -1,7 +1,9 @@
-package com.lanyuan.picking.common;
+package com.lanyuan.picking.ui.contents;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
@@ -16,17 +18,28 @@ import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.ui.BaseActivity;
+import com.lanyuan.picking.ui.detail.DetailActivity;
+import com.lanyuan.picking.ui.menu.Menu;
+import com.lanyuan.picking.ui.menu.MenuAdapter;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.pattern.custom.BasePattern;
+import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ContentsActivity extends BaseActivity {
 
@@ -59,6 +72,10 @@ public class ContentsActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contents);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
 
         ButterKnife.bind(this);
 
@@ -149,12 +166,12 @@ public class ContentsActivity extends BaseActivity {
         return pattern.getMenuList();
     }
 
-    public Map<parameter, Object> getContent(String baseUrl, String currentUrl) {
-        return pattern.getContent(baseUrl, currentUrl);
+    public Map<parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<parameter, Object> resultMap) throws UnsupportedEncodingException {
+        return pattern.getContent(baseUrl, currentUrl, result, resultMap);
     }
 
-    public String getNext(String baseUrl, String currentUrl) {
-        return pattern.getNext(baseUrl, currentUrl);
+    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+        return pattern.getNext(baseUrl, currentUrl, result);
     }
 
     @Override
@@ -170,15 +187,26 @@ public class ContentsActivity extends BaseActivity {
 
         @Override
         protected Map<parameter, Object> doInBackground(String... strings) {
-            if (strings.length > 0)
-                return getContent(baseUrl, strings[0]);
-            else
+            if (strings.length > 0) {
+                try {
+                    Map<parameter, Object> resultMap = new HashMap<>();
+                    Request request = new Request.Builder()
+                            .url(strings[0])
+                            .build();
+                    Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
+                    byte[] result = response.body().bytes();
+                    return getContent(baseUrl, strings[0], result, resultMap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else
                 return null;
         }
 
         @Override
         protected void onPostExecute(Map<parameter, Object> resultMap) {
-            if (!isRunnable) return;
+            if (!isRunnable || resultMap == null) return;
 
             currentUrl = (String) resultMap.get(parameter.CURRENT_URL);
 
@@ -191,9 +219,19 @@ public class ContentsActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            if (strings.length > 0)
-                return getNext(baseUrl, strings[0]);
-            else
+            if (strings.length > 0) {
+                try {
+                    Request request = new Request.Builder()
+                            .url(strings[0])
+                            .build();
+                    Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
+                    byte[] result = response.body().bytes();
+                    return getNext(baseUrl, strings[0], result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            } else
                 return "";
         }
 

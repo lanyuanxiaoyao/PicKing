@@ -1,9 +1,11 @@
-package com.lanyuan.picking.common;
+package com.lanyuan.picking.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -22,9 +24,17 @@ public class PicDialog extends Dialog {
     PhotoDraweeView photoDraweeView;
 
     public PicDialog(Context context) {
-        super(context, R.style.NotitleFullScreen);
+        super(context, R.style.AppNoActionBarDarkTheme);
         setOwnerActivity((Activity) context);
         setContentView(R.layout.pic_dialog);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
 
         ButterKnife.bind(this);
 

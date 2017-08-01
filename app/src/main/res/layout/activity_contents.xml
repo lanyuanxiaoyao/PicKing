@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.lanyuan.picking.common.RefreshHeadView
+        <com.lanyuan.picking.ui.RefreshView
             android:id="@id/swipe_refresh_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/refresh_view_height"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
-        <com.lanyuan.picking.common.RefreshHeadView
+        <com.lanyuan.picking.ui.RefreshView
             android:id="@id/swipe_load_more_footer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/refresh_view_height"

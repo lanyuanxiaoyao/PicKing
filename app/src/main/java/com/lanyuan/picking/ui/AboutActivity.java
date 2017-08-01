@@ -1,4 +1,4 @@
-package com.lanyuan.picking;
+package com.lanyuan.picking.ui;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,10 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.lanyuan.picking.R;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;

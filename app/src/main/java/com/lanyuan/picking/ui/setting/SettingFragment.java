@@ -1,4 +1,4 @@
-package com.lanyuan.picking.setting;
+package com.lanyuan.picking.ui.setting;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;

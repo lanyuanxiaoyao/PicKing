@@ -16,15 +16,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import com.lanyuan.picking.common.BaseActivity;
+import com.lanyuan.picking.ui.AboutActivity;
+import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.pattern.Anime.ACG12;
-import com.lanyuan.picking.pattern.Anime.ApicPattern;
-import com.lanyuan.picking.pattern.custom.BasePattern;
+import com.lanyuan.picking.pattern.anime.ACG12;
+import com.lanyuan.picking.pattern.anime.ApicPattern;
+import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.pattern.custom.MM131Pattern;
 import com.lanyuan.picking.pattern.custom.RosiMMPattern;
-import com.lanyuan.picking.pattern.XiuMM.XiuMMPattern;
-import com.lanyuan.picking.setting.SettingActivity;
+import com.lanyuan.picking.pattern.custom.XiuMMPattern;
+import com.lanyuan.picking.ui.setting.SettingActivity;
+import com.lanyuan.picking.ui.category.CategoryFragment;
+import com.lanyuan.picking.ui.category.CategoryPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +53,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
             localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
@@ -60,6 +61,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 drawerLayout.setClipToPadding(false);
             }
         }
+
+        ButterKnife.bind(this);
 
         AppConfig.init(this);
 
@@ -98,6 +101,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         titleList.add("风俗区");
         titleList.add("二次元区");
         return titleList;
+    }
+
+    @Override
+    public boolean supportSlideBack() {
+        return false;
     }
 
     @Override

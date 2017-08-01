@@ -7,10 +7,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aitangba.swipeback.ActivityLifecycleHelper;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
-
-import butterknife.ButterKnife;
 
 public class MyApplication extends Application {
 
@@ -19,6 +18,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Fresco.initialize(this);
         ToastInstance.builder.init(this);
+        registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
     }
 
     public enum ToastInstance {

@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="main_item_height">100dp</dimen>
+    <dimen name="main_item_height">70dp</dimen>
     <dimen name="refresh_view_height">50dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->

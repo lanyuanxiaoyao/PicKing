@@ -1,6 +1,7 @@
-package com.lanyuan.picking;
+package com.lanyuan.picking.ui.category;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import com.lanyuan.picking.common.ContentsActivity;
-import com.lanyuan.picking.pattern.custom.BasePattern;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.lanyuan.picking.R;
+import com.lanyuan.picking.ui.contents.ContentsActivity;
+import com.lanyuan.picking.pattern.BasePattern;
 
 import java.util.List;
 
@@ -49,10 +52,11 @@ public class CategoryFragment extends Fragment {
     private View createImageView(final BasePattern pattern) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.item_category, null);
-        ImageView imageView = (ImageView) view.findViewById(R.id.item_image);
-        imageView.setImageResource(pattern.getResourceId());
-        imageView.setBackgroundColor(pattern.getBackgroundColor());
-        imageView.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.category_layout);
+        SimpleDraweeView simpleDraweeView = (SimpleDraweeView) view.findViewById(R.id.item_image);
+        simpleDraweeView.setImageURI(Uri.parse(pattern.getCategoryCoverUrl()));
+        relativeLayout.setBackgroundColor(pattern.getBackgroundColor());
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(pattern);
