@@ -2,6 +2,7 @@ package com.lanyuan.picking.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import java.util.Map;
@@ -10,7 +11,11 @@ public class AppConfig {
 
     private static Map map;
 
+    public static String DOWNLOAD_PATH;
+
     public static void init(Context context) {
+        DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Papaya/";
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         setMap(sharedPreferences.getAll());
     }

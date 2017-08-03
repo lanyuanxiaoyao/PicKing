@@ -16,15 +16,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.lanyuan.picking.pattern.custom.Yesky;
 import com.lanyuan.picking.ui.AboutActivity;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.pattern.anime.ACG12;
-import com.lanyuan.picking.pattern.anime.ApicPattern;
+import com.lanyuan.picking.pattern.anime.Acg12;
+import com.lanyuan.picking.pattern.anime.Apic;
 import com.lanyuan.picking.pattern.BasePattern;
-import com.lanyuan.picking.pattern.custom.MM131Pattern;
-import com.lanyuan.picking.pattern.custom.RosiMMPattern;
-import com.lanyuan.picking.pattern.custom.XiuMMPattern;
+import com.lanyuan.picking.pattern.custom.MM131;
+import com.lanyuan.picking.pattern.custom.RosiMM;
+import com.lanyuan.picking.pattern.custom.XiuMM;
 import com.lanyuan.picking.ui.setting.SettingActivity;
 import com.lanyuan.picking.ui.category.CategoryFragment;
 import com.lanyuan.picking.ui.category.CategoryPagerAdapter;
@@ -85,13 +86,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
-            add(new MM131Pattern());
-            add(new XiuMMPattern());
-            add(new RosiMMPattern());
+            add(new MM131());
+            add(new XiuMM());
+            add(new RosiMM());
+            add(new Yesky());
         }}));
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
-            add(new ApicPattern());
-            add(new ACG12());
+            add(new Apic());
+            add(new Acg12());
         }}));
         return fragmentList;
     }
@@ -124,6 +126,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         switch (id) {
             case R.id.nav_setting:
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                break;
+            case R.id.nav_update:
                 break;
             case R.id.nav_donate:
                 Intent intent = new Intent();

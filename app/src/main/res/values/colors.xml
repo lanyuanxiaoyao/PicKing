@@ -10,4 +10,5 @@
     <color name="centerColor">#F06292</color>
     <color name="startColor">#F8BBD0</color>
     <color name="endColor">#D81B60</color>
+    <color name="transparent">#00ffffff</color>
 </resources>

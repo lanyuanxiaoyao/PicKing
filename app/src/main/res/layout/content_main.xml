@@ -19,6 +19,7 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tab_layout"></android.support.v4.view.ViewPager>
+        android:layout_below="@id/tab_layout"
+        android:overScrollMode="never"></android.support.v4.view.ViewPager>
 
 </LinearLayout>

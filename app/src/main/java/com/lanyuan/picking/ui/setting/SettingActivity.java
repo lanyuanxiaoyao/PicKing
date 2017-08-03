@@ -1,6 +1,7 @@
 package com.lanyuan.picking.ui.setting;
 
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 

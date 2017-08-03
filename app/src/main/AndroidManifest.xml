@@ -3,17 +3,20 @@
     package="com.lanyuan.picking">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_apaya"
+        android:icon="@mipmap/ic_papaya"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppNoActionBarTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppNoActionBarTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -21,7 +24,7 @@
         </activity>
         <activity
             android:name=".ui.contents.ContentsActivity"
-            android:theme="@style/AppNoActionBarDarkTheme" />
+            android:theme="@style/AppNoActionBarTheme" />
         <activity
             android:name=".ui.detail.DetailActivity"
             android:theme="@style/AppNoActionBarDarkTheme" />

@@ -3,15 +3,19 @@ package com.lanyuan.picking.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
+import com.lanyuan.picking.ui.detail.DetailActivity;
+import com.lanyuan.picking.util.PicUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,10 +54,35 @@ public class PicDialog extends Dialog {
         window.setWindowAnimations(R.style.dialogStyle);
     }
 
-    public void show(String url) {
-        if (url != null && !"".equals(url))
+    public void show(final String url, int position) {
+        if (url != null && !"".equals(url)) {
             photoDraweeView.setPhotoUri(Uri.parse(url));
+            photoDraweeView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    String[] items = {"保存", "分享"};
+                    AlertDialog dialog = new AlertDialog.Builder(getOwnerActivity())
+                            .setItems(items, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int index) {
+                                    Log.e("DetailActivity", "onClick: " + index);
+                                    switch (index) {
+                                        case 0:
+                                            PicUtil.saveImageFromFresco(getWindow().getDecorView(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                            break;
+                                        case 1:
+                                            PicUtil.shareImageFromFresco(getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                            break;
 
+                                    }
+                                }
+                            })
+                            .create();
+                    dialog.show();
+                    return false;
+                }
+            });
+        }
         this.show();
     }
 }

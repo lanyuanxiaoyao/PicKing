@@ -26,7 +26,7 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RosiMMPattern implements BasePattern {
+public class RosiMM implements BasePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "http://cdn-rosmm.b0.upaiyun.com/public/image/logo.png";

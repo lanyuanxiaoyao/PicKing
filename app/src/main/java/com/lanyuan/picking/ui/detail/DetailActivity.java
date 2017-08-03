@@ -1,24 +1,27 @@
 package com.lanyuan.picking.ui.detail;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
-import com.lanyuan.picking.common.PicUtil;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.PicDialog;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
+import com.lanyuan.picking.util.PicUtil;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.ToastUtil;
 
@@ -91,13 +94,30 @@ public class DetailActivity extends BaseActivity {
         adapter.setOnClickListener(new DetailAdapter.OnItemClickListener() {
             @Override
             public void ItemClickListener(View view, int position, String url) {
-                picDialog.show(url);
+                picDialog.show(url, position);
             }
 
             @Override
-            public void ItemLongClickListener(View view, int position, String url) {
-                PicUtil.saveImageFromFresco(url, "/sdcard/picking");
-                toast("save");
+            public void ItemLongClickListener(View view, int position, final String url) {
+                String[] items = {"保存", "分享"};
+                AlertDialog dialog = new AlertDialog.Builder(DetailActivity.this)
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int index) {
+                                Log.e("DetailActivity", "onClick: " + index);
+                                switch (index) {
+                                    case 0:
+                                        PicUtil.saveImageFromFresco(getWindow().getDecorView(), url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                        break;
+                                    case 1:
+                                        PicUtil.shareImageFromFresco(DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                        break;
+
+                                }
+                            }
+                        })
+                        .create();
+                dialog.show();
             }
         });
         recyclerView.setAdapter(adapter);

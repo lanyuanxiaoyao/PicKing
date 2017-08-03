@@ -1,37 +1,34 @@
 package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 import com.lanyuan.picking.pattern.BasePattern;
-import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class ApicPattern implements BasePattern {
+public class Acg12 implements BasePattern {
     @Override
     public String getCategoryCoverUrl() {
-        return "http://www.apic.in/wp-content/themes/AZone/big-logo.png";
+        return "https://static.acg12.com/uploads/2017/06/7cc936d8c0258f17b7ca86309d919490.png";
     }
 
     @Override
     public int getBackgroundColor() {
-        return Color.WHITE;
+        return Color.rgb(236, 227, 191);
     }
 
     @Override
@@ -42,18 +39,16 @@ public class ApicPattern implements BasePattern {
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
-        menuList.add(new Menu("动漫区", "http://www.apic.in/anime"));
-        menuList.add(new Menu("制服控", "http://www.apic.in/zhifu"));
-        menuList.add(new Menu("Hentai", "http://www.apic.in/hentai"));
-        menuList.add(new Menu("御三家", "http://www.apic.in/yusanjia"));
-        menuList.add(new Menu("二次元杂图", "http://www.apic.in/zatuji"));
-        menuList.add(new Menu("福利包", "http://www.apic.in/fuli"));
-        menuList.add(new Menu("足控", "http://www.apic.in/hentai/zukongfuli"));
-        menuList.add(new Menu("绝对领域", "http://www.apic.in/hentai/jueduilingyu"));
-        menuList.add(new Menu("胖次", "http://www.apic.in/hentai/pangci"));
-        menuList.add(new Menu("萝莉控", "http://www.apic.in/zhifu/lolikong"));
-        menuList.add(new Menu("百合", "http://www.apic.in/hentai/baihe"));
-        menuList.add(new Menu("巨乳", "http://www.apic.in/hentai/juru"));
+        menuList.add(new Menu("动漫杂志", "https://acg12.com/category/acg-gallery/acg-magazine/"));
+        menuList.add(new Menu("画集画册", "https://acg12.com/category/acg-gallery/album/"));
+        menuList.add(new Menu("P站日榜", "https://acg12.com/category/pixiv/pixiv-daily/"));
+        menuList.add(new Menu("P站画师", "https://acg12.com/category/pixiv/pixiv-painter/"));
+        menuList.add(new Menu("yande日榜", "https://acg12.com/category/pixiv/yandek-wallpaper/"));
+        menuList.add(new Menu("美图日刊", "https://acg12.com/category/pixiv/fresh/"));
+        menuList.add(new Menu("绅士福利", "https://acg12.com/category/hentai-dou/welfare/"));
+        menuList.add(new Menu("动漫福利壁纸", "https://acg12.com/category/hentai-dou/k-wallpaper/"));
+        menuList.add(new Menu("COS福利", "https://acg12.com/category/online-atlas/online-cos/"));
+        menuList.add(new Menu("在线壁纸", "https://acg12.com/category/online-atlas/online-wallpaper/"));
         return menuList;
     }
 
@@ -61,13 +56,13 @@ public class ApicPattern implements BasePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select(".content a");
+        Elements elements = document.select("section .card-bg > a:has(img)");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href") + "/1");
+            temp.setAlbumUrl(element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+                temp.setCoverUrl(elements1.get(0).attr("data-src"));
             data.add(temp);
         }
 
@@ -79,7 +74,7 @@ public class ApicPattern implements BasePattern {
     @Override
     public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("#page .next");
+        Elements elements = document.select(".pager a.next");
         if (elements.size() > 0)
             return elements.get(0).attr("href");
         return "";
@@ -89,9 +84,23 @@ public class ApicPattern implements BasePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<String> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select(".post img");
+        Elements elements = document.select(".entry-content a:has(img)");
         for (Element element : elements) {
-            urls.add(element.attr("src"));
+            String url = element.attr("href");
+            if (url == null || url.equals("") || !Pattern.matches("https:.*.jpg", url)) {
+                Elements elements1 = element.select("img");
+                if (elements1.size() > 0)
+                    url = elements1.get(0).attr("src");
+            }
+            if (!Pattern.matches("https:.*.jpg", url))
+                url = "https:" + url;
+            urls.add(url);
+        }
+        if (urls.size() == 0) {
+            Elements elements1 = document.select(".entry-content p:has(img) img");
+            for (Element element : elements1) {
+                urls.add(element.attr("src"));
+            }
         }
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);
@@ -99,21 +108,7 @@ public class ApicPattern implements BasePattern {
     }
 
     @Override
-    public String getDetailNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("#page-links a");
-
-        int pageCount, index;
-        if (elements.size() > 0)
-            pageCount = elements.size() + 1;
-        else
-            return "";
-        int length = currentUrl.length();
-        String prefix = currentUrl.substring(0, length - 1);
-        index = Integer.parseInt(currentUrl.substring(length - 1, length));
-        if (++index > pageCount)
-            return "";
-        else
-            return prefix + index;
+    public String getDetailNext(String baseUrl, String currentUrl, byte[] result) {
+        return "";
     }
 }

@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="全局设置">
+    <PreferenceCategory android:title="浏览设置">
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/load_pic_swipe"
             android:summary="使图片在滑动列表的同时进行加载,开启此选项会消耗较多内存,造成卡顿,建议低配置的设备关闭此选项"
             android:title="滑动列表时加载图片" />
-        <EditTextPreference
-            android:key="savePath"
-            android:summary="/sdcard/Picture"
-            android:title="默认下载地址" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="大图浏览设置">
         <SwitchPreference
             android:defaultValue="false"
-            android:key="clickToBack"
-            android:title="单击返回" />
+            android:key="@string/click_to_back"
+            android:title="大图页面单击返回" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="缓存设置">
+        <EditTextPreference
+            android:enabled="false"
+            android:key="@string/download_path"
+            android:title="默认下载地址" />
+        <EditTextPreference
+            android:enabled="false"
+            android:key="@string/cache_size"
+            android:title="已缓存大小" />
     </PreferenceCategory>
 </PreferenceScreen>

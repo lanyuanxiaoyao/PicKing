@@ -26,7 +26,7 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MM131Pattern implements BasePattern {
+public class MM131 implements BasePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=50538304,1525126075&fm=58&s=7C00763384B06D8210E8B5CE03004021&bpow=200&bpoh=75";

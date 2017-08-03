@@ -16,6 +16,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.util.ScreenUtil;
 
 import java.util.List;
 
@@ -37,15 +38,20 @@ public class CategoryFragment extends Fragment {
         return this;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (linearLayout.getChildCount() == 0)
+            for (BasePattern pattern : patternList)
+                linearLayout.addView(createImageView(pattern));
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentView = inflater.inflate(R.layout.category_fragment, container, false);
         ButterKnife.bind(this, fragmentView);
-
-        for (BasePattern pattern : patternList)
-            linearLayout.addView(createImageView(pattern));
-
         return fragmentView;
     }
 
@@ -60,6 +66,7 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(pattern);
+                // getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             }
         });
         return view;

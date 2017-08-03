@@ -25,7 +25,9 @@ android {
         }
     }
     repositories {
-        maven { url "https://jitpack.io" }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://dl.bintray.com/firzenyogesh/maven' }
+        maven { url 'https://maven.google.com' }
     }
 }
 
@@ -40,5 +42,6 @@ dependencies {
     compile 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
     compile 'com.jakewharton:butterknife:8.7.0'
     compile 'com.aitangba:swipeback:1.0.2'
+    compile 'com.luffykou:android-common-utils:1.1.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
 }

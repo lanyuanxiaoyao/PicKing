@@ -54,6 +54,7 @@ public class ContentsActivity extends BaseActivity {
 
     private String baseUrl;
     private String currentUrl;
+    private String firstUrl;
 
     private boolean isRunnable = true;
     private boolean hasMore = true;
@@ -87,7 +88,6 @@ public class ContentsActivity extends BaseActivity {
         menuAdapter.setOnClickListener(new MenuAdapter.OnItemClickListener() {
             @Override
             public void ItemClickListener(View view, int position) {
-                ToastUtil.toast(menuList.get(position).getUrl());
                 adapter.removeAll();
                 baseUrl = getBaseUrl(menuList, position);
                 currentUrl = menuList.get(position).getUrl();
@@ -133,7 +133,6 @@ public class ContentsActivity extends BaseActivity {
 
             @Override
             public void ItemLongClickListener(View view, int position, AlbumInfo albumInfo) {
-                toast(albumInfo.getCoverUrl());
             }
         });
 
@@ -144,7 +143,8 @@ public class ContentsActivity extends BaseActivity {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                toast("refresh");
+                adapter.removeAll();
+                new GetContent().execute(firstUrl);
                 refreshLayout.setRefreshing(false);
             }
         });
@@ -209,9 +209,11 @@ public class ContentsActivity extends BaseActivity {
             if (!isRunnable || resultMap == null) return;
 
             currentUrl = (String) resultMap.get(parameter.CURRENT_URL);
+            if (firstUrl == null) firstUrl = currentUrl;
 
             List<AlbumInfo> urls = (List<AlbumInfo>) resultMap.get(parameter.RESULT);
             adapter.addMore(urls);
+            refreshLayout.setLoadingMore(false);
         }
     }
 
@@ -240,7 +242,6 @@ public class ContentsActivity extends BaseActivity {
             if (!isRunnable) return;
             if (!"".equals(url)) {
                 new GetContent().execute(url);
-                refreshLayout.setLoadingMore(false);
             } else {
                 hasMore = false;
                 toast("下面已经没有更多了！");
