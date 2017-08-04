@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
@@ -132,7 +133,7 @@ public class ContentsActivity extends BaseActivity {
             public void ItemClickListener(View view, int position, AlbumInfo albumInfo) {
                 if (pattern.isSinglePic()) {
                     new GetSinglePicContent().execute(albumInfo.getAlbumUrl());
-                    Snackbar.make(getWindow().getDecorView(), "正在加载，请稍候……", Snackbar.LENGTH_LONG).show();
+                    SnackbarUtils.Short(getWindow().getDecorView(), "正在加载，请稍候……").info().show();
                 } else {
                     Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
                     Bundle bundle = new Bundle();

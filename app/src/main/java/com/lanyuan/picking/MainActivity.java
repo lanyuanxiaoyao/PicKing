@@ -13,9 +13,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.lanyuan.picking.pattern.anime.AoJiao;
 import com.lanyuan.picking.pattern.custom.DuowanCos;
 import com.lanyuan.picking.pattern.custom.Yesky;
 import com.lanyuan.picking.ui.AboutActivity;
@@ -30,6 +32,8 @@ import com.lanyuan.picking.pattern.custom.XiuMM;
 import com.lanyuan.picking.ui.setting.SettingActivity;
 import com.lanyuan.picking.ui.category.CategoryFragment;
 import com.lanyuan.picking.ui.category.CategoryPagerAdapter;
+import com.lanyuan.picking.util.SnackbarUtils;
+import com.litesuits.common.assist.Network;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +86,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         viewPager.setAdapter(categoryPagerAdapter);
         viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
+
+        if (!Network.isConnected(this))
+            SnackbarUtils.Long(getWindow().getDecorView(), "当前没有网络连接！！").danger().show();
+        else if (!Network.isWifiConnected(this))
+            SnackbarUtils.Custom(getWindow().getDecorView(), "当前不在WiFi连接下，请注意流量使用！！", 5000).warning().show();
     }
 
     private List<Fragment> getFragmentList() {
@@ -89,6 +98,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
             add(new Apic());
             add(new Acg12());
+            add(new AoJiao());
         }}));
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
             add(new MM131());
@@ -152,5 +162,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    long LastTime = 0, NowTime = 0;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            NowTime = System.currentTimeMillis();
+            if (NowTime - LastTime < 1000) {
+                finish();
+            } else {
+                SnackbarUtils.Short(getWindow().getDecorView(), "再点一次返回键退出").show();
+            }
+            LastTime = NowTime;
+        }
+
+        return false;
     }
 }

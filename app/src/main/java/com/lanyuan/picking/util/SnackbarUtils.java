@@ -12,7 +12,6 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.Space;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,11 +125,11 @@ public class SnackbarUtils {
     //工具类当前持有的Snackbar实例
     private static WeakReference<Snackbar> snackbarWeakReference;
 
-    private SnackbarUtils(){
+    private SnackbarUtils() {
         throw new RuntimeException("禁止无参创建实例");
     }
 
-    private SnackbarUtils(@Nullable WeakReference<Snackbar> snackbarWeakReference){
+    private SnackbarUtils(@Nullable WeakReference<Snackbar> snackbarWeakReference) {
         this.snackbarWeakReference = snackbarWeakReference;
     }
 
@@ -140,9 +139,9 @@ public class SnackbarUtils {
      * @return
      */
     public Snackbar getSnackbar() {
-        if(this.snackbarWeakReference != null && this.snackbarWeakReference.get()!=null){
+        if (this.snackbarWeakReference != null && this.snackbarWeakReference.get() != null) {
             return this.snackbarWeakReference.get();
-        }else {
+        } else {
             return null;
         }
     }
@@ -418,7 +417,6 @@ public class SnackbarUtils {
             message.setLayoutParams(paramsMessage);
             message.setCompoundDrawablePadding(message.getPaddingLeft());
             int textSize = (int) message.getTextSize();
-            Log.e("Jet", "textSize:" + textSize);
             if (leftDrawable != null) {
                 leftDrawable.setBounds(0, 0, textSize, textSize);
             }
@@ -540,29 +538,6 @@ public class SnackbarUtils {
     }
 
     /**
-     * 经试验发现:
-     *      执行过{@link SnackbarUtils#backColor(int)}后:background instanceof ColorDrawable
-     *      未执行过{@link SnackbarUtils#backColor(int)}:background instanceof GradientDrawable
-     * @return
-     */
-    /*
-    public SnackbarUtils radius(){
-        Drawable background = snackbarWeakReference.get().getView().getBackground();
-        if(background instanceof GradientDrawable){
-            Log.e("Jet","radius():GradientDrawable");
-        }
-        if(background instanceof ColorDrawable){
-            Log.e("Jet","radius():ColorDrawable");
-        }
-        if(background instanceof StateListDrawable){
-            Log.e("Jet","radius():StateListDrawable");
-        }
-        Log.e("Jet","radius()background:"+background.getClass().getSimpleName());
-        return new SnackbarUtils(mSnackbar);
-    }
-    */
-
-    /**
      * 通过SnackBar现在的背景,获取其设置圆角值时候所需的GradientDrawable实例
      *
      * @param backgroundOri
@@ -629,25 +604,8 @@ public class SnackbarUtils {
      * @return
      */
     private int calculateSnackBarHeight() {
-        /*
-        <TextView
-                android:id="@+id/snackbar_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/design_snackbar_padding_vertical"
-                android:paddingBottom="@dimen/design_snackbar_padding_vertical"
-                android:paddingLeft="@dimen/design_snackbar_padding_horizontal"
-                android:paddingRight="@dimen/design_snackbar_padding_horizontal"
-                android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
-                android:maxLines="@integer/design_snackbar_text_max_lines"
-                android:layout_gravity="center_vertical|left|start"
-                android:ellipsize="end"
-                android:textAlignment="viewStart"/>
-        */
         //文字高度+paddingTop+paddingBottom : 14sp + 14dp*2
         int SnackbarHeight = ScreenUtil.dp2px(getSnackbar().getView().getContext(), 28) + ScreenUtil.sp2px(getSnackbar().getView().getContext(), 14);
-        Log.e("Jet", "直接获取MessageView高度:" + getSnackbar().getView().findViewById(R.id.snackbar_text).getHeight());
         return SnackbarHeight;
     }
 
@@ -667,9 +625,7 @@ public class SnackbarUtils {
             marginRight = marginRight <= 0 ? 0 : marginRight;
             int[] locations = new int[2];
             targetView.getLocationOnScreen(locations);
-            Log.e("Jet", "距离屏幕左侧:" + locations[0] + "==距离屏幕顶部:" + locations[1]);
             int snackbarHeight = calculateSnackBarHeight();
-            Log.e("Jet", "Snackbar高度:" + snackbarHeight);
             //必须保证指定View的顶部可见 且 单行Snackbar可以完整的展示
             if (locations[1] >= contentViewTop + snackbarHeight) {
                 gravityFrameLayout(Gravity.BOTTOM);
@@ -688,9 +644,7 @@ public class SnackbarUtils {
             marginRight = marginRight <= 0 ? 0 : marginRight;
             int[] locations = new int[2];
             targetView.getLocationOnScreen(locations);
-            Log.e("Jet", "距离屏幕左侧:" + locations[0] + "==距离屏幕顶部:" + locations[1]);
             int snackbarHeight = calculateSnackBarHeight();
-            Log.e("Jet", "Snackbar高度:" + snackbarHeight);
             //必须保证指定View的顶部可见 且 单行Snackbar可以完整的展示
             if (locations[1] >= contentViewTop + snackbarHeight) {
                 gravityCoordinatorLayout(Gravity.BOTTOM);
@@ -777,12 +731,8 @@ public class SnackbarUtils {
      * 显示 mSnackbar
      */
     public void show() {
-        Log.e("Jet", "show()");
         if (getSnackbar() != null) {
-            Log.e("Jet", "show");
             getSnackbar().show();
-        } else {
-            Log.e("Jet", "已经被回收");
         }
     }
 }

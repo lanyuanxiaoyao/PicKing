@@ -22,7 +22,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?attr/selectableItemBackground"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/about_item_height"
                 android:paddingLeft="@dimen/about_item_height"
@@ -32,6 +31,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/about_item_height"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     app:cardCornerRadius="10dp">
 
                     <LinearLayout
@@ -40,13 +41,24 @@
                         android:orientation="vertical"
                         android:padding="10dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="简介"
-                            android:textColor="@color/black"
-                            android:textSize="25sp" />
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitCenter"
+                                android:src="@mipmap/info" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="简介"
+                                android:textColor="@color/black"
+                                android:textSize="25sp" />
+                        </LinearLayout>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -61,6 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/about_item_height"
+                    android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     app:cardCornerRadius="10dp">
 
@@ -70,13 +83,24 @@
                         android:orientation="vertical"
                         android:padding="10dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="作者"
-                            android:textColor="@color/black"
-                            android:textSize="25sp" />
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitCenter"
+                                android:src="@mipmap/programmer" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="作者"
+                                android:textColor="@color/black"
+                                android:textSize="25sp" />
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/about_author"
@@ -93,6 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/about_item_height"
+                    android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     app:cardCornerRadius="10dp">
 
@@ -102,13 +127,24 @@
                         android:orientation="vertical"
                         android:padding="10dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="捐赠"
-                            android:textColor="@color/black"
-                            android:textSize="25sp" />
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitCenter"
+                                android:src="@mipmap/donate2" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="捐赠"
+                                android:textColor="@color/black"
+                                android:textSize="25sp" />
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/about_donate"
@@ -133,6 +169,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/about_item_height"
+                    android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     app:cardCornerRadius="10dp">
 
@@ -142,13 +179,24 @@
                         android:orientation="vertical"
                         android:padding="10dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="开源"
-                            android:textColor="@color/black"
-                            android:textSize="25sp" />
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:scaleType="fitCenter"
+                                android:src="@mipmap/opensource" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="开源"
+                                android:textColor="@color/black"
+                                android:textSize="25sp" />
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/about_open"
