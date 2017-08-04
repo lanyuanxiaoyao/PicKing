@@ -1,6 +1,7 @@
 package com.lanyuan.picking.ui.detail;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
     private int width;
     private Context context;
     private OnItemClickListener itemClickListener;
+    private OnLoveClickListener loveClickListener;
 
     public DetailAdapter(Context context, List<String> lists, int width) {
         this.context = context;
@@ -39,19 +41,29 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
         this.itemClickListener = listener;
     }
 
+    public interface OnLoveClickListener {
+        void LoveClickListener(View view, int position, String url);
+    }
+
+    public void setOnLoveClickListener(OnLoveClickListener listener) {
+        this.loveClickListener = listener;
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_recycler_view, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_detail_recycler_view, parent, false);
         MyViewHolder viewHolder = new MyViewHolder(view);
         return viewHolder;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         public SimpleDraweeView simpleDraweeView;
+        public AppCompatImageButton imageButton;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.fresco);
+            imageButton = (AppCompatImageButton) itemView.findViewById(R.id.love_button);
         }
     }
 
@@ -73,6 +85,15 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
                         int pos = holder.getLayoutPosition();
                         itemClickListener.ItemLongClickListener(holder.itemView, pos, lists.get(pos));
                         return true;
+                    }
+                });
+            }
+            if (loveClickListener != null) {
+                holder.imageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int pos = holder.getLayoutPosition();
+                        loveClickListener.LoveClickListener(holder.itemView, pos, lists.get(pos));
                     }
                 });
             }

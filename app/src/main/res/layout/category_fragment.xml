@@ -6,13 +6,15 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/category_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#e2e2e2">
 
         <LinearLayout
             android:id="@+id/category_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical"
+            android:padding="10dp"></LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

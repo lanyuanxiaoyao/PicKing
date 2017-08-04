@@ -16,7 +16,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.pattern.BasePattern;
-import com.lanyuan.picking.util.ScreenUtil;
 
 import java.util.List;
 

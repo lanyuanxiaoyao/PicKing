@@ -54,13 +54,13 @@ public class PicDialog extends Dialog {
         window.setWindowAnimations(R.style.dialogStyle);
     }
 
-    public void show(final String url, int position) {
+    public void show(final String url) {
         if (url != null && !"".equals(url)) {
             photoDraweeView.setPhotoUri(Uri.parse(url));
             photoDraweeView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    String[] items = {"保存", "分享"};
+                    String[] items = {"保存", "分享", "设为壁纸"};
                     AlertDialog dialog = new AlertDialog.Builder(getOwnerActivity())
                             .setItems(items, new DialogInterface.OnClickListener() {
                                 @Override
@@ -71,9 +71,11 @@ public class PicDialog extends Dialog {
                                             PicUtil.saveImageFromFresco(getWindow().getDecorView(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
                                             break;
                                         case 1:
-                                            PicUtil.shareImageFromFresco(getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                            PicUtil.shareImageFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
                                             break;
-
+                                        case 2:
+                                            PicUtil.setWallPaperImageFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                            break;
                                     }
                                 }
                             })

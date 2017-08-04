@@ -3,7 +3,6 @@ package com.lanyuan.picking.util;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -12,10 +11,6 @@ import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
-
-/**
- * Created by lanyuanxiaoyao on 2017/7/23.
- */
 
 public class FrescoUtil {
     /**

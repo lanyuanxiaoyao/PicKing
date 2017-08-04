@@ -53,6 +53,11 @@ public class Acg12 implements BasePattern {
     }
 
     @Override
+    public boolean isSinglePic() {
+        return false;
+    }
+
+    @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
@@ -78,6 +83,11 @@ public class Acg12 implements BasePattern {
         if (elements.size() > 0)
             return elements.get(0).attr("href");
         return "";
+    }
+
+    @Override
+    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) {
+        return null;
     }
 
     @Override

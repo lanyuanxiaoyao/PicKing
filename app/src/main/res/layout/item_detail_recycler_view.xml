@@ -11,4 +11,16 @@
         android:layout_height="500dp"
         app:placeholderImage="@mipmap/ic_papaya" />
 
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/love_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="top|left"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/love_selector"
+        android:scaleType="center"
+        app:layout_anchor="@+id/fresco"
+        app:layout_anchorGravity="bottom|right" />
+
 </android.support.design.widget.CoordinatorLayout>

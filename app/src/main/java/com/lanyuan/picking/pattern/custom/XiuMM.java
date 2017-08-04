@@ -66,6 +66,11 @@ public class XiuMM implements BasePattern {
     }
 
     @Override
+    public boolean isSinglePic() {
+        return false;
+    }
+
+    @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
@@ -90,6 +95,11 @@ public class XiuMM implements BasePattern {
         if (elements.size() > 0)
             return baseUrl + elements.get(0).attr("href");
         return "";
+    }
+
+    @Override
+    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) {
+        return null;
     }
 
     @Override

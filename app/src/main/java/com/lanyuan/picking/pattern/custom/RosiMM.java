@@ -50,6 +50,11 @@ public class RosiMM implements BasePattern {
     }
 
     @Override
+    public boolean isSinglePic() {
+        return false;
+    }
+
+    @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gbk"));
@@ -83,6 +88,11 @@ public class RosiMM implements BasePattern {
             }
         }
         return "";
+    }
+
+    @Override
+    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) {
+        return null;
     }
 
     @Override

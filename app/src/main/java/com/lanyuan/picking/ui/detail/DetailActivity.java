@@ -7,12 +7,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
@@ -23,7 +23,7 @@ import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.PicUtil;
 import com.lanyuan.picking.util.ScreenUtil;
-import com.lanyuan.picking.util.ToastUtil;
+import com.lanyuan.picking.util.SnackbarUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -56,6 +56,8 @@ public class DetailActivity extends BaseActivity {
 
     private PicDialog picDialog;
 
+    private Snackbar snackbar;
+
     public enum parameter {
         RESULT, CURRENT_URL
     }
@@ -72,6 +74,7 @@ public class DetailActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         picDialog = new PicDialog(this);
+        snackbar = SnackbarUtils.Long(getWindow().getDecorView(), "").info().getSnackbar();
 
         Intent intent = getIntent();
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
@@ -91,28 +94,35 @@ public class DetailActivity extends BaseActivity {
                 }
             });
         adapter = new DetailAdapter(this, new ArrayList<String>(), ScreenUtil.getScreenWidth(this));
+        adapter.setOnLoveClickListener(new DetailAdapter.OnLoveClickListener() {
+            @Override
+            public void LoveClickListener(View view, int position, String url) {
+                PicUtil.saveImageFromFresco(getWindow().getDecorView(), url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+            }
+        });
         adapter.setOnClickListener(new DetailAdapter.OnItemClickListener() {
             @Override
             public void ItemClickListener(View view, int position, String url) {
-                picDialog.show(url, position);
+                picDialog.show(url);
             }
 
             @Override
             public void ItemLongClickListener(View view, int position, final String url) {
-                String[] items = {"保存", "分享"};
+                String[] items = {"保存", "分享", "设为壁纸"};
                 AlertDialog dialog = new AlertDialog.Builder(DetailActivity.this)
                         .setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int index) {
-                                Log.e("DetailActivity", "onClick: " + index);
                                 switch (index) {
                                     case 0:
                                         PicUtil.saveImageFromFresco(getWindow().getDecorView(), url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
                                         break;
                                     case 1:
-                                        PicUtil.shareImageFromFresco(DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                        PicUtil.shareImageFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
                                         break;
-
+                                    case 2:
+                                        PicUtil.setWallPaperImageFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
+                                        break;
                                 }
                             }
                         })
@@ -156,14 +166,23 @@ public class DetailActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Map<parameter, Object> resultMap) {
-            if (!isRunnable || resultMap == null) return;
+            if (!isRunnable)
+                return;
+            else if (resultMap == null) {
+                SnackbarUtils.Short(getWindow().getDecorView(), "获取内容失败，请检查网络连接").danger().show();
+                return;
+            }
 
             List<String> urls = (List<String>) resultMap.get(parameter.RESULT);
+            if (urls.size() == 0) {
+                SnackbarUtils.Short(getWindow().getDecorView(), "获取内容失败，请检查网络连接").danger().show();
+                return;
+            }
             adapter.addMore(urls);
 
             if (hasMore) {
                 picNumber += urls.size();
-                toast("正在加载第" + picNumber + "张图片", Toast.LENGTH_LONG);
+                snackbar.setText("正在加载第" + picNumber + "张图片").show();
                 new GetNext().execute((String) resultMap.get(parameter.CURRENT_URL));
             }
         }
@@ -196,7 +215,7 @@ public class DetailActivity extends BaseActivity {
                 new GetContent().execute(url);
             } else {
                 hasMore = false;
-                toast("(/◔ ◡ ◔)/\n加载完成 共" + picNumber + "张图片", Toast.LENGTH_LONG);
+                SnackbarUtils.Short(getWindow().getDecorView(), "(/◔ ◡ ◔)/ 加载完成 共" + picNumber + "张图片").confirm().show();
             }
         }
     }
@@ -204,7 +223,7 @@ public class DetailActivity extends BaseActivity {
     @Override
     protected void onPause() {
         isRunnable = false;
-        ToastUtil.cancel();
+        snackbar.dismiss();
         super.onPause();
     }
 }

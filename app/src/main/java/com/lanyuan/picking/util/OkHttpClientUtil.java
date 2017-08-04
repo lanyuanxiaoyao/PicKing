@@ -10,7 +10,6 @@ public class OkHttpClientUtil {
 
     public static OkHttpClient getInstance() {
         if (instance == null) {
-            Log.e("OkHttpClientUtil", "getInstance: 创建了单例");
             instance = new OkHttpClient();
         }
         return instance;

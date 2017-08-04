@@ -3,7 +3,6 @@ package com.lanyuan.picking.ui;
 import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.aspsine.swipetoloadlayout.SwipeRefreshTrigger;
 import com.aspsine.swipetoloadlayout.SwipeTrigger;
@@ -24,7 +23,7 @@ public class RefreshView extends AppCompatTextView implements SwipeRefreshTrigge
 
     @Override
     public void onRefresh() {
-        setText("onRefresh");
+        setText("正在努力加载");
     }
 
     @Override

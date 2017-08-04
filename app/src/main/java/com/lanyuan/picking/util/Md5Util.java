@@ -2,9 +2,9 @@ package com.lanyuan.picking.util;
 
 import com.litesuits.common.utils.MD5Util;
 
-public class MD5 {
+public class Md5Util {
     public static String getMD5(String val) {
-        return getString(MD5Util.md5(val));
+        return getString(com.litesuits.common.utils.MD5Util.md5(val));
     }
 
     private static String getString(byte[] b) {

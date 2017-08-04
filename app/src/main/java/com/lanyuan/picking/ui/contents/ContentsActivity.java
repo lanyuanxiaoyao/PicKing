@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.ui.BaseActivity;
+import com.lanyuan.picking.ui.PicDialog;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 import com.lanyuan.picking.ui.menu.MenuAdapter;
@@ -27,7 +29,7 @@ import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.ScreenUtil;
-import com.lanyuan.picking.util.ToastUtil;
+import com.lanyuan.picking.util.SnackbarUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -63,6 +65,8 @@ public class ContentsActivity extends BaseActivity {
 
     private List<Menu> menuList;
 
+    private PicDialog picDialog;
+
     private BasePattern pattern;
 
     public enum parameter {
@@ -80,6 +84,8 @@ public class ContentsActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        picDialog = new PicDialog(this);
+
         Intent intent = getIntent();
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
 
@@ -91,7 +97,8 @@ public class ContentsActivity extends BaseActivity {
                 adapter.removeAll();
                 baseUrl = getBaseUrl(menuList, position);
                 currentUrl = menuList.get(position).getUrl();
-                new GetContent().execute(currentUrl);
+                firstUrl = currentUrl;
+                refreshLayout.setRefreshing(true);
                 drawerLayout.closeDrawer(GravityCompat.END);
             }
 
@@ -105,6 +112,7 @@ public class ContentsActivity extends BaseActivity {
 
         baseUrl = getBaseUrl(menuList, 0);
         currentUrl = menuList.get(0).getUrl();
+        firstUrl = currentUrl;
 
         if (!(boolean) AppConfig.getByResourceId(this, R.string.load_pic_swipe, false))
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -122,13 +130,18 @@ public class ContentsActivity extends BaseActivity {
         adapter.setOnClickListener(new ContentsAdapter.OnItemClickListener() {
             @Override
             public void ItemClickListener(View view, int position, AlbumInfo albumInfo) {
-                Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("currentUrl", albumInfo.getAlbumUrl());
-                bundle.putString("baseUrl", baseUrl);
-                bundle.putSerializable("pattern", pattern);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (pattern.isSinglePic()) {
+                    new GetSinglePicContent().execute(albumInfo.getAlbumUrl());
+                    Snackbar.make(getWindow().getDecorView(), "正在加载，请稍候……", Snackbar.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("currentUrl", albumInfo.getAlbumUrl());
+                    bundle.putString("baseUrl", baseUrl);
+                    bundle.putSerializable("pattern", pattern);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
 
             @Override
@@ -145,7 +158,6 @@ public class ContentsActivity extends BaseActivity {
             public void onRefresh() {
                 adapter.removeAll();
                 new GetContent().execute(firstUrl);
-                refreshLayout.setRefreshing(false);
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -154,8 +166,7 @@ public class ContentsActivity extends BaseActivity {
                 new GetNextPage().execute(currentUrl);
             }
         });
-
-        new GetContent().execute(currentUrl);
+        refreshLayout.setRefreshing(true);
     }
 
     public String getBaseUrl(List<Menu> menuList, int position) {
@@ -172,6 +183,10 @@ public class ContentsActivity extends BaseActivity {
 
     public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         return pattern.getNext(baseUrl, currentUrl, result);
+    }
+
+    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+        return pattern.getSinglePicContent(baseUrl, currentUrl, result);
     }
 
     @Override
@@ -206,13 +221,25 @@ public class ContentsActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Map<parameter, Object> resultMap) {
-            if (!isRunnable || resultMap == null) return;
+            if (!isRunnable)
+                return;
+            else if (resultMap == null) {
+                Snackbar.make(getWindow().getDecorView(), "获取内容失败，请检查网络连接", Snackbar.LENGTH_LONG).show();
+                refreshLayout.setRefreshing(false);
+                return;
+            }
 
             currentUrl = (String) resultMap.get(parameter.CURRENT_URL);
             if (firstUrl == null) firstUrl = currentUrl;
 
             List<AlbumInfo> urls = (List<AlbumInfo>) resultMap.get(parameter.RESULT);
+            if (urls.size() == 0) {
+                Snackbar.make(getWindow().getDecorView(), "获取内容失败，请检查网络连接", Snackbar.LENGTH_LONG).show();
+                refreshLayout.setRefreshing(false);
+                return;
+            }
             adapter.addMore(urls);
+            refreshLayout.setRefreshing(false);
             refreshLayout.setLoadingMore(false);
         }
     }
@@ -244,9 +271,42 @@ public class ContentsActivity extends BaseActivity {
                 new GetContent().execute(url);
             } else {
                 hasMore = false;
-                toast("下面已经没有更多了！");
+                SnackbarUtils.Short(getWindow().getDecorView(), "下面已经没有更多了！").danger().show();
                 refreshLayout.setLoadingMore(false);
             }
+        }
+    }
+
+    private class GetSinglePicContent extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            if (strings.length > 0) {
+                try {
+                    Request request = new Request.Builder()
+                            .url(strings[0])
+                            .build();
+                    Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
+                    byte[] result = response.body().bytes();
+                    return getSinglePicContent(baseUrl, currentUrl, result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (!isRunnable)
+                return;
+            else if (result == null || "".equals(result)) {
+                SnackbarUtils.Long(getWindow().getDecorView(), "获取内容失败，请检查网络连接").danger().show();
+                return;
+            }
+
+            picDialog.show(result);
         }
     }
 }

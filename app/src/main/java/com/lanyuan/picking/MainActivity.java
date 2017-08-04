@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.lanyuan.picking.pattern.custom.DuowanCos;
 import com.lanyuan.picking.pattern.custom.Yesky;
 import com.lanyuan.picking.ui.AboutActivity;
 import com.lanyuan.picking.ui.BaseActivity;
@@ -86,22 +87,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
+            add(new Apic());
+            add(new Acg12());
+        }}));
+        fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
             add(new MM131());
             add(new XiuMM());
             add(new RosiMM());
             add(new Yesky());
-        }}));
-        fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
-            add(new Apic());
-            add(new Acg12());
+            add(new DuowanCos());
         }}));
         return fragmentList;
     }
 
     private List<String> getTitleList() {
         List<String> titleList = new ArrayList<>();
-        titleList.add("风俗区");
         titleList.add("二次元区");
+        titleList.add("风俗区");
         return titleList;
     }
 
@@ -127,8 +129,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.nav_setting:
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
-            case R.id.nav_update:
-                break;
+            /*case R.id.nav_update:
+                break;*/
             case R.id.nav_donate:
                 Intent intent = new Intent();
                 intent.setAction("android.intent.action.VIEW");
@@ -137,8 +139,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity");
                 startActivity(intent);
                 break;
-            case R.id.nav_share:
-                break;
+            /*case R.id.nav_share:
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.putExtra(Intent.EXTRA_TEXT, "有人给你分享了一张图片");
+                share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                share.setType("text/plain");
+                startActivity(Intent.createChooser(share, "分享到"));
+                break;*/
             case R.id.nav_about:
                 startActivity(new Intent(MainActivity.this, AboutActivity.class));
                 break;

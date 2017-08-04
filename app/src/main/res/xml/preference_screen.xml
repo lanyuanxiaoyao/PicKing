@@ -4,12 +4,19 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/load_pic_swipe"
-            android:summary="使图片在滑动列表的同时进行加载,开启此选项会消耗较多内存,造成卡顿,建议低配置的设备关闭此选项"
+            android:summary="使图片在滑动列表的同时进行加载,开启此选项会消耗较多内存和流量,造成卡顿,建议低配置的设备关闭此选项"
             android:title="滑动列表时加载图片" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/click_to_back"
             android:title="大图页面单击返回" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="分享设置">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/share_model"
+            android:summary="默认关闭,关闭状态下在应用中点击分享只分享图片链接,开启后在应用中点击分享会保存图片并直接分享原图"
+            android:title="直接分享原图" />
     </PreferenceCategory>
     <PreferenceCategory android:title="缓存设置">
         <EditTextPreference
