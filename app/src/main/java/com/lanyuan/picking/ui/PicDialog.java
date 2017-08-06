@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
+import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.ui.detail.DetailActivity;
@@ -56,27 +57,17 @@ public class PicDialog extends Dialog {
 
     public void show(final String url) {
         if (url != null && !"".equals(url)) {
+            photoDraweeView.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
             photoDraweeView.setPhotoUri(Uri.parse(url));
             photoDraweeView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public boolean onLongClick(View view) {
+                public boolean onLongClick(final View view) {
                     String[] items = {"保存", "分享", "设为壁纸"};
                     AlertDialog dialog = new AlertDialog.Builder(getOwnerActivity())
                             .setItems(items, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int index) {
-                                    Log.e("DetailActivity", "onClick: " + index);
-                                    switch (index) {
-                                        case 0:
-                                            PicUtil.saveImageFromFresco(getWindow().getDecorView(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
-                                            break;
-                                        case 1:
-                                            PicUtil.shareImageFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
-                                            break;
-                                        case 2:
-                                            PicUtil.setWallPaperImageFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
-                                            break;
-                                    }
+                                    PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), index);
                                 }
                             })
                             .create();

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.util.FrescoUtil;
@@ -63,6 +64,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
         public MyViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.fresco);
+            simpleDraweeView.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
             imageButton = (AppCompatImageButton) itemView.findViewById(R.id.love_button);
         }
     }

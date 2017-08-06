@@ -13,13 +13,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.lanyuan.picking.MainActivity_ViewBinding;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.PicDialog;
@@ -29,6 +25,11 @@ import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.PicUtil;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+import com.yanzhenjie.permission.PermissionListener;
+import com.yanzhenjie.permission.Rationale;
+import com.yanzhenjie.permission.RationaleListener;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,14 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Request;
 import okhttp3.Response;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
-@RuntimePermissions
 public class DetailActivity extends BaseActivity {
 
     @BindView(R.id.detail_recycle_view)
@@ -109,7 +103,7 @@ public class DetailActivity extends BaseActivity {
         adapter.setOnLoveClickListener(new DetailAdapter.OnLoveClickListener() {
             @Override
             public void LoveClickListener(View view, int position, String url) {
-                DetailActivityPermissionsDispatcher.saveImageFromFrescoWithCheck(DetailActivity.this, url);
+                PicUtil.doFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH), PicUtil.SAVE_IMAGE);
             }
         });
         adapter.setOnClickListener(new DetailAdapter.OnItemClickListener() {
@@ -124,18 +118,8 @@ public class DetailActivity extends BaseActivity {
                 AlertDialog dialog = new AlertDialog.Builder(DetailActivity.this)
                         .setItems(items, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int index) {
-                                switch (index) {
-                                    case 0:
-                                        DetailActivityPermissionsDispatcher.saveImageFromFrescoWithCheck(DetailActivity.this, url);
-                                        break;
-                                    case 1:
-                                        DetailActivityPermissionsDispatcher.shareImageFromFrescoWithCheck(DetailActivity.this, url);
-                                        break;
-                                    case 2:
-                                        DetailActivityPermissionsDispatcher.setWallPaperImageFromFrescoWithCheck(DetailActivity.this, url);
-                                        break;
-                                }
+                            public void onClick(DialogInterface dialogInterface, final int index) {
+                                PicUtil.doFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH), index);
                             }
                         })
                         .create();
@@ -143,50 +127,6 @@ public class DetailActivity extends BaseActivity {
             }
         });
         recyclerView.setAdapter(adapter);
-    }
-
-    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void saveImageFromFresco(String url) {
-        PicUtil.saveImageFromFresco(getWindow().getDecorView(), url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
-    }
-
-    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void shareImageFromFresco(String url) {
-        PicUtil.shareImageFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
-    }
-
-    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void setWallPaperImageFromFresco(String url) {
-        PicUtil.setWallPaperImageFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH));
-    }
-
-    @OnShowRationale({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationaleForCamera(final PermissionRequest request) {
-        new AlertDialog.Builder(this)
-                .setMessage("应用中的设置壁纸，保存图片，分享图片等功能需要用到读写存储空间的权限，请允许")
-                .setPositiveButton("授权", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        request.cancel();
-                    }
-                })
-                .show();
-    }
-
-    @OnPermissionDenied({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showDeniedForCamera() {
-        SnackbarUtils.Long(getWindow().getDecorView(), "禁用此权限将无法保存和分享图片和设置壁纸").danger().show();
-    }
-
-    @OnNeverAskAgain({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showNeverAskForCamera() {
-        SnackbarUtils.Custom(getWindow().getDecorView(), "您已禁止木瓜读取外置存储权限\n请在安全软件中开启", 5000).danger().show();
     }
 
     public Map<parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<parameter, Object> resultMap) throws UnsupportedEncodingException {
@@ -278,7 +218,6 @@ public class DetailActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        DetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override

@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.lanyuan.picking.pattern.anime.AoJiao;
+import com.lanyuan.picking.pattern.anime.ZeroChan;
 import com.lanyuan.picking.pattern.custom.DuowanCos;
 import com.lanyuan.picking.pattern.custom.Yesky;
 import com.lanyuan.picking.ui.AboutActivity;
@@ -99,6 +100,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             add(new Apic());
             add(new Acg12());
             add(new AoJiao());
+            add(new ZeroChan());
         }}));
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
             add(new MM131());
