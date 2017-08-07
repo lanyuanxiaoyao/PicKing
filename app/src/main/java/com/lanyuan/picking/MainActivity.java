@@ -33,6 +33,7 @@ import com.lanyuan.picking.pattern.custom.XiuMM;
 import com.lanyuan.picking.ui.setting.SettingActivity;
 import com.lanyuan.picking.ui.category.CategoryFragment;
 import com.lanyuan.picking.ui.category.CategoryPagerAdapter;
+import com.lanyuan.picking.util.AliPayUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
 import com.litesuits.common.assist.Network;
 
@@ -144,12 +145,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             /*case R.id.nav_update:
                 break;*/
             case R.id.nav_donate:
-                Intent intent = new Intent();
-                intent.setAction("android.intent.action.VIEW");
-                Uri qrcode_url = Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2FFKX06852EOBWRJPACOMCF5%3F_s%3Dweb-other");
-                intent.setData(qrcode_url);
-                intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity");
-                startActivity(intent);
+                if (!AliPayUtil.goAliPay(this))
+                    SnackbarUtils.Short(getWindow().getDecorView(), "设备上没有安装支付宝").danger().show();
                 break;
             /*case R.id.nav_share:
                 Intent share = new Intent(Intent.ACTION_SEND);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -28,8 +29,10 @@ import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.PermissionListener;
 import com.yanzhenjie.permission.Rationale;
 import com.yanzhenjie.permission.RationaleListener;
+import com.zhy.base.fileprovider.FileProvider7;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class PicUtil {
@@ -46,7 +49,7 @@ public class PicUtil {
                     public void onSucceed(int requestCode, @NonNull List<String> grantedPermissions) {
                         switch (pattern) {
                             case SAVE_IMAGE:
-                                saveImageFromFresco(view, url, path);
+                                saveImageFromFresco(view, context, url, path);
                                 break;
                             case SHARE_IMAGE:
                                 shareImageFromFresco(view, context, url, path);
@@ -74,7 +77,7 @@ public class PicUtil {
                 .start();
     }
 
-    private static void saveImageFromFresco(final View view, final String url, final String path) {
+    private static void saveImageFromFresco(final View view, final Context context, final String url, final String path) {
         SnackbarUtils.Short(view, "正在保存...").info().show();
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
@@ -83,9 +86,11 @@ public class PicUtil {
             @Override
             public void onNewResultImpl(@Nullable Bitmap bitmap) {
                 if (bitmap != null) {
-                    String filePath = path + Md5Util.getMD5(url) + ".jpg";
+                    String filename = Md5Util.getMD5(url) + ".jpg";
+                    String filePath = path + filename;
                     ifPathNotExistsAndCreate(path);
                     if (BitmapUtil.saveBitmap(bitmap, filePath)) {
+                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, FileProvider7.getUriForFile(context, new File(filePath))));
                         SnackbarUtils.Short(view, "保存成功").confirm().show();
                     } else {
                         SnackbarUtils.Short(view, "保存失败").danger().show();
@@ -128,7 +133,7 @@ public class PicUtil {
                             File file = new File(filePath);
                             share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
                             context.startActivity(Intent.createChooser(share, "分享到"));
-
+                            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, FileProvider7.getUriForFile(context, new File(filePath))));
                         } else {
                             SnackbarUtils.Short(view, "分享失败").danger().show();
                         }
@@ -165,6 +170,7 @@ public class PicUtil {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, FileProvider7.getUriForFile(context, new File(filePath))));
                     } else {
                         SnackbarUtils.Short(view, "设置失败").danger().show();
                     }

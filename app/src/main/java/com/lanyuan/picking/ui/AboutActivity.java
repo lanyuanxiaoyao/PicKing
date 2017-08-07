@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.util.AliPayUtil;
+import com.lanyuan.picking.util.SnackbarUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,12 +34,8 @@ public class AboutActivity extends BaseActivity {
         alipay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("android.intent.action.VIEW");
-                Uri qrcode_url = Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2FFKX06852EOBWRJPACOMCF5%3F_s%3Dweb-other");
-                intent.setData(qrcode_url);
-                intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity");
-                startActivity(intent);
+                if (!AliPayUtil.goAliPay(AboutActivity.this))
+                    SnackbarUtils.Short(getWindow().getDecorView(), "设备上没有安装支付宝").danger().show();
             }
         });
     }
