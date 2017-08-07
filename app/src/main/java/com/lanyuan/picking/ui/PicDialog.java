@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -17,16 +18,25 @@ import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.util.PicUtil;
+import com.lanyuan.picking.util.SnackbarUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import me.relex.photodraweeview.OnViewTapListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
-public class PicDialog extends Dialog {
+public class PicDialog extends Dialog implements View.OnClickListener {
+
+    private String url;
 
     @BindView(R.id.pic_view)
     PhotoDraweeView photoDraweeView;
+
+    @BindViews({R.id.love_button, R.id.download_button, R.id.share_button, R.id.wallpaper_button})
+    List<AppCompatImageButton> imageButtons;
 
     public PicDialog(Context context) {
         super(context, R.style.AppNoActionBarDarkTheme);
@@ -51,31 +61,46 @@ public class PicDialog extends Dialog {
                 }
             });
 
+        for (AppCompatImageButton imageButton : imageButtons)
+            imageButton.setOnClickListener(this);
+
         Window window = this.getWindow();
         window.setWindowAnimations(R.style.dialogStyle);
     }
 
     public void show(final String url) {
         if (url != null && !"".equals(url)) {
+            this.url = url;
             photoDraweeView.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
             photoDraweeView.setPhotoUri(Uri.parse(url));
-            photoDraweeView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(final View view) {
-                    String[] items = {"保存", "分享", "设为壁纸"};
-                    AlertDialog dialog = new AlertDialog.Builder(getOwnerActivity())
-                            .setItems(items, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int index) {
-                                    PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), index);
-                                }
-                            })
-                            .create();
-                    dialog.show();
-                    return false;
-                }
-            });
         }
         this.show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.love_button:
+                SnackbarUtils.Short(getWindow().getDecorView(), "收藏功能还在开发当中……").info().show();
+                break;
+            case R.id.download_button:
+                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), 0);
+                break;
+            case R.id.share_button:
+                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), 1);
+                break;
+            case R.id.wallpaper_button:
+                new AlertDialog.Builder(getOwnerActivity())
+                        .setTitle("确定要把图片设为壁纸吗？")
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("设为壁纸", new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), 2);
+                            }
+                        })
+                        .show();
+                break;
+        }
     }
 }

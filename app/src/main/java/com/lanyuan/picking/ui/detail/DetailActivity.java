@@ -114,16 +114,6 @@ public class DetailActivity extends BaseActivity {
 
             @Override
             public void ItemLongClickListener(final View view, final int position, final String url) {
-                String[] items = {"保存", "分享", "设为壁纸"};
-                AlertDialog dialog = new AlertDialog.Builder(DetailActivity.this)
-                        .setItems(items, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, final int index) {
-                                PicUtil.doFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH), index);
-                            }
-                        })
-                        .create();
-                dialog.show();
             }
         });
         recyclerView.setAdapter(adapter);

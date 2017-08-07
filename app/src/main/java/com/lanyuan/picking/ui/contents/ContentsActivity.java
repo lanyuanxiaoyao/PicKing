@@ -133,7 +133,7 @@ public class ContentsActivity extends BaseActivity {
             public void ItemClickListener(View view, int position, AlbumInfo albumInfo) {
                 if (pattern.isSinglePic()) {
                     new GetSinglePicContent().execute(albumInfo.getAlbumUrl());
-                    SnackbarUtils.Short(getWindow().getDecorView(), "正在加载，请稍候……").info().show();
+                    SnackbarUtils.Long(getWindow().getDecorView(), "正在加载，请稍候……").info().show();
                 } else {
                     Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
                     Bundle bundle = new Bundle();

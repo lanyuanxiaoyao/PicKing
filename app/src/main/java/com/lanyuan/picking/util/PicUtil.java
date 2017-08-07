@@ -78,7 +78,7 @@ public class PicUtil {
     }
 
     private static void saveImageFromFresco(final View view, final Context context, final String url, final String path) {
-        SnackbarUtils.Short(view, "正在保存...").info().show();
+        SnackbarUtils.Indefinite(view, "正在保存...").info().show();
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
                 .fetchDecodedImage(imageRequest, null);
@@ -114,7 +114,7 @@ public class PicUtil {
         dataSource.subscribe(new BaseBitmapDataSubscriber() {
             @Override
             public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                SnackbarUtils.Short(view, "正在准备分享...").info().show();
+                SnackbarUtils.Indefinite(view, "正在准备分享...").info().show();
                 if (bitmap != null) {
                     String filePath = path + Md5Util.getMD5(url) + ".jpg";
                     ifPathNotExistsAndCreate(path);
@@ -151,7 +151,7 @@ public class PicUtil {
     }
 
     private static void setWallPaperImageFromFresco(final View view, final Context context, final String url, final String path) {
-        SnackbarUtils.Short(view, "正在设置壁纸...").info().show();
+        SnackbarUtils.Indefinite(view, "正在设置壁纸...").info().show();
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
                 .fetchDecodedImage(imageRequest, null);
