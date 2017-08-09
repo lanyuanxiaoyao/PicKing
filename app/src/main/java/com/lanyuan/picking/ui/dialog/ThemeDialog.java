@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 public class ThemeDialog extends Dialog implements View.OnClickListener {
 
-    @BindViews({R.id.theme_default, R.id.theme_blue, R.id.theme_orange, R.id.theme_brown})
+    @BindViews({R.id.theme_default, R.id.theme_blue, R.id.theme_orange, R.id.theme_brown, R.id.theme_purple, R.id.theme_cyan, R.id.theme_green, R.id.theme_grey, R.id.theme_yellow})
     List<AppCompatButton> buttons;
 
     private BaseActivity activity;
@@ -50,6 +50,21 @@ public class ThemeDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.theme_brown:
                 changeTheme(AppConfig.BROWN_COLOR);
+                break;
+            case R.id.theme_purple:
+                changeTheme(AppConfig.PURPLE_COLOR);
+                break;
+            case R.id.theme_cyan:
+                changeTheme(AppConfig.CYAN_COLOR);
+                break;
+            case R.id.theme_green:
+                changeTheme(AppConfig.GREEN_COLOR);
+                break;
+            case R.id.theme_yellow:
+                changeTheme(AppConfig.YELLOW_COLOR);
+                break;
+            case R.id.theme_grey:
+                changeTheme(AppConfig.GREY_COLOR);
                 break;
         }
     }

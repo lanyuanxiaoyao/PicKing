@@ -26,7 +26,6 @@ public class BaseActivity extends SwipeBackActivity {
     }
 
     public void changeTheme(String theme) {
-        Log.e("BaseActivity", "changeTheme: " + theme);
         if (theme == null) return;
         switch (theme) {
             case AppConfig.DEFAULT_COLOR:
@@ -44,6 +43,26 @@ public class BaseActivity extends SwipeBackActivity {
             case AppConfig.BROWN_COLOR:
                 setTheme(R.style.AppNoActionBarThemeBrown);
                 SPUtils.put(this, AppConfig.choose_theme, AppConfig.BROWN_COLOR);
+                break;
+            case AppConfig.PURPLE_COLOR:
+                setTheme(R.style.AppNoActionBarThemePurple);
+                SPUtils.put(this, AppConfig.choose_theme, AppConfig.PURPLE_COLOR);
+                break;
+            case AppConfig.CYAN_COLOR:
+                setTheme(R.style.AppNoActionBarThemeCyan);
+                SPUtils.put(this, AppConfig.choose_theme, AppConfig.CYAN_COLOR);
+                break;
+            case AppConfig.GREEN_COLOR:
+                setTheme(R.style.AppNoActionBarThemeGreen);
+                SPUtils.put(this, AppConfig.choose_theme, AppConfig.GREEN_COLOR);
+                break;
+            case AppConfig.YELLOW_COLOR:
+                setTheme(R.style.AppNoActionBarThemeYellow);
+                SPUtils.put(this, AppConfig.choose_theme, AppConfig.YELLOW_COLOR);
+                break;
+            case AppConfig.GREY_COLOR:
+                setTheme(R.style.AppNoActionBarThemeGrey);
+                SPUtils.put(this, AppConfig.choose_theme, AppConfig.GREY_COLOR);
                 break;
         }
     }

@@ -1,7 +1,9 @@
 package com.lanyuan.picking.ui;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -26,7 +28,12 @@ public class AboutActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
-        toolbar.setTitle("关于");
+        try {
+            toolbar.setTitle("关于  v " + getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_CONFIGURATIONS).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            toolbar.setTitle("关于");
+        }
         setSupportActionBar(toolbar);
 
         TextView alipay = (TextView) findViewById(R.id.alipay);

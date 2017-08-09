@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -15,21 +16,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/colorAccent" />
+            android:background="@color/colorPrimary" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/theme_blue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/colorAccentBlue" />
+            android:background="@color/colorPrimaryBlue" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/theme_orange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/colorAccentOrange" />
+            android:background="@color/colorPrimaryOrange" />
     </LinearLayout>
 
     <LinearLayout
@@ -42,7 +43,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/colorAccentBrown" />
+            android:background="@color/colorPrimaryBrown" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/theme_purple"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryPurple" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/theme_cyan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryCyan" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/theme_green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryGreen" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/theme_yellow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryYellow" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/theme_grey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryGrey" />
     </LinearLayout>
 
 </LinearLayout>

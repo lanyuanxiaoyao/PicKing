@@ -15,7 +15,13 @@ public class AppConfig {
     public static final String BLUE_COLOR = "blue";
     public static final String ORANGE_COLOR = "orange";
     public static final String BROWN_COLOR = "brown";
+    public static final String PURPLE_COLOR = "purple";
+    public static final String CYAN_COLOR = "cyan";
+    public static final String GREEN_COLOR = "green";
+    public static final String YELLOW_COLOR = "yellow";
+    public static final String GREY_COLOR = "grey";
 
+    public static final String show_tips = "showTips";
     public static final String choose_theme = "chooseTheme";
     public static final String load_pic_swipe = "loadPicSwipe";
     public static final String click_to_back = "clickToBack";

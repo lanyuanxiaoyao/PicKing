@@ -23,6 +23,7 @@ import com.lanyuan.picking.util.PicUtil;
 import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
+import com.lanyuan.picking.util.StatusBarUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -66,6 +67,8 @@ public class DetailActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        StatusBarUtil.MIUISetStatusBarLightMode(this, true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);

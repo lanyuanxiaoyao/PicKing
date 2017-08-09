@@ -37,6 +37,10 @@
         <activity
             android:name=".ui.AboutActivity"
             android:theme="@style/AppNoActionBarTheme" />
+        <activity
+            android:name=".ui.favorite.FavoriteActivity"
+            android:theme="@style/AppNoActionBarTheme" />
+
         <activity android:name=".TestActivity"></activity>
     </application>
 

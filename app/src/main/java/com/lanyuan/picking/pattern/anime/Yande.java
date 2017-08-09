@@ -81,10 +81,8 @@ public class Yande implements BasePattern {
     @Override
     public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        // Log.e("Yande", "getSinglePicContent: " + new String(result, "utf-8"));
         Elements elements = document.select("#right-col img");
         if (elements.size() > 0) {
-            Log.e("Yande", "getSinglePicContent: " + elements.get(0).attr("src"));
             return elements.get(0).attr("src");
         }
         return "";

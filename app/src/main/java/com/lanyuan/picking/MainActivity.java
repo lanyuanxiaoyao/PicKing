@@ -1,5 +1,6 @@
 package com.lanyuan.picking;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -13,9 +14,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.lanyuan.picking.pattern.anime.AoJiao;
@@ -33,10 +37,13 @@ import com.lanyuan.picking.pattern.custom.MM131;
 import com.lanyuan.picking.pattern.custom.RosiMM;
 import com.lanyuan.picking.pattern.custom.XiuMM;
 import com.lanyuan.picking.ui.dialog.ThemeDialog;
+import com.lanyuan.picking.ui.favorite.FavoriteActivity;
 import com.lanyuan.picking.ui.setting.SettingActivity;
 import com.lanyuan.picking.ui.category.CategoryFragment;
 import com.lanyuan.picking.ui.category.CategoryPagerAdapter;
 import com.lanyuan.picking.util.AliPayUtil;
+import com.lanyuan.picking.util.FavoriteUtil;
+import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.SnackbarUtils;
 import com.litesuits.common.assist.Network;
 
@@ -96,7 +103,28 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         else if (!Network.isWifiConnected(this))
             SnackbarUtils.Custom(getWindow().getDecorView(), "当前不在WiFi连接下，请注意流量使用！！", 5000).warning().show();
 
+        showTips();
+
+        FavoriteUtil.init(this);
         // startActivity(new Intent(this, TestActivity.class));
+    }
+
+    private void showTips() {
+        if ((boolean) SPUtils.get(this, AppConfig.show_tips, true)) {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("提示")
+                    .setMessage(getResources().getString(R.string.tips))
+                    .setPositiveButton("知道了", null)
+                    .setNegativeButton("不在提示", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            SPUtils.put(MainActivity.this, AppConfig.show_tips, false);
+                        }
+                    })
+                    .create();
+            // dialog.getWindow().setWindowAnimations(R.style.dialogStyle);
+            dialog.show();
+        }
     }
 
     private List<Fragment> getFragmentList() {
@@ -121,7 +149,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<String> getTitleList() {
         List<String> titleList = new ArrayList<>();
         titleList.add("二次元区");
-        titleList.add("风俗区");
+        titleList.add("三次元区");
         return titleList;
     }
 
@@ -144,6 +172,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.nav_favorite:
+                Log.e("MainActivity", "onNavigationItemSelected: " + FavoriteUtil.favorites.size());
+                startActivity(new Intent(this, FavoriteActivity.class));
+                break;
             case R.id.nav_setting:
                 startActivity(new Intent(this, SettingActivity.class));
                 break;

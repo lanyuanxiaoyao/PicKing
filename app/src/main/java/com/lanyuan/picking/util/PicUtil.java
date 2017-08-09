@@ -118,8 +118,9 @@ public class PicUtil {
             public void onNewResultImpl(@Nullable Bitmap bitmap) {
                 snackbar.show();
                 if (bitmap != null) {
-                    String filePath = path + Md5Util.getMD5(url) + ".jpg";
-                    ifPathNotExistsAndCreate(path);
+                    String sharePath = path + "share" + File.separatorChar;
+                    String filePath = sharePath + Md5Util.getMD5(url) + ".jpg";
+                    ifPathNotExistsAndCreate(sharePath);
                     if ((boolean) SPUtils.get(context, AppConfig.share_model, false) == false) {
                         snackbar.dismiss();
                         Intent share = new Intent(Intent.ACTION_SEND);
@@ -163,9 +164,9 @@ public class PicUtil {
             @Override
             public void onNewResultImpl(@Nullable Bitmap bitmap) {
                 if (bitmap != null) {
-                    String filePath = path + Md5Util.getMD5(url) + ".jpg";
-                    File tempFile = new File(filePath);
-                    ifPathNotExistsAndCreate(path);
+                    String sharePath = path + "wallpaper" + File.separatorChar;
+                    String filePath = sharePath + Md5Util.getMD5(url) + ".jpg";
+                    ifPathNotExistsAndCreate(sharePath);
                     if (BitmapUtil.saveBitmap(bitmap, filePath)) {
                         try {
                             WallpaperManager wallpaper = WallpaperManager.getInstance(context);

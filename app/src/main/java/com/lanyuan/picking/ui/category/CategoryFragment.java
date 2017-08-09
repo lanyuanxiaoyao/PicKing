@@ -32,7 +32,6 @@ public class CategoryFragment extends Fragment {
     private List<BasePattern> patternList;
 
     public CategoryFragment init(List<BasePattern> patternList) {
-        Log.e("CategoryFragment", "init: 初始化");
         this.patternList = patternList;
         return this;
     }

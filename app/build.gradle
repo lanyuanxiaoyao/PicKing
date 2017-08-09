@@ -7,8 +7,8 @@ android {
         applicationId "com.lanyuan.picking"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 14
-        versionName "1.0.8"
+        versionCode 16
+        versionName "0.0.9"
         multiDexEnabled true
     }
     buildTypes {
@@ -44,6 +44,6 @@ dependencies {
     compile 'com.yanzhenjie:permission:1.1.0'
     compile 'com.zhy.base:fileprovider:1.0.0'
     compile 'com.just.agentweb:agentweb:1.2.6'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.google.code.gson:gson:2.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
 }

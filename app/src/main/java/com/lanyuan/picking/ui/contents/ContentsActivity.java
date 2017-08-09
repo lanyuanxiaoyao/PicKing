@@ -34,6 +34,7 @@ import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
+import com.lanyuan.picking.util.StatusBarUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -74,6 +75,8 @@ public class ContentsActivity extends BaseActivity {
 
     private BasePattern pattern;
 
+    private Snackbar picDialogSnackBar;
+
     public enum parameter {
         RESULT, CURRENT_URL
     }
@@ -83,6 +86,8 @@ public class ContentsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contents);
 
+        StatusBarUtil.MIUISetStatusBarLightMode(this, true);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
@@ -90,6 +95,7 @@ public class ContentsActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         picDialog = new PicDialog(this);
+        picDialogSnackBar = SnackbarUtils.Indefinite(getWindow().getDecorView(), "正在加载，请稍候……").info().getSnackbar();
 
         Intent intent = getIntent();
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
@@ -137,7 +143,7 @@ public class ContentsActivity extends BaseActivity {
             public void ItemClickListener(View view, int position, AlbumInfo albumInfo) {
                 if (pattern.isSinglePic()) {
                     new GetSinglePicContent().execute(albumInfo.getAlbumUrl());
-                    SnackbarUtils.Long(getWindow().getDecorView(), "正在加载，请稍候……").info().show();
+                    picDialogSnackBar.show();
                 } else {
                     Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
                     Bundle bundle = new Bundle();
@@ -162,8 +168,6 @@ public class ContentsActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 adapter.removeAll();
-                Log.e("ContentsActivity", "onRefresh: " + "WebView-start" + firstUrl);
-                // new GetContentByWebView(ContentsActivity.this).execute(firstUrl);
                 new GetContent().execute(firstUrl);
             }
         });
@@ -316,6 +320,7 @@ public class ContentsActivity extends BaseActivity {
             }
 
             picDialog.show(result);
+            picDialogSnackBar.dismiss();
         }
     }
 

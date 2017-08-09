@@ -3,6 +3,10 @@
 
     <group>
         <item
+            android:id="@+id/nav_favorite"
+            android:icon="@mipmap/favorite_folder"
+            android:title="收藏" />
+        <item
             android:id="@+id/nav_setting"
             android:icon="@mipmap/setting"
             android:title="设置" />
