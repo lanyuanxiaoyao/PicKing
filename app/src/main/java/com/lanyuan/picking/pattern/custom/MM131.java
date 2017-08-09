@@ -79,7 +79,7 @@ public class MM131 implements BasePattern {
     }
 
     @Override
-    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+    public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "gbk"));
         Elements elements = document.select("dd.page a:containsOwn(下一页)");
         if (elements.size() > 0)

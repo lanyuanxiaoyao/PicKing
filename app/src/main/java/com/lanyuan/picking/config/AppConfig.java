@@ -9,28 +9,18 @@ import java.util.Map;
 
 public class AppConfig {
 
-    private static Map map;
+    public static final String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Papaya/";
 
-    public static String DOWNLOAD_PATH;
+    public static final String DEFAULT_COLOR = "default";
+    public static final String BLUE_COLOR = "blue";
+    public static final String ORANGE_COLOR = "orange";
+    public static final String BROWN_COLOR = "brown";
 
-    public static void init(Context context) {
-        DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Papaya/";
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        setMap(sharedPreferences.getAll());
-    }
-
-    public static Object getByResourceId(Context context, int id, Object defaultValue) {
-        Object o = getMap().get(context.getResources().getString(id));
-        return o == null ? defaultValue : o;
-    }
-
-    public static Map getMap() {
-        return map;
-    }
-
-    public static void setMap(Map map) {
-        AppConfig.map = map;
-    }
+    public static final String choose_theme = "chooseTheme";
+    public static final String load_pic_swipe = "loadPicSwipe";
+    public static final String click_to_back = "clickToBack";
+    public static final String download_path = "downloadPath";
+    public static final String cache_size = "cacheSize";
+    public static final String share_model = "shareModel";
 
 }

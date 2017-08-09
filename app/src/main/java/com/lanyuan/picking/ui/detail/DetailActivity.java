@@ -1,7 +1,5 @@
 package com.lanyuan.picking.ui.detail;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -10,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
@@ -18,18 +15,14 @@ import android.view.View;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.ui.BaseActivity;
-import com.lanyuan.picking.ui.PicDialog;
+import com.lanyuan.picking.ui.dialog.PicDialog;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.PicUtil;
+import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.Permission;
-import com.yanzhenjie.permission.PermissionListener;
-import com.yanzhenjie.permission.Rationale;
-import com.yanzhenjie.permission.RationaleListener;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -40,6 +33,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -88,7 +82,7 @@ public class DetailActivity extends BaseActivity {
         currentUrl = intent.getStringExtra("currentUrl");
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        if (!(boolean) AppConfig.getByResourceId(this, R.string.load_pic_swipe, false))
+        if (!(boolean) SPUtils.get(this, AppConfig.load_pic_swipe, false))
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -103,7 +97,7 @@ public class DetailActivity extends BaseActivity {
         adapter.setOnLoveClickListener(new DetailAdapter.OnLoveClickListener() {
             @Override
             public void LoveClickListener(View view, int position, String url) {
-                PicUtil.doFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) AppConfig.getByResourceId(getBaseContext(), R.string.download_path, AppConfig.DOWNLOAD_PATH), PicUtil.SAVE_IMAGE);
+                PicUtil.doFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) SPUtils.get(DetailActivity.this, AppConfig.download_path, AppConfig.DOWNLOAD_PATH), PicUtil.SAVE_IMAGE);
             }
         });
         adapter.setOnClickListener(new DetailAdapter.OnItemClickListener() {
@@ -137,7 +131,8 @@ public class DetailActivity extends BaseActivity {
                     Request request = new Request.Builder()
                             .url(strings[0])
                             .build();
-                    Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
+                    Call call = OkHttpClientUtil.getInstance().newCall(request);
+                    Response response = call.execute();
                     byte[] result = response.body().bytes();
                     return getContent(baseUrl, strings[0], result, resultMap);
                 } catch (IOException e) {
@@ -181,7 +176,8 @@ public class DetailActivity extends BaseActivity {
                     Request request = new Request.Builder()
                             .url(strings[0])
                             .build();
-                    Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
+                    Call call = OkHttpClientUtil.getInstance().newCall(request);
+                    Response response = call.execute();
                     byte[] result = response.body().bytes();
                     return getNext(baseUrl, strings[0], result);
                 } catch (IOException e) {

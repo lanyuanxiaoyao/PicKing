@@ -1,8 +1,9 @@
 package com.lanyuan.picking;
 
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.lanyuan.picking.pattern.anime.AoJiao;
+import com.lanyuan.picking.pattern.anime.Yande;
 import com.lanyuan.picking.pattern.anime.ZeroChan;
 import com.lanyuan.picking.pattern.custom.DuowanCos;
 import com.lanyuan.picking.pattern.custom.Yesky;
@@ -30,6 +32,7 @@ import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.pattern.custom.MM131;
 import com.lanyuan.picking.pattern.custom.RosiMM;
 import com.lanyuan.picking.pattern.custom.XiuMM;
+import com.lanyuan.picking.ui.dialog.ThemeDialog;
 import com.lanyuan.picking.ui.setting.SettingActivity;
 import com.lanyuan.picking.ui.category.CategoryFragment;
 import com.lanyuan.picking.ui.category.CategoryPagerAdapter;
@@ -72,8 +75,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         ButterKnife.bind(this);
 
-        AppConfig.init(this);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -82,6 +83,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 
         CategoryPagerAdapter categoryPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), getFragmentList(), getTitleList());
@@ -93,6 +95,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             SnackbarUtils.Long(getWindow().getDecorView(), "当前没有网络连接！！").danger().show();
         else if (!Network.isWifiConnected(this))
             SnackbarUtils.Custom(getWindow().getDecorView(), "当前不在WiFi连接下，请注意流量使用！！", 5000).warning().show();
+
+        // startActivity(new Intent(this, TestActivity.class));
     }
 
     private List<Fragment> getFragmentList() {
@@ -102,6 +106,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             add(new Acg12());
             add(new AoJiao());
             add(new ZeroChan());
+            add(new Yande());
         }}));
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
             add(new MM131());
@@ -140,7 +145,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         switch (id) {
             case R.id.nav_setting:
-                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                startActivity(new Intent(this, SettingActivity.class));
+                break;
+            case R.id.nav_theme:
+                new ThemeDialog(this, this).show();
                 break;
             /*case R.id.nav_update:
                 break;*/
@@ -156,7 +164,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(Intent.createChooser(share, "分享到"));
                 break;*/
             case R.id.nav_about:
-                startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                startActivity(new Intent(this, AboutActivity.class));
                 break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);

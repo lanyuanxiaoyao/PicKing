@@ -31,10 +31,4 @@ public class SettingActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
-
-    @Override
-    public void onBackPressed() {
-        AppConfig.init(this);
-        super.onBackPressed();
-    }
 }

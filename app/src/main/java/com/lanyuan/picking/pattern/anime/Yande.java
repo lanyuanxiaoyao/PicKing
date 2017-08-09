@@ -19,26 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AoJiao implements BasePattern {
+public class Yande implements BasePattern {
     @Override
     public String getCategoryCoverUrl() {
-        return "https://www.aojiao.org/wp-content/uploads/2016/10/439c8112e53379d73724e80c93eccd0c.png";
+        return "https://assets.yande.re/assets/logo_small-418e8d5ec0229f274edebe4af43b01aa29ed83b715991ba14bb41ba06b5b57b5.png";
     }
 
     @Override
     public int getBackgroundColor() {
-        return Color.rgb(255, 125, 127);
+        return Color.BLACK;
     }
 
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
-        return "https://www.aojiao.org/";
+        return "https://yande.re";
     }
 
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
-        menuList.add(new Menu("ACG图包", "https://www.aojiao.org/category/pic"));
+        menuList.add(new Menu("Posts", "https://yande.re/post"));
         return menuList;
     }
 
@@ -51,13 +51,13 @@ public class AoJiao implements BasePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("section a:has(img)");
+        Elements elements = document.select("#post-list-posts li div.inner a");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href"));
+            temp.setAlbumUrl(baseUrl + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("data-src"));
+                temp.setCoverUrl(elements1.get(0).attr("src"));
             data.add(temp);
         }
 
@@ -69,17 +69,22 @@ public class AoJiao implements BasePattern {
     @Override
     public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("div.pager a.next");
-        if (elements.size() > 0)
-            return elements.get(0).attr("href");
+        Log.e("Yande", "getSinglePicContent: " + new String(result, "utf-8"));
+        Elements elements = document.select("div#paginator a.next_page");
+        if (elements.size() > 0) {
+            Log.e("Yande", "getContentNext: " + baseUrl + elements.get(0).attr("href"));
+            return baseUrl + elements.get(0).attr("href");
+        }
         return "";
     }
 
     @Override
     public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select(".entry-content img");
+        // Log.e("Yande", "getSinglePicContent: " + new String(result, "utf-8"));
+        Elements elements = document.select("#right-col img");
         if (elements.size() > 0) {
+            Log.e("Yande", "getSinglePicContent: " + elements.get(0).attr("src"));
             return elements.get(0).attr("src");
         }
         return "";

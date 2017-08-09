@@ -1,6 +1,7 @@
 package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
@@ -66,6 +67,7 @@ public class Apic implements BasePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        Log.e("Apic", "getContent: " + new String(result, "utf-8"));
         Elements elements = document.select(".content a");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
@@ -82,7 +84,7 @@ public class Apic implements BasePattern {
     }
 
     @Override
-    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+    public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("#page .next");
         if (elements.size() > 0)
@@ -99,6 +101,7 @@ public class Apic implements BasePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<String> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        Log.e("Apic", "getDetailContent: " + new String(result, "utf-8"));
         Elements elements = document.select(".post img");
         for (Element element : elements) {
             urls.add(element.attr("src"));

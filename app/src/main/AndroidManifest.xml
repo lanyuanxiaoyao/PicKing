@@ -14,13 +14,14 @@
         android:icon="@mipmap/ic_papaya"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppNoActionBarTheme">
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppNoActionBarTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -29,14 +30,14 @@
             android:theme="@style/AppNoActionBarTheme" />
         <activity
             android:name=".ui.detail.DetailActivity"
-            android:theme="@style/AppNoActionBarDarkTheme" />
+            android:theme="@style/AppNoActionBarTheme" />
         <activity
             android:name=".ui.setting.SettingActivity"
             android:theme="@style/AppNoActionBarTheme" />
         <activity
             android:name=".ui.AboutActivity"
-            android:hardwareAccelerated="true"
             android:theme="@style/AppNoActionBarTheme" />
+        <activity android:name=".TestActivity"></activity>
     </application>
 
 </manifest>

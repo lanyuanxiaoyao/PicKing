@@ -1,4 +1,4 @@
-package com.lanyuan.picking.ui;
+package com.lanyuan.picking.ui.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -16,8 +16,8 @@ import android.view.Window;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.util.PicUtil;
+import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.SnackbarUtils;
 
 import java.util.List;
@@ -39,9 +39,9 @@ public class PicDialog extends Dialog implements View.OnClickListener {
     List<AppCompatImageButton> imageButtons;
 
     public PicDialog(Context context) {
-        super(context, R.style.AppNoActionBarDarkTheme);
+        super(context, R.style.AppNoActionBarTheme);
         setOwnerActivity((Activity) context);
-        setContentView(R.layout.pic_dialog);
+        setContentView(R.layout.dialog_pic);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View decorView = getWindow().getDecorView();
@@ -53,7 +53,7 @@ public class PicDialog extends Dialog implements View.OnClickListener {
 
         ButterKnife.bind(this);
 
-        if ((boolean) AppConfig.getByResourceId(getContext(), R.string.click_to_back, false))
+        if ((boolean) SPUtils.get(getContext(), AppConfig.click_to_back, false))
             photoDraweeView.setOnViewTapListener(new OnViewTapListener() {
                 @Override
                 public void onViewTap(View view, float x, float y) {
@@ -71,6 +71,7 @@ public class PicDialog extends Dialog implements View.OnClickListener {
     public void show(final String url) {
         if (url != null && !"".equals(url)) {
             this.url = url;
+            Log.e("PicDialog", "show: " + url);
             photoDraweeView.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
             photoDraweeView.setPhotoUri(Uri.parse(url));
         }
@@ -84,10 +85,10 @@ public class PicDialog extends Dialog implements View.OnClickListener {
                 SnackbarUtils.Short(getWindow().getDecorView(), "收藏功能还在开发当中……").info().show();
                 break;
             case R.id.download_button:
-                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), 0);
+                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 0);
                 break;
             case R.id.share_button:
-                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), 1);
+                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 1);
                 break;
             case R.id.wallpaper_button:
                 new AlertDialog.Builder(getOwnerActivity())
@@ -96,7 +97,7 @@ public class PicDialog extends Dialog implements View.OnClickListener {
                         .setPositiveButton("设为壁纸", new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) AppConfig.getByResourceId(getOwnerActivity(), R.string.download_path, AppConfig.DOWNLOAD_PATH), 2);
+                                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 2);
                             }
                         })
                         .show();

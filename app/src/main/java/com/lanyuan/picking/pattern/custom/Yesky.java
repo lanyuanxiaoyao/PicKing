@@ -101,11 +101,11 @@ public class Yesky implements BasePattern {
     }
 
     @Override
-    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+    public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "gb2312"));
         Elements elements = document.select(".flym font a:containsOwn(下一页)");
         if (elements.size() > 0) {
-            Log.e("Yesky", "getNext: " + baseUrl + elements.get(0).attr("href"));
+            Log.e("Yesky", "getContentNext: " + baseUrl + elements.get(0).attr("href"));
             return baseUrl + elements.get(0).attr("href");
         }
         return "";

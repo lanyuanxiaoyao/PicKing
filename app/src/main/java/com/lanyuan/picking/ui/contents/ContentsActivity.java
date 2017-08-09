@@ -1,5 +1,6 @@
 package com.lanyuan.picking.ui.contents;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -21,14 +22,16 @@ import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.common.WebViewTask;
 import com.lanyuan.picking.ui.BaseActivity;
-import com.lanyuan.picking.ui.PicDialog;
+import com.lanyuan.picking.ui.dialog.PicDialog;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 import com.lanyuan.picking.ui.menu.MenuAdapter;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
+import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
 
@@ -41,6 +44,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -115,7 +119,7 @@ public class ContentsActivity extends BaseActivity {
         currentUrl = menuList.get(0).getUrl();
         firstUrl = currentUrl;
 
-        if (!(boolean) AppConfig.getByResourceId(this, R.string.load_pic_swipe, false))
+        if (!(boolean) SPUtils.get(this, AppConfig.load_pic_swipe, false))
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -158,13 +162,15 @@ public class ContentsActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 adapter.removeAll();
+                Log.e("ContentsActivity", "onRefresh: " + "WebView-start" + firstUrl);
+                // new GetContentByWebView(ContentsActivity.this).execute(firstUrl);
                 new GetContent().execute(firstUrl);
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                new GetNextPage().execute(currentUrl);
+                new GetContentNext().execute(currentUrl);
             }
         });
         refreshLayout.setRefreshing(true);
@@ -182,8 +188,8 @@ public class ContentsActivity extends BaseActivity {
         return pattern.getContent(baseUrl, currentUrl, result, resultMap);
     }
 
-    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return pattern.getNext(baseUrl, currentUrl, result);
+    public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+        return pattern.getContentNext(baseUrl, currentUrl, result);
     }
 
     public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
@@ -209,7 +215,8 @@ public class ContentsActivity extends BaseActivity {
                     Request request = new Request.Builder()
                             .url(strings[0])
                             .build();
-                    Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
+                    Call call = OkHttpClientUtil.getInstance().newCall(request);
+                    Response response = call.execute();
                     byte[] result = response.body().bytes();
                     return getContent(baseUrl, strings[0], result, resultMap);
                 } catch (IOException e) {
@@ -245,7 +252,7 @@ public class ContentsActivity extends BaseActivity {
         }
     }
 
-    private class GetNextPage extends AsyncTask<String, Integer, String> {
+    private class GetContentNext extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -254,9 +261,10 @@ public class ContentsActivity extends BaseActivity {
                     Request request = new Request.Builder()
                             .url(strings[0])
                             .build();
-                    Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
+                    Call call = OkHttpClientUtil.getInstance().newCall(request);
+                    Response response = call.execute();
                     byte[] result = response.body().bytes();
-                    return getNext(baseUrl, strings[0], result);
+                    return getContentNext(baseUrl, strings[0], result);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return "";
@@ -308,6 +316,90 @@ public class ContentsActivity extends BaseActivity {
             }
 
             picDialog.show(result);
+        }
+    }
+
+    private class GetContentByWebView extends WebViewTask {
+
+        public GetContentByWebView(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                Map<parameter, Object> resultMap = new HashMap<>();
+                resultMap = getContent(baseUrl, currentUrl, result.getBytes(), resultMap);
+
+                if (!isRunnable) {
+                    cancel();
+                    return;
+                } else if (resultMap == null) {
+                    return;
+                }
+
+                currentUrl = (String) resultMap.get(parameter.CURRENT_URL);
+                if (firstUrl == null) firstUrl = currentUrl;
+
+                Log.e("GetContentByWebView", "onPostExecute: " + currentUrl);
+
+                List<AlbumInfo> urls = (List<AlbumInfo>) resultMap.get(parameter.RESULT);
+                if (urls.size() == 0) {
+                    return;
+                }
+
+                Log.e("GetContentByWebView", "onPostExecute: " + urls.size());
+
+                adapter.addMore(urls);
+                refreshLayout.setRefreshing(false);
+                refreshLayout.setLoadingMore(false);
+                cancel();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onFailureExecute() {
+            Snackbar.make(getWindow().getDecorView(), "获取内容失败，请检查网络连接", Snackbar.LENGTH_LONG).show();
+            refreshLayout.setRefreshing(false);
+        }
+    }
+
+    private class getContentNextByWebView extends WebViewTask {
+
+        public getContentNextByWebView(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                String url = getContentNext(baseUrl, currentUrl, result.getBytes());
+
+                Log.e("getContentNextByWebView", "onPostExecute: " + url);
+
+                if (!isRunnable) {
+                    cancel();
+                    return;
+                }
+                if (!"".equals(url)) {
+                    new GetContentByWebView(ContentsActivity.this).execute(url);
+                } else {
+                    hasMore = false;
+                    SnackbarUtils.Short(getWindow().getDecorView(), "下面已经没有更多了！").danger().show();
+                    refreshLayout.setLoadingMore(false);
+                    cancel();
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onFailureExecute() {
+            Snackbar.make(getWindow().getDecorView(), "获取内容失败，请检查网络连接", Snackbar.LENGTH_LONG).show();
+            refreshLayout.setLoadingMore(false);
         }
     }
 }

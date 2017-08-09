@@ -22,7 +22,7 @@ public interface BasePattern extends Serializable {
 
     Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException;
 
-    String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException;
+    String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException;
 
     String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException;
 

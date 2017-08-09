@@ -112,19 +112,23 @@ public class PicUtil {
         DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
                 .fetchDecodedImage(imageRequest, null);
         dataSource.subscribe(new BaseBitmapDataSubscriber() {
+            Snackbar snackbar = SnackbarUtils.Indefinite(view, "正在准备分享...").info().getSnackbar();
+
             @Override
             public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                SnackbarUtils.Indefinite(view, "正在准备分享...").info().show();
+                snackbar.show();
                 if (bitmap != null) {
                     String filePath = path + Md5Util.getMD5(url) + ".jpg";
                     ifPathNotExistsAndCreate(path);
-                    if ((boolean) AppConfig.getByResourceId(context, R.string.share_model, false) == false) {
+                    if ((boolean) SPUtils.get(context, AppConfig.share_model, false) == false) {
+                        snackbar.dismiss();
                         Intent share = new Intent(Intent.ACTION_SEND);
                         share.setType("text/plain");
                         share.putExtra(Intent.EXTRA_TEXT, "有人给你分享了一张图片:" + url);
                         context.startActivity(Intent.createChooser(share, "分享到"));
                     } else {
                         if (BitmapUtil.saveBitmap(bitmap, filePath)) {
+                            snackbar.dismiss();
                             Intent share = new Intent(Intent.ACTION_SEND);
                             share.putExtra(Intent.EXTRA_SUBJECT, "分享");
                             share.putExtra(Intent.EXTRA_TEXT, "有人给你分享了一张图片");

@@ -69,15 +69,15 @@ public class DuowanCos implements BasePattern {
     }
 
     @Override
-    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        Log.e("DuowanCos", "getNext: " + currentUrl);
+    public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+        Log.e("DuowanCos", "getContentNext: " + currentUrl);
         Pattern pattern = Pattern.compile("[0-9]\\d*");
         Matcher matcher = pattern.matcher(currentUrl);
         if (matcher.find()) {
             String page_s = matcher.group();
-            Log.e("DuowanCos", "getNext: " + matcher.group(0));
+            Log.e("DuowanCos", "getContentNext: " + matcher.group(0));
             Integer page = Integer.parseInt(page_s) + 30;
-            Log.e("DuowanCos", "getNext: " + baseUrl + page);
+            Log.e("DuowanCos", "getContentNext: " + baseUrl + page);
             return baseUrl + page;
         }
         return "";

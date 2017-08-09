@@ -89,7 +89,7 @@ public class XiuMM implements BasePattern {
     }
 
     @Override
-    public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+    public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select(".paginator span.next a");
         if (elements.size() > 0)
