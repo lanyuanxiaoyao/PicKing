@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         CategoryPagerAdapter categoryPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), getFragmentList(), getTitleList());
         viewPager.setAdapter(categoryPagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(5);
         tabLayout.setupWithViewPager(viewPager);
 
         if (!Network.isConnected(this))

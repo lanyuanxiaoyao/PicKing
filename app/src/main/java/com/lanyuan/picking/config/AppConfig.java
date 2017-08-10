@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class AppConfig {
 
-    public static final String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Papaya/";
+    public static final String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures/Papaya/";
 
     public static final String DEFAULT_COLOR = "default";
     public static final String BLUE_COLOR = "blue";
@@ -28,5 +28,6 @@ public class AppConfig {
     public static final String download_path = "downloadPath";
     public static final String cache_size = "cacheSize";
     public static final String share_model = "shareModel";
+    public static final String hide_pic = "hidePic";
 
 }

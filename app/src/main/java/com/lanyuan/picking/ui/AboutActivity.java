@@ -1,9 +1,6 @@
 package com.lanyuan.picking.ui;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,6 +9,7 @@ import android.widget.TextView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.util.AliPayUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
+import com.litesuits.common.utils.PackageUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,13 +25,7 @@ public class AboutActivity extends BaseActivity {
         setContentView(R.layout.activity_about);
 
         ButterKnife.bind(this);
-
-        try {
-            toolbar.setTitle("关于  v " + getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_CONFIGURATIONS).versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            toolbar.setTitle("关于");
-        }
+        toolbar.setTitle("关于  v " + PackageUtil.getAppPackageInfo(this).versionName);
         setSupportActionBar(toolbar);
 
         TextView alipay = (TextView) findViewById(R.id.alipay);

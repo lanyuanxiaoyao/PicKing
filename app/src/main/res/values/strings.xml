@@ -9,6 +9,7 @@
     <string name="download_path">downloadPath</string>
     <string name="cache_size">cacheSize</string>
     <string name="share_model">shareModel</string>
+    <string name="hide_pic">hidePic</string>
 
     <string name="tips">木瓜是一款网络图片浏览工具，应用内的所有图片资源均属于原网站，木瓜不存在中途存储，改变网站内容的行为，所有内容均为用户设备即时访问原网站获得。\n\n所有的图片版权均归原网站和原作者所有，请勿用于商业用途，由此引发的图片本身导致的相关问题，木瓜不承担任何责任，因为木瓜本身也不知道到底会有什么图片出现在上面……\n\n木瓜这款应用只发布于酷安，若通过其他渠道获得变质的木瓜导致的问题，作者表示无能为力\n\n木瓜免费且所有代码开源，供大家学习和参考，详细请在应用关于页面浏览\n\n若有其他奇奇怪怪的问题……umm……憋着吧</string>
     <string name="wallpaper_tips">受限于各个设备平台的壁纸设置存在差异，直接设置壁纸可能导致壁纸被拉伸，剪切，导致质量不佳，推荐保存图片，再手动通过设备自带的壁纸应用设置壁纸</string>

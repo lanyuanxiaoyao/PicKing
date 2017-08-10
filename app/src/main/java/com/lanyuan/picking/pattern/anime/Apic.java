@@ -101,7 +101,6 @@ public class Apic implements BasePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<String> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Log.e("Apic", "getDetailContent: " + new String(result, "utf-8"));
         Elements elements = document.select(".post img");
         for (Element element : elements) {
             urls.add(element.attr("src"));

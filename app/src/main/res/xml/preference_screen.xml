@@ -19,6 +19,11 @@
             android:title="直接分享原图" />
     </PreferenceCategory>
     <PreferenceCategory android:title="缓存设置">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/hide_pic"
+            android:summary="通过建立.nomedia文件阻止图库类应用扫描，并不是真正对图片文件本身进行隐藏，所以这对一些不遵守Android建议的应用不起作用"
+            android:title="隐藏下载的图片"/>
         <EditTextPreference
             android:enabled="false"
             android:key="@string/download_path"
