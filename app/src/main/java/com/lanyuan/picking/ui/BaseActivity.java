@@ -9,7 +9,9 @@ import android.view.View;
 import com.aitangba.swipeback.SwipeBackActivity;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.application.MyApplication;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.util.SPUtils;
 
@@ -25,7 +27,6 @@ public class BaseActivity extends SwipeBackActivity {
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(option);
         }
-        Log.e("BaseActivity", "onCreate: " + (float) Fresco.getImagePipelineFactory().getMainFileCache().getSize() / ByteConstants.MB);
     }
 
     public void changeTheme(String theme) {

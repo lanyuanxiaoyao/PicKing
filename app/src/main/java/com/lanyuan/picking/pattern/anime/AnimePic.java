@@ -1,4 +1,4 @@
-package com.lanyuan.picking.pattern.custom;
+package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -18,49 +18,55 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class DuowanCos implements BasePattern {
+public class AnimePic implements BasePattern {
     @Override
     public String getCategoryCoverUrl() {
-        return "http://tu.duowan.com/images/logo_v1.7.png";
+        return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/anime-pic.png";
     }
 
     @Override
     public int getBackgroundColor() {
-        return Color.rgb(68, 68, 68);
+        return Color.rgb(238, 238, 238);
     }
 
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
-        return "http://tu.duowan.com/m/meinv?offset=";
+        return "https://anime-pictures.net";
     }
 
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
-        menuList.add(new Menu("美女图片", "http://tu.duowan.com/m/meinv?offset=0"));
+        menuList.add(new Menu("Pictures", "https://anime-pictures.net/pictures/view_posts/0?lang=en"));
         return menuList;
     }
 
     @Override
     public boolean isSinglePic() {
-        return false;
+        return true;
     }
 
     @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("li.box:not(.tags) a:has(img)");
+        Elements elements = document.select(".posts_block span.img_block_big>a");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href").replaceAll("gallery", "scroll"));
+            temp.setAlbumUrl(baseUrl + element.attr("href"));
             Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
-            data.add(temp);
+            if (elements1.size() > 0) {
+                String coverUrl = elements1.get(0).attr("src");
+                if (coverUrl != null && !"".equals(coverUrl)) {
+                    if (coverUrl.startsWith("https:"))
+                        temp.setCoverUrl(coverUrl);
+                    else
+                        temp.setCoverUrl("https:" + coverUrl);
+                }
+            }
+            if (temp.getCoverUrl() != null && !"".equals(temp.getCoverUrl()))
+                data.add(temp);
         }
 
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
@@ -70,37 +76,31 @@ public class DuowanCos implements BasePattern {
 
     @Override
     public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        Pattern pattern = Pattern.compile("[0-9]\\d*");
-        Matcher matcher = pattern.matcher(currentUrl);
-        if (matcher.find()) {
-            String page_s = matcher.group();
-            Integer page = Integer.parseInt(page_s) + 30;
-            return baseUrl + page;
+        Document document = Jsoup.parse(new String(result, "utf-8"));
+        Elements elements = document.select("p.numeric_pages a:containsOwn(>)");
+        if (elements.size() > 0) {
+            return baseUrl + elements.get(0).attr("href");
         }
         return "";
     }
 
     @Override
     public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return null;
+        Document document = Jsoup.parse(new String(result, "utf-8"));
+        Elements elements = document.select("#big_preview_cont a");
+        if (elements.size() > 0) {
+            return baseUrl + elements.get(0).attr("href");
+        }
+        return "";
     }
 
     @Override
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
-        Log.e("DuowanCos", "getDetailContent: " + currentUrl);
-        List<String> urls = new ArrayList<>();
-        Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("span.pic-box-item");
-        for (Element element : elements)
-            urls.add(element.attr("data-img"));
-
-        resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
-        resultMap.put(DetailActivity.parameter.RESULT, urls);
-        return resultMap;
+        return null;
     }
 
     @Override
     public String getDetailNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return "";
+        return null;
     }
 }

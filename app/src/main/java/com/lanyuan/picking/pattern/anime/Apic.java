@@ -37,7 +37,7 @@ public class Apic implements BasePattern {
 
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
-        return null;
+        return "http://www.apic.in/";
     }
 
     @Override

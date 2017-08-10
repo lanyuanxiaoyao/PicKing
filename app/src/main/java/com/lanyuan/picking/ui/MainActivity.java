@@ -1,10 +1,8 @@
-package com.lanyuan.picking;
+package com.lanyuan.picking.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -19,16 +17,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.Window;
 import android.view.WindowManager;
 
+import com.lanyuan.picking.R;
+import com.lanyuan.picking.pattern.anime.AKabe;
+import com.lanyuan.picking.pattern.anime.AnimePic;
 import com.lanyuan.picking.pattern.anime.AoJiao;
+import com.lanyuan.picking.pattern.anime.MiniTokyo;
 import com.lanyuan.picking.pattern.anime.Yande;
 import com.lanyuan.picking.pattern.anime.ZeroChan;
 import com.lanyuan.picking.pattern.custom.DuowanCos;
 import com.lanyuan.picking.pattern.custom.Yesky;
-import com.lanyuan.picking.ui.AboutActivity;
-import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.anime.Acg12;
 import com.lanyuan.picking.pattern.anime.Apic;
@@ -135,6 +134,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             add(new AoJiao());
             add(new ZeroChan());
             add(new Yande());
+            add(new AKabe());
+            add(new AnimePic());
+            add(new MiniTokyo());
         }}));
         fragmentList.add(new CategoryFragment().init(new ArrayList<BasePattern>() {{
             add(new MM131());

@@ -194,7 +194,7 @@ public class DetailActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String url) {
             if (!isRunnable) return;
-            if (!"".equals(url)) {
+            if (!"".equals(url) && url != null) {
                 currentUrl = url;
                 new GetContent().execute(url);
             } else {

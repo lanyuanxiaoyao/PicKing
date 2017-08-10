@@ -1,6 +1,5 @@
 package com.lanyuan.picking.ui.setting;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -12,13 +11,9 @@ import android.util.Log;
 
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.util.SPUtils;
-import com.litesuits.common.utils.PackageUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,24 +38,27 @@ public class SettingFragment extends PreferenceFragment {
             noMediaSwitch.setChecked(false);
 
         // Fresco.getImagePipelineFactory().getMainFileCache().trimToMinimum();
-        float size = Fresco.getImagePipelineFactory().getMainFileCache().getSize() / ByteConstants.MB;
+        float size = (float) Fresco.getImagePipelineFactory().getMainFileCache().getSize() / ByteConstants.MB;
         EditTextPreference cacheSize = (EditTextPreference) findPreference(getResources().getString(R.string.cache_size));
         cacheSize.setSummary(String.format("已使用 %.2f MB", size));
     }
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-
+        Log.e("SettingFragment", "onPreferenceTreeClick: " + preference.getKey());
         if (preference.getKey().equals(AppConfig.hide_pic)) {
             SwitchPreference switchPreference = (SwitchPreference) preference;
             if (switchPreference.isChecked()) {
-                if (!noMedia.exists())
+                if (!noMedia.exists()) {
+                    Log.e("SettingFragment", "onPreferenceTreeClick: exists");
                     try {
                         noMedia.createNewFile();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
             } else {
+                Log.e("SettingFragment", "onPreferenceTreeClick: no exists");
                 if (noMedia.exists())
                     noMedia.delete();
             }
