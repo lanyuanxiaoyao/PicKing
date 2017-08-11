@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'AndResGuard'
 
 android {
     compileSdkVersion 26
@@ -7,13 +8,14 @@ android {
         applicationId "com.lanyuan.picking"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 19
-        versionName "0.0.9"
-        multiDexEnabled true
+        versionCode 20
+        versionName "1.0.1"
     }
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-fresco.pro'
         }
     }
@@ -45,5 +47,25 @@ dependencies {
     compile 'com.zhy.base:fileprovider:1.0.0'
     compile 'com.just.agentweb:agentweb:1.2.6'
     compile 'com.google.code.gson:gson:2.8.1'
+
+    // compile 'com.tencent.bugly:crashreport:latest.release'
+
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+}
+
+andResGuard {
+    mappingFile = null
+    use7zip = true
+    useSign = true
+    keepRoot = false
+    compressFilePattern = [
+            "*.png",
+            "*.jpg",
+            "*.jpeg",
+            "*.gif",
+            "resources.arsc"
+    ]
+    sevenzip {
+        artifact = 'com.tencent.mm:SevenZip:1.2.3'
+    }
 }

@@ -1,20 +1,18 @@
-package com.lanyuan.picking.pattern.custom;
+package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
 
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.ui.menu.Menu;
-import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +20,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.Call;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class MM131 implements BasePattern {
+public class MM131 implements MultiPicturePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=50538304,1525126075&fm=58&s=7C00763384B06D8210E8B5CE03004021&bpow=200&bpoh=75";
@@ -55,11 +49,6 @@ public class MM131 implements BasePattern {
     }
 
     @Override
-    public boolean isSinglePic() {
-        return false;
-    }
-
-    @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gbk"));
@@ -85,11 +74,6 @@ public class MM131 implements BasePattern {
         if (elements.size() > 0)
             return baseUrl + elements.get(0).attr("href");
         return "";
-    }
-
-    @Override
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) {
-        return null;
     }
 
     @Override

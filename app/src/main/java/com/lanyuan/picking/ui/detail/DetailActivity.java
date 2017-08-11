@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.dialog.PicDialog;
 import com.lanyuan.picking.config.AppConfig;
@@ -117,11 +118,11 @@ public class DetailActivity extends BaseActivity {
     }
 
     public Map<parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<parameter, Object> resultMap) throws UnsupportedEncodingException {
-        return pattern.getDetailContent(baseUrl, currentUrl, result, resultMap);
+        return ((MultiPicturePattern) pattern).getDetailContent(baseUrl, currentUrl, result, resultMap);
     }
 
     public String getNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return pattern.getDetailNext(baseUrl, currentUrl, result);
+        return ((MultiPicturePattern) pattern).getDetailNext(baseUrl, currentUrl, result);
     }
 
     private class GetContent extends AsyncTask<String, Integer, Map<parameter, Object>> {

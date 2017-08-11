@@ -1,6 +1,5 @@
 package com.lanyuan.picking.ui;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;

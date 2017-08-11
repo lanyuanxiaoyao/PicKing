@@ -1,30 +1,25 @@
 package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 import com.lanyuan.picking.pattern.BasePattern;
-import com.lanyuan.picking.util.OkHttpClientUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class Apic implements BasePattern {
+public class Apic implements MultiPicturePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "http://www.apic.in/wp-content/themes/AZone/big-logo.png";
@@ -59,15 +54,9 @@ public class Apic implements BasePattern {
     }
 
     @Override
-    public boolean isSinglePic() {
-        return false;
-    }
-
-    @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Log.e("Apic", "getContent: " + new String(result, "utf-8"));
         Elements elements = document.select(".content a");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
@@ -90,11 +79,6 @@ public class Apic implements BasePattern {
         if (elements.size() > 0)
             return elements.get(0).attr("href");
         return "";
-    }
-
-    @Override
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) {
-        return null;
     }
 
     @Override

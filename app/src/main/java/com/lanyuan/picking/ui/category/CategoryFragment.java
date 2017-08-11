@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.pattern.BasePattern;
 
@@ -29,20 +30,23 @@ public class CategoryFragment extends Fragment {
 
     private View fragmentView;
 
+    private String patternListName;
+
     private List<BasePattern> patternList;
 
-    public CategoryFragment init(List<BasePattern> patternList) {
-        this.patternList = patternList;
+    public CategoryFragment init(String patternListName) {
+        this.patternListName = patternListName;
         return this;
     }
 
-
     @Override
-    public void onStart() {
-        super.onStart();
-        if (linearLayout.getChildCount() == 0)
+    public void onResume() {
+        super.onResume();
+        if (linearLayout.getChildCount() == 0) {
+            patternList = (List<BasePattern>) AppConfig.categoryList.get(patternListName);
             for (BasePattern pattern : patternList)
                 linearLayout.addView(createImageView(pattern));
+        }
     }
 
     @Nullable
@@ -64,7 +68,6 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(pattern);
-                // getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             }
         });
         return view;

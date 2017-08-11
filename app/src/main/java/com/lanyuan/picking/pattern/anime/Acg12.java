@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class Acg12 implements BasePattern {
+public class Acg12 implements MultiPicturePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "https://static.acg12.com/uploads/2017/06/7cc936d8c0258f17b7ca86309d919490.png";
@@ -53,11 +54,6 @@ public class Acg12 implements BasePattern {
     }
 
     @Override
-    public boolean isSinglePic() {
-        return false;
-    }
-
-    @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
@@ -83,11 +79,6 @@ public class Acg12 implements BasePattern {
         if (elements.size() > 0)
             return elements.get(0).attr("href");
         return "";
-    }
-
-    @Override
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) {
-        return null;
     }
 
     @Override

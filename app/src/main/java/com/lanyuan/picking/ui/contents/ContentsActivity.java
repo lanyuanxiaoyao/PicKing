@@ -23,6 +23,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.common.WebViewTask;
+import com.lanyuan.picking.pattern.MultiPicturePattern;
+import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.dialog.PicDialog;
 import com.lanyuan.picking.ui.detail.DetailActivity;
@@ -141,10 +143,10 @@ public class ContentsActivity extends BaseActivity {
         adapter.setOnClickListener(new ContentsAdapter.OnItemClickListener() {
             @Override
             public void ItemClickListener(View view, int position, AlbumInfo albumInfo) {
-                if (pattern.isSinglePic()) {
+                if (pattern instanceof SinglePicturePattern) {
                     new GetSinglePicContent().execute(albumInfo.getAlbumUrl());
                     picDialogSnackBar.show();
-                } else {
+                } else if (pattern instanceof MultiPicturePattern) {
                     Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("currentUrl", albumInfo.getAlbumUrl());
@@ -197,7 +199,7 @@ public class ContentsActivity extends BaseActivity {
     }
 
     public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return pattern.getSinglePicContent(baseUrl, currentUrl, result);
+        return ((SinglePicturePattern) pattern).getSinglePicContent(baseUrl, currentUrl, result);
     }
 
     @Override

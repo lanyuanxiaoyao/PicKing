@@ -1,10 +1,10 @@
-package com.lanyuan.picking.pattern.custom;
+package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
 import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DuowanCos implements BasePattern {
+public class DuowanCos implements MultiPicturePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "http://tu.duowan.com/images/logo_v1.7.png";
@@ -42,11 +42,6 @@ public class DuowanCos implements BasePattern {
         List<Menu> menuList = new ArrayList<>();
         menuList.add(new Menu("美女图片", "http://tu.duowan.com/m/meinv?offset=0"));
         return menuList;
-    }
-
-    @Override
-    public boolean isSinglePic() {
-        return false;
     }
 
     @Override
@@ -78,11 +73,6 @@ public class DuowanCos implements BasePattern {
             return baseUrl + page;
         }
         return "";
-    }
-
-    @Override
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return null;
     }
 
     @Override

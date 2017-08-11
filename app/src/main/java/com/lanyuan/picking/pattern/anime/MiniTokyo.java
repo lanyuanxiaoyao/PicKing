@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MiniTokyo implements BasePattern {
+public class MiniTokyo implements SinglePicturePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/minitokyo2.png";
@@ -40,11 +41,6 @@ public class MiniTokyo implements BasePattern {
         List<Menu> menuList = new ArrayList<>();
         menuList.add(new Menu("All Wallpapers", "http://gallery.minitokyo.net/wallpapers?order=id&display=thumbnails"));
         return menuList;
-    }
-
-    @Override
-    public boolean isSinglePic() {
-        return true;
     }
 
     @Override
@@ -84,15 +80,5 @@ public class MiniTokyo implements BasePattern {
             return elements.get(0).attr("href");
         }
         return "";
-    }
-
-    @Override
-    public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
-        return null;
-    }
-
-    @Override
-    public String getDetailNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return null;
     }
 }

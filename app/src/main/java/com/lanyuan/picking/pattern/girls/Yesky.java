@@ -1,10 +1,10 @@
-package com.lanyuan.picking.pattern.custom;
+package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
 import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Yesky implements BasePattern {
+public class Yesky implements MultiPicturePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "http://www.yesky.com/TLimages2009/yesky/images/pic2015/pic_logo.jpg";
@@ -66,11 +66,6 @@ public class Yesky implements BasePattern {
     }
 
     @Override
-    public boolean isSinglePic() {
-        return false;
-    }
-
-    @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gb2312"));
@@ -109,11 +104,6 @@ public class Yesky implements BasePattern {
             return baseUrl + elements.get(0).attr("href");
         }
         return "";
-    }
-
-    @Override
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) {
-        return null;
     }
 
     @Override

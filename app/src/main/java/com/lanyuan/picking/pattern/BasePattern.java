@@ -18,15 +18,8 @@ public interface BasePattern extends Serializable {
 
     List<Menu> getMenuList();
 
-    boolean isSinglePic();
-
     Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException;
 
     String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException;
 
-    String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException;
-
-    Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException;
-
-    String getDetailNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException;
 }

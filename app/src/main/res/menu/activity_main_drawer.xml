@@ -18,18 +18,14 @@
 
     <item android:title="更多">
         <menu>
-            <!--<item
+            <item
                 android:id="@+id/nav_update"
                 android:icon="@mipmap/update"
-                android:title="更新" />-->
+                android:title="更新" />
             <item
                 android:id="@+id/nav_donate"
                 android:icon="@mipmap/donate"
                 android:title="捐赠" />
-            <!--<item
-                android:id="@+id/nav_share"
-                android:icon="@mipmap/share"
-                android:title="分享" />-->
             <item
                 android:id="@+id/nav_about"
                 android:icon="@mipmap/about"

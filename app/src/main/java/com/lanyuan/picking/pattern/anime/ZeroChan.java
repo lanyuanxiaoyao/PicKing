@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
 import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ZeroChan implements BasePattern {
+public class ZeroChan implements SinglePicturePattern {
     @Override
     public String getCategoryCoverUrl() {
         return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/header-1.png";
@@ -42,11 +43,6 @@ public class ZeroChan implements BasePattern {
         List<Menu> menuList = new ArrayList<>();
         menuList.add(new Menu("everything", "http://www.zerochan.net/?p=1"));
         return menuList;
-    }
-
-    @Override
-    public boolean isSinglePic() {
-        return true;
     }
 
     @Override
@@ -89,13 +85,4 @@ public class ZeroChan implements BasePattern {
         return "";
     }
 
-    @Override
-    public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
-        return null;
-    }
-
-    @Override
-    public String getDetailNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
-        return null;
-    }
 }
