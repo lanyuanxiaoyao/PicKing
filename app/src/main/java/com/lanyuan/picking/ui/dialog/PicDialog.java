@@ -14,9 +14,14 @@ import android.view.View;
 import android.view.Window;
 
 import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
+import com.lanyuan.picking.ui.zoomableView.OnViewTapListener;
+import com.lanyuan.picking.ui.zoomableView.PhotoDraweeView;
 import com.lanyuan.picking.util.FavoriteUtil;
+import com.lanyuan.picking.util.FrescoUtil;
 import com.lanyuan.picking.util.PicUtil;
 import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.SnackbarUtils;
@@ -27,8 +32,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
-import me.relex.photodraweeview.OnViewTapListener;
-import me.relex.photodraweeview.PhotoDraweeView;
 
 public class PicDialog extends Dialog implements View.OnClickListener {
 
@@ -65,17 +68,22 @@ public class PicDialog extends Dialog implements View.OnClickListener {
                 }
             });
 
+        photoDraweeView.setAllowParentInterceptOnEdge(false);
+        photoDraweeView.setEnableDraweeMatrix(false);
+
         for (AppCompatImageButton imageButton : imageButtons)
             imageButton.setOnClickListener(this);
 
         getWindow().setWindowAnimations(R.style.dialogStyle);
     }
 
+
     public void show(final String url) {
         if (url != null && !"".equals(url)) {
             this.url = url;
             photoDraweeView.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
             photoDraweeView.setPhotoUri(Uri.parse(url));
+            photoDraweeView.getController().getAnimatable().start();
         }
         this.show();
     }

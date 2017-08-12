@@ -9,7 +9,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 20
-        versionName "1.0.1"
+        versionName "1.0.2 bugly"
     }
     buildTypes {
         release {
@@ -36,7 +36,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:26.0.0-alpha1'
     compile 'com.facebook.fresco:fresco:1.4.0'
     compile 'com.facebook.fresco:imagepipeline-okhttp3:1.4.0'
-    compile 'me.relex:photodraweeview:1.1.3'
+    compile 'com.facebook.fresco:animated-gif:1.4.0'
     compile 'org.jsoup:jsoup:1.10.3'
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
@@ -48,7 +48,7 @@ dependencies {
     compile 'com.just.agentweb:agentweb:1.2.6'
     compile 'com.google.code.gson:gson:2.8.1'
 
-    // compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.tencent.bugly:crashreport:latest.release'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
 }

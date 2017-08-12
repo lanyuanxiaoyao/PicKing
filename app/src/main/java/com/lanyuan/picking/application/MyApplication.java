@@ -12,6 +12,7 @@ import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,12 +32,12 @@ public class MyApplication extends Application {
                 .build();
         Fresco.initialize(this, config);
 
-        /*Context context = getApplicationContext();
+        Context context = getApplicationContext();
         String packageName = context.getPackageName();
         String processName = getProcessName(android.os.Process.myPid());
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", true, strategy);*/
+        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", true, strategy);
 
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
     }

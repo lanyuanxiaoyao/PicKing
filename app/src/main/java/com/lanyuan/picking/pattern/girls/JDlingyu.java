@@ -26,7 +26,7 @@ public class JDlingyu implements MultiPicturePattern {
 
     @Override
     public int getBackgroundColor() {
-        return Color.WHITE;
+        return Color.LTGRAY;
     }
 
     @Override

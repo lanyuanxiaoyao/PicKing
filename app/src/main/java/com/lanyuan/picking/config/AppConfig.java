@@ -10,15 +10,16 @@ import com.lanyuan.picking.pattern.anime.AoJiao;
 import com.lanyuan.picking.pattern.anime.Apic;
 import com.lanyuan.picking.pattern.anime.KonaChan;
 import com.lanyuan.picking.pattern.anime.MiniTokyo;
-import com.lanyuan.picking.pattern.anime.Yande;
 import com.lanyuan.picking.pattern.anime.ZeroChan;
 import com.lanyuan.picking.pattern.boys.Nanrentu;
 import com.lanyuan.picking.pattern.girls.DuowanCos;
 import com.lanyuan.picking.pattern.girls.JDlingyu;
+import com.lanyuan.picking.pattern.girls.JianDan;
 import com.lanyuan.picking.pattern.girls.MM131;
 import com.lanyuan.picking.pattern.girls.RosiMM;
 import com.lanyuan.picking.pattern.girls.XiuMM;
 import com.lanyuan.picking.pattern.girls.Yesky;
+import com.lanyuan.picking.pattern.sex.Yande;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ public class AppConfig {
     public static final String anime_patterns = "animePatterns";
     public static final String boys_patterns = "boysPatterns";
     public static final String girls_patterns = "girlsPatterns";
+    public static final String sex_patterns = "sexPatterns";
 
     public static Map categoryList;
 
@@ -62,12 +64,12 @@ public class AppConfig {
             add(new Acg12());
             add(new AoJiao());
             add(new ZeroChan());
-            // add(new Yande());
             add(new AKabe());
             add(new AnimePic());
             add(new MiniTokyo());
         }};
         List<BasePattern> girlsPatterns = new ArrayList<BasePattern>() {{
+            add(new JianDan());
             add(new JDlingyu());
             add(new MM131());
             add(new XiuMM());
@@ -77,6 +79,9 @@ public class AppConfig {
         }};
         List<BasePattern> boysPatterns = new ArrayList<BasePattern>() {{
             add(new Nanrentu());
+        }};
+        List<BasePattern> sexPatterns = new ArrayList<BasePattern>() {{
+            add(new Yande());
         }};
         categoryList.put(anime_patterns, animePatterns);
         categoryList.put(girls_patterns, girlsPatterns);

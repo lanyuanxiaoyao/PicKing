@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <me.relex.photodraweeview.PhotoDraweeView
+    <com.lanyuan.picking.ui.zoomableView.PhotoDraweeView
         android:id="@+id/pic_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,7 +14,6 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|left"
         android:layout_margin="10dp"
         android:orientation="horizontal"
         fresco:layout_anchor="@+id/pic_view"

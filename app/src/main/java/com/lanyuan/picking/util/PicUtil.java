@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -13,17 +12,18 @@ import android.util.Log;
 import android.view.View;
 
 import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.internal.Closeables;
+import com.facebook.common.memory.PooledByteBuffer;
+import com.facebook.common.memory.PooledByteBufferInputStream;
 import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
-import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.litesuits.common.utils.BitmapUtil;
-import com.litesuits.common.utils.FileUtil;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.PermissionListener;
@@ -31,8 +31,11 @@ import com.yanzhenjie.permission.Rationale;
 import com.yanzhenjie.permission.RationaleListener;
 import com.zhy.base.fileprovider.FileProvider7;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 public class PicUtil {
@@ -49,7 +52,7 @@ public class PicUtil {
                     public void onSucceed(int requestCode, @NonNull List<String> grantedPermissions) {
                         switch (pattern) {
                             case SAVE_IMAGE:
-                                saveImageFromFresco(view, context, url, path);
+                                saveFromFresco(view, context, url, path);
                                 break;
                             case SHARE_IMAGE:
                                 shareImageFromFresco(view, context, url, path);
@@ -77,7 +80,8 @@ public class PicUtil {
                 .start();
     }
 
-    private static void saveImageFromFresco(final View view, final Context context, final String url, final String path) {
+    // 旧的只支持静态图保存的方法
+    /* private static void saveImageFromFresco(final View view, final Context context, final String url, final String path) {
         SnackbarUtils.Indefinite(view, "正在保存...").info().show();
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
@@ -105,9 +109,62 @@ public class PicUtil {
                 SnackbarUtils.Short(view, "保存失败").danger().show();
             }
         }, CallerThreadExecutor.getInstance());
+    } */
+
+    private static void saveFromFresco(final View view, final Context context, final String url, final String path) {
+        ImageRequest imageRequest = ImageRequest.fromUri(url);
+        DataSource<CloseableReference<PooledByteBuffer>> dataSource = Fresco.getImagePipeline()
+                .fetchEncodedImage(imageRequest, null);
+        dataSource.subscribe(new BaseDataSubscriber<CloseableReference<PooledByteBuffer>>() {
+            @Override
+            protected void onNewResultImpl(DataSource<CloseableReference<PooledByteBuffer>> dataSource) {
+                if (!dataSource.isFinished()) {
+                    SnackbarUtils.Short(view, "保存失败").danger().show();
+                }
+                CloseableReference reference = dataSource.getResult();
+                if (reference != null) {
+                    try {
+                        String filename = Md5Util.getMD5(url) + "." + getPictureType(url);
+                        String filePath = path + filename;
+                        Log.e("PicUtil", "onNewResultImpl: " + filePath);
+                        ifPathNotExistsAndCreate(path);
+                        PooledByteBuffer result = (PooledByteBuffer) reference.get();
+                        InputStream inputStream = new PooledByteBufferInputStream(result);
+                        try {
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
+                            byte[] bytes = new byte[1024];
+                            int n;
+                            while ((n = inputStream.read(bytes)) != -1) {
+                                byteArrayOutputStream.write(bytes, 0, n);
+                            }
+                            inputStream.close();
+                            byteArrayOutputStream.close();
+                            File file = new File(filePath);
+                            if (!file.exists())
+                                file.createNewFile();
+                            DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(file));
+                            byteArrayOutputStream.writeTo(dataOutputStream);
+                            SnackbarUtils.Short(view, "保存成功").confirm().show();
+                        } catch (Exception e) {
+                            SnackbarUtils.Short(view, "保存失败").danger().show();
+                        } finally {
+                            Closeables.closeQuietly(inputStream);
+                        }
+                    } finally {
+                        CloseableReference.closeSafely(reference);
+                        reference = null;
+                    }
+                }
+            }
+
+            @Override
+            protected void onFailureImpl(DataSource<CloseableReference<PooledByteBuffer>> dataSource) {
+                SnackbarUtils.Short(view, "保存失败").danger().show();
+            }
+        }, CallerThreadExecutor.getInstance());
     }
 
-    private static void shareImageFromFresco(final View view, final Context context, final String url, final String path) {
+    /* private static void shareImageFromFresco(final View view, final Context context, final String url, final String path) {
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
                 .fetchDecodedImage(imageRequest, null);
@@ -119,7 +176,7 @@ public class PicUtil {
                 snackbar.show();
                 if (bitmap != null) {
                     String sharePath = path + "share" + File.separatorChar;
-                    String filePath = sharePath + Md5Util.getMD5(url) + ".jpg";
+                    String filePath = sharePath + Md5Util.getMD5(url) + getPictureType(url);
                     ifPathNotExistsAndCreate(sharePath);
                     if ((boolean) SPUtils.get(context, AppConfig.share_model, false) == false) {
                         snackbar.dismiss();
@@ -153,10 +210,83 @@ public class PicUtil {
                 SnackbarUtils.Short(view, "分享失败").danger().show();
             }
         }, CallerThreadExecutor.getInstance());
+    } */
+
+    private static void shareImageFromFresco(final View view, final Context context, final String url, final String path) {
+        ImageRequest imageRequest = ImageRequest.fromUri(url);
+        DataSource<CloseableReference<PooledByteBuffer>> dataSource = Fresco.getImagePipeline()
+                .fetchEncodedImage(imageRequest, null);
+        dataSource.subscribe(new BaseDataSubscriber<CloseableReference<PooledByteBuffer>>() {
+            Snackbar snackbar = SnackbarUtils.Indefinite(view, "正在准备分享...").info().getSnackbar();
+
+            @Override
+            protected void onNewResultImpl(DataSource<CloseableReference<PooledByteBuffer>> dataSource) {
+                if (!dataSource.isFinished()) {
+                    SnackbarUtils.Short(view, "分享失败").danger().show();
+                }
+                CloseableReference reference = dataSource.getResult();
+                if (reference != null) {
+                    try {
+                        String sharePath = path + "share" + File.separatorChar;
+                        String filePath = sharePath + Md5Util.getMD5(url) + "." + getPictureType(url);
+                        ifPathNotExistsAndCreate(sharePath);
+                        if ((boolean) SPUtils.get(context, AppConfig.share_model, false) == false) {
+                            snackbar.dismiss();
+                            Intent share = new Intent(Intent.ACTION_SEND);
+                            share.setType("text/plain");
+                            share.putExtra(Intent.EXTRA_TEXT, "有人给你分享了一张图片:" + url);
+                            context.startActivity(Intent.createChooser(share, "分享到"));
+                        } else {
+                            PooledByteBuffer result = (PooledByteBuffer) reference.get();
+                            InputStream inputStream = new PooledByteBufferInputStream(result);
+                            try {
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
+                                byte[] bytes = new byte[1024];
+                                int n;
+                                while ((n = inputStream.read(bytes)) != -1) {
+                                    byteArrayOutputStream.write(bytes, 0, n);
+                                }
+                                inputStream.close();
+                                byteArrayOutputStream.close();
+                                File file = new File(filePath);
+                                if (!file.exists())
+                                    file.createNewFile();
+                                DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(file));
+                                byteArrayOutputStream.writeTo(dataOutputStream);
+
+                                snackbar.dismiss();
+                                Intent share = new Intent(Intent.ACTION_SEND);
+                                share.putExtra(Intent.EXTRA_SUBJECT, "分享");
+                                share.putExtra(Intent.EXTRA_TEXT, "有人给你分享了一张图片");
+                                share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                share.setType("image/jpg");
+                                share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                                context.startActivity(Intent.createChooser(share, "分享到"));
+                                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, FileProvider7.getUriForFile(context, new File(filePath))));
+                            } catch (Exception e) {
+                                SnackbarUtils.Short(view, "分享失败").danger().show();
+                            } finally {
+                                Closeables.closeQuietly(inputStream);
+                            }
+                        }
+                    } finally {
+                        CloseableReference.closeSafely(reference);
+                        reference = null;
+                    }
+                }
+            }
+
+            @Override
+            protected void onFailureImpl(DataSource<CloseableReference<PooledByteBuffer>> dataSource) {
+                SnackbarUtils.Short(view, "分享失败").danger().show();
+            }
+        }, CallerThreadExecutor.getInstance());
     }
 
     private static void setWallPaperImageFromFresco(final View view, final Context context, final String url, final String path) {
         SnackbarUtils.Indefinite(view, "正在设置壁纸...").info().show();
+        if (getPictureType(url).equals("gif"))
+            SnackbarUtils.Long(view, "GIF图不支持设置为壁纸").danger().show();
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
                 .fetchDecodedImage(imageRequest, null);
@@ -165,7 +295,7 @@ public class PicUtil {
             public void onNewResultImpl(@Nullable Bitmap bitmap) {
                 if (bitmap != null) {
                     String sharePath = path + "wallpaper" + File.separatorChar;
-                    String filePath = sharePath + Md5Util.getMD5(url) + ".jpg";
+                    String filePath = sharePath + Md5Util.getMD5(url) + "." + getPictureType(url);
                     ifPathNotExistsAndCreate(sharePath);
                     if (BitmapUtil.saveBitmap(bitmap, filePath)) {
                         try {
@@ -195,5 +325,14 @@ public class PicUtil {
         File file = new File(path);
         if (!file.exists())
             file.mkdirs();
+    }
+
+    public static String getPictureType(String pictureName) {
+        if (pictureName.endsWith("png") || pictureName.endsWith("PNG"))
+            return "png";
+        else if (pictureName.endsWith("gif") || pictureName.endsWith("GIF"))
+            return "gif";
+        else
+            return "jpg";
     }
 }

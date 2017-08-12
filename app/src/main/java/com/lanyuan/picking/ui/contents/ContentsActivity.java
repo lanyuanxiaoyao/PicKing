@@ -79,6 +79,8 @@ public class ContentsActivity extends BaseActivity {
 
     private Snackbar picDialogSnackBar;
 
+    private boolean isSinglePic = false;
+
     public enum parameter {
         RESULT, CURRENT_URL
     }
@@ -88,20 +90,27 @@ public class ContentsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contents);
 
+        // MIUI状态栏字体颜色调整
         StatusBarUtil.MIUISetStatusBarLightMode(this, true);
 
+        // 设置状态栏颜色透明
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+        // 绑定控件
         ButterKnife.bind(this);
 
+        // 初始化单图对话框和提示框
         picDialog = new PicDialog(this);
         picDialogSnackBar = SnackbarUtils.Indefinite(getWindow().getDecorView(), "正在加载，请稍候……").info().getSnackbar();
 
+        // 获取传来的规则并初始化状态
         Intent intent = getIntent();
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
+        initPattern(pattern);
 
+        // 加载分类侧边栏
         menuList = getMenuList() == null ? new ArrayList<Menu>() : getMenuList();
         MenuAdapter menuAdapter = new MenuAdapter(this, menuList);
         menuAdapter.setOnClickListener(new MenuAdapter.OnItemClickListener() {
@@ -123,10 +132,12 @@ public class ContentsActivity extends BaseActivity {
         menuRecycleView.setLayoutManager(new LinearLayoutManager(this));
         menuRecycleView.setAdapter(menuAdapter);
 
+        // 初始化访问地址
         baseUrl = getBaseUrl(menuList, 0);
         currentUrl = menuList.get(0).getUrl();
         firstUrl = currentUrl;
 
+        // 是否滑动界面的时候不加载图片
         if (!(boolean) SPUtils.get(this, AppConfig.load_pic_swipe, false))
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -139,11 +150,12 @@ public class ContentsActivity extends BaseActivity {
                 }
             });
 
+        // 设置列表adapter，区分单图模式和多图模式，分别处理
         adapter = new ContentsAdapter(this, new ArrayList<AlbumInfo>(), ScreenUtil.getScreenWidth(this) / 2);
         adapter.setOnClickListener(new ContentsAdapter.OnItemClickListener() {
             @Override
             public void ItemClickListener(View view, int position, AlbumInfo albumInfo) {
-                if (pattern instanceof SinglePicturePattern) {
+                if (isSinglePic) {
                     new GetSinglePicContent().execute(albumInfo.getAlbumUrl());
                     picDialogSnackBar.show();
                 } else if (pattern instanceof MultiPicturePattern) {
@@ -162,10 +174,12 @@ public class ContentsActivity extends BaseActivity {
             }
         });
 
+        // 设置列表显示的列数
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(adapter);
 
+        // 设置下拉刷新和上拉加载
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -180,6 +194,13 @@ public class ContentsActivity extends BaseActivity {
             }
         });
         refreshLayout.setRefreshing(true);
+    }
+
+    private void initPattern(BasePattern pattern) {
+        if (pattern instanceof SinglePicturePattern)
+            isSinglePic = true;
+        else if (pattern instanceof MultiPicturePattern)
+            isSinglePic = false;
     }
 
     public String getBaseUrl(List<Menu> menuList, int position) {
@@ -301,6 +322,8 @@ public class ContentsActivity extends BaseActivity {
                     Request request = new Request.Builder()
                             .url(strings[0])
                             .build();
+                    if (strings[0].endsWith("jpg") || strings[0].endsWith("gif") || strings[0].endsWith("png"))
+                        return getSinglePicContent(baseUrl, currentUrl, strings[0].getBytes());
                     Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
                     byte[] result = response.body().bytes();
                     return getSinglePicContent(baseUrl, currentUrl, result);

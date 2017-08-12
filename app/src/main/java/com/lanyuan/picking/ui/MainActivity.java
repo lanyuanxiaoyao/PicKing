@@ -57,15 +57,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
-            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                drawerLayout.setFitsSystemWindows(true);
-                drawerLayout.setClipToPadding(false);
-            }
-        }
-
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -78,11 +69,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
-
-        CategoryPagerAdapter categoryPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), getFragmentList(), getTitleList());
-        viewPager.setAdapter(categoryPagerAdapter);
-        viewPager.setOffscreenPageLimit(5);
-        tabLayout.setupWithViewPager(viewPager);
 
         if (!Network.isConnected(this))
             SnackbarUtils.Long(getWindow().getDecorView(), "当前没有网络连接！！").danger().show();
@@ -100,7 +86,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     .setTitle("提示")
                     .setMessage(getResources().getString(R.string.tips))
                     .setPositiveButton("知道了", null)
-                    .setNegativeButton("不在提示", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("不再提示", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             SPUtils.put(MainActivity.this, AppConfig.show_tips, false);
@@ -125,6 +111,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         titleList.add("三次元区");
         titleList.add("四次元区");
         return titleList;
+    }
+
+    @Override
+    protected void onResume() {
+        CategoryPagerAdapter categoryPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), getFragmentList(), getTitleList());
+        viewPager.setAdapter(categoryPagerAdapter);
+        viewPager.setOffscreenPageLimit(5);
+        tabLayout.setupWithViewPager(viewPager);
+        super.onResume();
     }
 
     @Override

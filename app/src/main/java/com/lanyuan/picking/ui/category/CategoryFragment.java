@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,12 +40,12 @@ public class CategoryFragment extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
         if (linearLayout.getChildCount() == 0) {
             patternList = (List<BasePattern>) AppConfig.categoryList.get(patternListName);
             for (BasePattern pattern : patternList)
                 linearLayout.addView(createImageView(pattern));
         }
+        super.onResume();
     }
 
     @Nullable

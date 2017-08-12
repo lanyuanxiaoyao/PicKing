@@ -1,13 +1,11 @@
-package com.lanyuan.picking.pattern.anime;
+package com.lanyuan.picking.pattern.sex;
 
 import android.graphics.Color;
 import android.util.Log;
 
 import com.lanyuan.picking.common.AlbumInfo;
-import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
-import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 
 import org.jsoup.Jsoup;
