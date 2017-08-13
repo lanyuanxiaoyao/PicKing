@@ -11,8 +11,11 @@ import com.lanyuan.picking.pattern.anime.Apic;
 import com.lanyuan.picking.pattern.anime.KonaChan;
 import com.lanyuan.picking.pattern.anime.MiniTokyo;
 import com.lanyuan.picking.pattern.anime.ZeroChan;
-import com.lanyuan.picking.pattern.boys.Nanrentu;
-import com.lanyuan.picking.pattern.girls.DuowanCos;
+import com.lanyuan.picking.pattern.girls.Meizi4493;
+import com.lanyuan.picking.pattern.girls.Mntu92;
+import com.lanyuan.picking.pattern.others.Aitaotu;
+import com.lanyuan.picking.pattern.others.Nanrentu;
+import com.lanyuan.picking.pattern.others.DuowanCos;
 import com.lanyuan.picking.pattern.girls.JDlingyu;
 import com.lanyuan.picking.pattern.girls.JianDan;
 import com.lanyuan.picking.pattern.girls.MM131;
@@ -40,6 +43,8 @@ public class AppConfig {
     public static final String YELLOW_COLOR = "yellow";
     public static final String GREY_COLOR = "grey";
 
+    public static final String version_code = "versionCode";
+
     public static final String show_tips = "showTips";
     public static final String choose_theme = "chooseTheme";
     public static final String load_pic_swipe = "loadPicSwipe";
@@ -48,9 +53,10 @@ public class AppConfig {
     public static final String cache_size = "cacheSize";
     public static final String share_model = "shareModel";
     public static final String hide_pic = "hidePic";
+    public static final String auto_gif_play = "autoGifPlay";
 
     public static final String anime_patterns = "animePatterns";
-    public static final String boys_patterns = "boysPatterns";
+    public static final String others_patterns = "boysPatterns";
     public static final String girls_patterns = "girlsPatterns";
     public static final String sex_patterns = "sexPatterns";
 
@@ -59,6 +65,7 @@ public class AppConfig {
     static {
         categoryList = new HashMap();
         List<BasePattern> animePatterns = new ArrayList<BasePattern>() {{
+            add(new com.lanyuan.picking.pattern.anime.Aitaotu());
             add(new KonaChan());
             add(new Apic());
             add(new Acg12());
@@ -69,23 +76,28 @@ public class AppConfig {
             add(new MiniTokyo());
         }};
         List<BasePattern> girlsPatterns = new ArrayList<BasePattern>() {{
+            add(new Meizi4493());
+            add(new Mntu92());
+            add(new com.lanyuan.picking.pattern.girls.Aitaotu());
+            // add(new Mzitu());
             add(new JianDan());
             add(new JDlingyu());
             add(new MM131());
             add(new XiuMM());
             add(new RosiMM());
             add(new Yesky());
-            add(new DuowanCos());
         }};
-        List<BasePattern> boysPatterns = new ArrayList<BasePattern>() {{
+        List<BasePattern> othersPatterns = new ArrayList<BasePattern>() {{
+            add(new Aitaotu());
             add(new Nanrentu());
+            add(new DuowanCos());
         }};
         List<BasePattern> sexPatterns = new ArrayList<BasePattern>() {{
             add(new Yande());
         }};
         categoryList.put(anime_patterns, animePatterns);
         categoryList.put(girls_patterns, girlsPatterns);
-        categoryList.put(boys_patterns, boysPatterns);
+        categoryList.put(others_patterns, othersPatterns);
     }
 
 }

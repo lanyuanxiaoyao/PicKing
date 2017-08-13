@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -13,6 +12,7 @@ import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.dialog.PicDialog;
@@ -22,9 +22,6 @@ import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.ScreenUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
 import com.lanyuan.picking.util.StatusBarUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,26 +65,26 @@ public class FavoriteActivity extends BaseActivity {
         adapter = new FavoriteAdapter(this, FavoriteUtil.favorites, ScreenUtil.getScreenWidth(this) / 2);
         adapter.setOnLoveClickListener(new FavoriteAdapter.OnLoveClickListener() {
             @Override
-            public void LoveClickListener(View view, int position, String url) {
-                PicUtil.doFromFresco(getWindow().getDecorView(), FavoriteActivity.this, url, (String) SPUtils.get(FavoriteActivity.this, AppConfig.download_path, AppConfig.DOWNLOAD_PATH), PicUtil.SAVE_IMAGE);
+            public void LoveClickListener(View view, int position, PicInfo picInfo) {
+                PicUtil.doFromFresco(getWindow().getDecorView(), FavoriteActivity.this, picInfo.getPicUrl(), (String) SPUtils.get(FavoriteActivity.this, AppConfig.download_path, AppConfig.DOWNLOAD_PATH), PicUtil.SAVE_IMAGE);
             }
         });
         adapter.setOnClickListener(new FavoriteAdapter.OnItemClickListener() {
             @Override
-            public void ItemClickListener(View view, int position, String url) {
-                picDialog.show(url);
+            public void ItemClickListener(View view, int position, PicInfo picInfo) {
+                picDialog.show(picInfo);
             }
 
             @Override
-            public void ItemLongClickListener(final View view, final int position, final String url) {
+            public void ItemLongClickListener(final View view, final int position, final PicInfo picInfo) {
                 new AlertDialog.Builder(FavoriteActivity.this)
                         .setTitle("注意")
                         .setMessage("确定要将这张图片从收藏中移除吗？")
                         .setPositiveButton("移除", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                adapter.remove(url);
-                                FavoriteUtil.remove(FavoriteActivity.this, url);
+                                adapter.remove(picInfo);
+                                FavoriteUtil.remove(FavoriteActivity.this, picInfo);
                                 SnackbarUtils.Short(getWindow().getDecorView(), "移除成功").confirm().show();
                             }
                         })

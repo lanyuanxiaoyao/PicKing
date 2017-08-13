@@ -2,7 +2,8 @@ package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
 
-import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.common.bean.AlbumInfo;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
@@ -84,11 +85,11 @@ public class JDlingyu implements MultiPicturePattern {
 
     @Override
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
-        List<String> urls = new ArrayList<>();
+        List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select(".main-body a:has(img)");
         for (Element element : elements) {
-            urls.add(element.attr("href"));
+            urls.add(new PicInfo(element.attr("data-img")));
         }
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);

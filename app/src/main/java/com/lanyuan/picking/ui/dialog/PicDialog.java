@@ -11,17 +11,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 
 import com.facebook.drawee.drawable.ProgressBarDrawable;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.ui.zoomableView.OnViewTapListener;
 import com.lanyuan.picking.ui.zoomableView.PhotoDraweeView;
 import com.lanyuan.picking.util.FavoriteUtil;
-import com.lanyuan.picking.util.FrescoUtil;
 import com.lanyuan.picking.util.PicUtil;
 import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.SnackbarUtils;
@@ -35,7 +32,7 @@ import butterknife.ButterKnife;
 
 public class PicDialog extends Dialog implements View.OnClickListener {
 
-    private String url;
+    private PicInfo picInfo;
 
     @BindView(R.id.pic_view)
     PhotoDraweeView photoDraweeView;
@@ -78,12 +75,11 @@ public class PicDialog extends Dialog implements View.OnClickListener {
     }
 
 
-    public void show(final String url) {
-        if (url != null && !"".equals(url)) {
-            this.url = url;
+    public void show(final PicInfo picInfo) {
+        if (picInfo != null && !"".equals(picInfo.getPicUrl())) {
+            this.picInfo = picInfo;
             photoDraweeView.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
-            photoDraweeView.setPhotoUri(Uri.parse(url));
-            photoDraweeView.getController().getAnimatable().start();
+            photoDraweeView.setPhotoUri(Uri.parse(picInfo.getPicUrl()));
         }
         this.show();
     }
@@ -92,16 +88,16 @@ public class PicDialog extends Dialog implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.love_button:
-                if (FavoriteUtil.add(getOwnerActivity(), url))
+                if (FavoriteUtil.add(getOwnerActivity(), picInfo))
                     SnackbarUtils.Short(getWindow().getDecorView(), "收藏成功").confirm().show();
                 else
                     SnackbarUtils.Short(getWindow().getDecorView(), "已收藏过这张图片了").warning().show();
                 break;
             case R.id.download_button:
-                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 0);
+                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), picInfo.getPicUrl(), (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 0);
                 break;
             case R.id.share_button:
-                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 1);
+                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), picInfo.getPicUrl(), (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 1);
                 break;
             case R.id.wallpaper_button:
                 new AlertDialog.Builder(getOwnerActivity())
@@ -111,7 +107,7 @@ public class PicDialog extends Dialog implements View.OnClickListener {
                         .setPositiveButton("设为壁纸", new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), url, (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 2);
+                                PicUtil.doFromFresco(getWindow().getDecorView(), getOwnerActivity(), picInfo.getPicUrl(), (String) SPUtils.get(getOwnerActivity(), AppConfig.download_path, AppConfig.DOWNLOAD_PATH), 2);
                             }
                         })
                         .show();

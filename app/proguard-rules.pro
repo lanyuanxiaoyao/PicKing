@@ -3,19 +3,10 @@
     public private *;
 }
 
-# 保留support下的所有类及其内部类
--keep class android.support.** {*;}
-
 # 保留继承的
 -keep public class * extends android.support.v4.**
 -keep public class * extends android.support.v7.**
 -keep public class * extends android.support.annotation.**
-
-# 保留R下面的资源
--keep class **.R$* {*;}
-
-# 保留Annotation不混淆
--keepattributes *Annotation*,InnerClasses
 
 # 避免混淆泛型
 -keepattributes Signature
@@ -38,17 +29,15 @@
 -keep interface com.facebook.fresco.** {*;}
 -keep enum com.facebook.fresco.** {*;}
 
-# OkHttp
--dontwarn okio.**
--dontwarn okhttp3.**
--dontwarn javax.annotation.Nullable
--dontwarn javax.annotation.ParametersAreNonnullByDefault
-
-# Gson
 -keepattributes Signature
--keepattributes *Annotation*
+# Gson specific classes
 -keep class sun.misc.Unsafe { *; }
 -keep class com.google.gson.stream.** { *; }
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.google.gson.examples.android.model.** { *; }
+-keep class com.google.gson.** { *;}
+#这句非常重要，主要是滤掉 com.lanyuan.picking.common.bean包下的所有.class文件不进行混淆编译
+-keep class com.lanyuan.picking.common.bean.** {*;}
 
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**

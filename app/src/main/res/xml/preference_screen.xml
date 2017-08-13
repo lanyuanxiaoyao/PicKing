@@ -10,6 +10,11 @@
             android:defaultValue="false"
             android:key="@string/click_to_back"
             android:title="大图页面单击返回" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/auto_gif_play"
+            android:summary="默认关闭,选项关闭时,仅在浏览大图时加载GIF动图,以节省流量和内存,当然如果想在浏览列表的时候就直接播放动图,打开此选项即可.(如果站点没有提供GIF预览图,此选项无效)"
+            android:title="浏览列表时自动加载GIF" />
     </PreferenceCategory>
     <PreferenceCategory android:title="分享设置">
         <SwitchPreference
@@ -23,7 +28,7 @@
             android:defaultValue="false"
             android:key="@string/hide_pic"
             android:summary="通过建立.nomedia文件阻止图库类应用扫描，并不是真正对图片文件本身进行隐藏，所以这对一些不遵守Android建议的应用不起作用"
-            android:title="隐藏下载的图片"/>
+            android:title="隐藏下载的图片" />
         <EditTextPreference
             android:enabled="false"
             android:key="@string/download_path"

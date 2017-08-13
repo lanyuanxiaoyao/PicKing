@@ -112,6 +112,7 @@ public class PicUtil {
     } */
 
     private static void saveFromFresco(final View view, final Context context, final String url, final String path) {
+        SnackbarUtils.Indefinite(view, "正在保存……").danger().show();
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<PooledByteBuffer>> dataSource = Fresco.getImagePipeline()
                 .fetchEncodedImage(imageRequest, null);
@@ -126,7 +127,6 @@ public class PicUtil {
                     try {
                         String filename = Md5Util.getMD5(url) + "." + getPictureType(url);
                         String filePath = path + filename;
-                        Log.e("PicUtil", "onNewResultImpl: " + filePath);
                         ifPathNotExistsAndCreate(path);
                         PooledByteBuffer result = (PooledByteBuffer) reference.get();
                         InputStream inputStream = new PooledByteBufferInputStream(result);

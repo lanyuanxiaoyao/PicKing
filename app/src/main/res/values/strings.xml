@@ -10,13 +10,14 @@
     <string name="cache_size">cacheSize</string>
     <string name="share_model">shareModel</string>
     <string name="hide_pic">hidePic</string>
+    <string name="auto_gif_play">autoGifPlay</string>
 
-    <string name="tips">木瓜是一款网络图片浏览工具，应用内的所有图片资源均属于原网站，木瓜不存在中途存储，改变网站内容的行为，所有内容均为用户设备即时访问原网站获得。\n\n所有的图片版权均归原网站和原作者所有，请勿用于商业用途，由此引发的图片本身导致的相关问题，木瓜不承担任何责任，因为木瓜本身也不知道到底会有什么图片出现在上面……\n\n木瓜这款应用只发布于酷安，若通过其他渠道获得变质的木瓜导致的问题，作者表示无能为力\n\n木瓜免费且所有代码开源，供大家学习和参考，详细请在应用关于页面浏览\n\n若有其他奇奇怪怪的问题……umm……憋着吧</string>
+    <string name="tips">木瓜是一款网络图片浏览工具，应用内的所有图片资源均属于原网站，木瓜不存在中途存储，改变网站内容的行为，所有内容均为用户设备即时访问原网站获得。\n\n所有的图片版权均归原网站和原作者所有，请勿用于商业用途，由此引发的图片本身导致的相关问题，木瓜不承担任何责任\n\n木瓜这款应用只发布于酷安，若通过其他渠道获得变质的木瓜导致的问题，作者表示无能为力\n\n木瓜免费且所有代码开源，供大家学习和参考，详细请在应用关于页面浏览\n\n如果你期待这款应用继续开发和维护，也可以通过捐赠对我表示支持</string>
     <string name="wallpaper_tips">受限于各个设备平台的壁纸设置存在差异，直接设置壁纸可能导致壁纸被拉伸，剪切，导致质量不佳，推荐保存图片，再手动通过设备自带的壁纸应用设置壁纸</string>
 
-    <string name="abou_easy">看漂亮小姐姐总是刚需！\n但是网站上看又太痛苦，不流畅的网页加上各种广告，让人……\n于是木瓜诞生了\n你可以把木瓜当做一个去广告+页面重排的浏览器……\n于是美好的生活……</string>
+    <string name="abou_easy">看漂亮小姐姐是刚需！\n但是网站上看又太痛苦，不流畅的网页加上各种广告，让人……\n于是木瓜诞生了\n你可以把木瓜当做一个去广告+页面重排的浏览器……\n于是美好的生活……</string>
     <string name="about_author">我是兰缘小妖，一只热爱Android的大学汪，如果你也是开发者或者只是单纯地想对我干一些不可告人的事情，那么……\n可以在这些地方关注到我：\nGitHub\nhttps://github.com/lanyuanxiaoyao\nBlog\nhttp://lanyuanxiaoyao.com\nEmail\nlanyuanxiaoyao@gmail.com</string>
-    <string name="about_donate">如果你觉得这个应用确实帮上了你的忙，那么你也可以通过搭上一丢丢狗粮来对我表示支持\n当然啦！五分的评价和Github的fork和star甚至是评论里的一句吐槽都是对我的支持，谢谢\n噢！对了！如果你也一心想为北部植被和绿化建设出一份力！请在玩蚂蚁森林的你务必加我支付宝好友！滑稽！</string>
+    <string name="about_donate">如果你觉得这个应用还不错，那么你也可以通过友情捐赠来对我表示支持\n虽然开发木瓜出于兴趣和热情，但也不可避免地占用了我大量的业余时间\n所以你的一次捐赠是我继续开发和维护应用的动力\n当然啦！五分的评价和Github的fork和star甚至是评论里的一句吐槽也都是对我的支持\n</string>
     <string name="about_alipay">点击此处直接跳转\n如果不能跳转就只能麻烦你复制一下了\n→ 支付宝: lanyuanxiaoyao@gmail.com ←\n↑↑低调的支付宝账号↑↑</string>
     <string name="about_open">向所有开源的作者们致敬，umm……每次说这句话总觉得在很不要脸地夸自己，因为本应用开源在\nhttps://github.com/lanyuanxiaoyao/PicKing\n以下是在应用中使用到的开源代码\nFresco\nhttps://github.com/facebook/fresco\nPhotoDraweeView\nhttps://github.com/ongakuer/PhotoDraweeView\nJsoup\nhttps://jsoup.org/\nOkhttp\nhttps://github.com/square/okhttp\nSwipeToLoadLayout\nhttps://github.com/Aspsine/SwipeToLoadLayout\nButterknife\nhttps://github.com/JakeWharton/butterknife\nAndPermission\nhttps://github.com/yanzhenjie/AndPermission\nandroid-common\nhttps://github.com/litesuits/android-common\n还有开源的图标！\nhttps://icons8.com/</string>
 </resources>

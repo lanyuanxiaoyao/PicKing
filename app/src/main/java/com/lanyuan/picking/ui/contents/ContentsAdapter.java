@@ -5,12 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
-import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.common.bean.AlbumInfo;
+import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.util.FrescoUtil;
+import com.lanyuan.picking.util.SPUtils;
 
 import java.util.List;
 
@@ -19,11 +21,13 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
     private int width;
     private Context context;
     private OnItemClickListener itemClickListener;
+    private boolean autoGifPlay = false;
 
     public ContentsAdapter(Context context, List<AlbumInfo> lists, int width) {
         this.context = context;
         this.lists = lists;
         this.width = width;
+        autoGifPlay = (boolean) SPUtils.get(context, AppConfig.auto_gif_play, false);
     }
 
     public void addMore(List<AlbumInfo> data) {
@@ -48,24 +52,37 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_recycler_view, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_contents_recycler_view, parent, false);
         MyViewHolder viewHolder = new MyViewHolder(view);
         return viewHolder;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         public SimpleDraweeView simpleDraweeView;
+        public TextView gifTip;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.fresco);
+            gifTip = (TextView) itemView.findViewById(R.id.gif_tip);
         }
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         if (!lists.get(position).equals(holder.simpleDraweeView.getTag())) {
-            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getCoverUrl(), width);
+            if (autoGifPlay)
+                FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getCoverUrl(), width);
+            else {
+                AlbumInfo albumInfo = lists.get(position);
+                if (albumInfo.getGifThumbUrl() != null && !"".equals(albumInfo.getGifThumbUrl())) {
+                    holder.gifTip.setVisibility(View.VISIBLE);
+                    FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getGifThumbUrl(), width);
+                } else {
+                    holder.gifTip.setVisibility(View.INVISIBLE);
+                    FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getCoverUrl(), width);
+                }
+            }
             if (itemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -84,6 +101,7 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
                 });
             }
         }
+
     }
 
     @Override

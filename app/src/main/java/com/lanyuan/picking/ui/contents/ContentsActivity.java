@@ -21,9 +21,11 @@ import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
-import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.common.bean.AlbumInfo;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.common.WebViewTask;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
+import com.lanyuan.picking.pattern.NeedHttpHeader;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.dialog.PicDialog;
@@ -80,9 +82,10 @@ public class ContentsActivity extends BaseActivity {
     private Snackbar picDialogSnackBar;
 
     private boolean isSinglePic = false;
+    private boolean isNeedHttpHeader = false;
 
     public enum parameter {
-        RESULT, CURRENT_URL
+        RESULT, CURRENT_URL, GIF_THUMB
     }
 
     @Override
@@ -201,6 +204,8 @@ public class ContentsActivity extends BaseActivity {
             isSinglePic = true;
         else if (pattern instanceof MultiPicturePattern)
             isSinglePic = false;
+        if (pattern instanceof NeedHttpHeader)
+            isNeedHttpHeader = true;
     }
 
     public String getBaseUrl(List<Menu> menuList, int position) {
@@ -219,7 +224,7 @@ public class ContentsActivity extends BaseActivity {
         return pattern.getContentNext(baseUrl, currentUrl, result);
     }
 
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+    public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         return ((SinglePicturePattern) pattern).getSinglePicContent(baseUrl, currentUrl, result);
     }
 
@@ -313,17 +318,20 @@ public class ContentsActivity extends BaseActivity {
         }
     }
 
-    private class GetSinglePicContent extends AsyncTask<String, Integer, String> {
+    private class GetSinglePicContent extends AsyncTask<String, Integer, PicInfo> {
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected PicInfo doInBackground(String... strings) {
             if (strings.length > 0) {
                 try {
                     Request request = new Request.Builder()
                             .url(strings[0])
                             .build();
+
+                    // 这是针对煎蛋很粗糙的一个处理
                     if (strings[0].endsWith("jpg") || strings[0].endsWith("gif") || strings[0].endsWith("png"))
                         return getSinglePicContent(baseUrl, currentUrl, strings[0].getBytes());
+
                     Response response = OkHttpClientUtil.getInstance().newCall(request).execute();
                     byte[] result = response.body().bytes();
                     return getSinglePicContent(baseUrl, currentUrl, result);
@@ -336,15 +344,15 @@ public class ContentsActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(PicInfo picInfo) {
             if (!isRunnable)
                 return;
-            else if (result == null || "".equals(result)) {
+            else if (picInfo == null || "".equals(picInfo.getPicUrl())) {
                 SnackbarUtils.Long(getWindow().getDecorView(), "获取内容失败，请检查网络连接").danger().show();
                 return;
             }
 
-            picDialog.show(result);
+            picDialog.show(picInfo);
             picDialogSnackBar.dismiss();
         }
     }

@@ -1,10 +1,12 @@
 package com.lanyuan.picking.ui.category;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +64,27 @@ public class CategoryFragment extends Fragment {
         RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.category_layout);
         SimpleDraweeView simpleDraweeView = (SimpleDraweeView) view.findViewById(R.id.item_image);
         simpleDraweeView.setImageURI(Uri.parse(pattern.getCategoryCoverUrl()));
+        relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("跳转到")
+                        .setMessage(pattern.getBaseUrl(null, 0))
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent();
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(pattern.getBaseUrl(null, 0)));
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .create()
+                        .show();
+                return true;
+            }
+        });
         relativeLayout.setBackgroundColor(pattern.getBackgroundColor());
         relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override

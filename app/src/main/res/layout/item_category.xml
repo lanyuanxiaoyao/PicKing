@@ -12,8 +12,8 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/item_image"
-            android:layout_width="160dp"
-            android:layout_height="80dp"
+            android:layout_width="130dp"
+            android:layout_height="65dp"
             android:layout_centerInParent="true"
             app:actualImageScaleType="fitCenter" />
     </RelativeLayout>

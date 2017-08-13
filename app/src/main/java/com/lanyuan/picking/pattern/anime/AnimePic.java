@@ -1,13 +1,11 @@
 package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
-import android.util.Log;
 
-import com.lanyuan.picking.common.AlbumInfo;
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.common.bean.AlbumInfo;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
-import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 
 import org.jsoup.Jsoup;
@@ -81,12 +79,12 @@ public class AnimePic implements SinglePicturePattern {
     }
 
     @Override
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+    public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("#big_preview_cont a");
         if (elements.size() > 0) {
-            return baseUrl + elements.get(0).attr("href");
+            return new PicInfo(baseUrl + elements.get(0).attr("href"));
         }
-        return "";
+        return null;
     }
 }

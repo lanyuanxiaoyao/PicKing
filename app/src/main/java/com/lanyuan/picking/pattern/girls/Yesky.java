@@ -1,9 +1,9 @@
 package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
-import android.util.Log;
 
-import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.common.bean.AlbumInfo;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
@@ -100,7 +100,6 @@ public class Yesky implements MultiPicturePattern {
         Document document = Jsoup.parse(new String(result, "gb2312"));
         Elements elements = document.select(".flym font a:containsOwn(下一页)");
         if (elements.size() > 0) {
-            Log.e("Yesky", "getContentNext: " + baseUrl + elements.get(0).attr("href"));
             return baseUrl + elements.get(0).attr("href");
         }
         return "";
@@ -108,11 +107,11 @@ public class Yesky implements MultiPicturePattern {
 
     @Override
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
-        List<String> data = new ArrayList<>();
+        List<PicInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gb2312"));
         Elements elements = document.select(".l_effect_img_mid img");
         if (elements.size() > 0)
-            data.add(elements.get(0).attr("src"));
+            data.add(new PicInfo(elements.get(0).attr("src")));
 
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, data);

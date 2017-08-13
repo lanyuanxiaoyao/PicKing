@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.dialog.PicDialog;
@@ -61,7 +62,7 @@ public class DetailActivity extends BaseActivity {
     private Snackbar snackbar;
 
     public enum parameter {
-        RESULT, CURRENT_URL
+        RESULT, CURRENT_URL, GIF_THUMB
     }
 
     @Override
@@ -97,21 +98,21 @@ public class DetailActivity extends BaseActivity {
                         Fresco.getImagePipeline().resume();
                 }
             });
-        adapter = new DetailAdapter(this, new ArrayList<String>(), ScreenUtil.getScreenWidth(this));
+        adapter = new DetailAdapter(this, new ArrayList<PicInfo>(), ScreenUtil.getScreenWidth(this));
         adapter.setOnLoveClickListener(new DetailAdapter.OnLoveClickListener() {
             @Override
-            public void LoveClickListener(View view, int position, String url) {
-                PicUtil.doFromFresco(getWindow().getDecorView(), DetailActivity.this, url, (String) SPUtils.get(DetailActivity.this, AppConfig.download_path, AppConfig.DOWNLOAD_PATH), PicUtil.SAVE_IMAGE);
+            public void LoveClickListener(View view, int position, PicInfo picInfo) {
+                PicUtil.doFromFresco(getWindow().getDecorView(), DetailActivity.this, picInfo.getPicUrl(), (String) SPUtils.get(DetailActivity.this, AppConfig.download_path, AppConfig.DOWNLOAD_PATH), PicUtil.SAVE_IMAGE);
             }
         });
         adapter.setOnClickListener(new DetailAdapter.OnItemClickListener() {
             @Override
-            public void ItemClickListener(View view, int position, String url) {
-                picDialog.show(url);
+            public void ItemClickListener(View view, int position, PicInfo picInfo) {
+                picDialog.show(picInfo);
             }
 
             @Override
-            public void ItemLongClickListener(final View view, final int position, final String url) {
+            public void ItemLongClickListener(View view, int position, PicInfo picInfo) {
             }
         });
         recyclerView.setAdapter(adapter);
@@ -156,15 +157,15 @@ public class DetailActivity extends BaseActivity {
                 return;
             }
 
-            List<String> urls = (List<String>) resultMap.get(parameter.RESULT);
-            if (urls.size() == 0) {
+            List<PicInfo> pics = (List<PicInfo>) resultMap.get(parameter.RESULT);
+            if (pics.size() == 0) {
                 SnackbarUtils.Short(getWindow().getDecorView(), "获取内容失败，请检查网络连接").danger().show();
                 return;
             }
-            adapter.addMore(urls);
+            adapter.addMore(pics);
 
             if (hasMore) {
-                picNumber += urls.size();
+                picNumber += pics.size();
                 snackbar.setText("正在加载第" + picNumber + "张图片").show();
                 new GetNext().execute((String) resultMap.get(parameter.CURRENT_URL));
             }

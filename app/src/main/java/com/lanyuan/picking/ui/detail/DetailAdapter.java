@@ -10,32 +10,33 @@ import android.view.ViewGroup;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.util.FrescoUtil;
 
 import java.util.List;
 
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHolder> {
-    private List<String> lists;
+    private List<PicInfo> lists;
     private int width;
     private Context context;
     private OnItemClickListener itemClickListener;
     private OnLoveClickListener loveClickListener;
 
-    public DetailAdapter(Context context, List<String> lists, int width) {
+    public DetailAdapter(Context context, List<PicInfo> lists, int width) {
         this.context = context;
         this.lists = lists;
         this.width = width;
     }
 
-    public void addMore(List<String> data) {
+    public void addMore(List<PicInfo> data) {
         lists.addAll(data);
         notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
-        void ItemClickListener(View view, int position, String url);
+        void ItemClickListener(View view, int position, PicInfo picInfo);
 
-        void ItemLongClickListener(View view, int position, String url);
+        void ItemLongClickListener(View view, int position, PicInfo picInfo);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -43,7 +44,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
     }
 
     public interface OnLoveClickListener {
-        void LoveClickListener(View view, int position, String url);
+        void LoveClickListener(View view, int position, PicInfo picInfo);
     }
 
     public void setOnLoveClickListener(OnLoveClickListener listener) {
@@ -72,7 +73,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         if (!lists.get(position).equals(holder.simpleDraweeView.getTag())) {
-            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position), width);
+            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getPicUrl(), width);
             if (itemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

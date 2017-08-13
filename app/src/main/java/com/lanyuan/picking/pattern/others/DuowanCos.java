@@ -1,9 +1,10 @@
-package com.lanyuan.picking.pattern.girls;
+package com.lanyuan.picking.pattern.others;
 
 import android.graphics.Color;
 import android.util.Log;
 
-import com.lanyuan.picking.common.AlbumInfo;
+import com.lanyuan.picking.common.bean.AlbumInfo;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
@@ -34,13 +35,18 @@ public class DuowanCos implements MultiPicturePattern {
 
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
-        return "http://tu.duowan.com/m/meinv?offset=";
+        String temp = menuList.get(position).getUrl();
+        if (menuList == null)
+            return "http://tu.duowan.com";
+        return temp.substring(0, temp.length() - 1);
     }
 
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
         menuList.add(new Menu("美女图片", "http://tu.duowan.com/m/meinv?offset=0"));
+        menuList.add(new Menu("多玩囧图", "http://tu.duowan.com/tag/5037.html?offset=0"));
+        menuList.add(new Menu("吐槽囧图", "http://tu.duowan.com/m/tucao?offset=0"));
         return menuList;
     }
 
@@ -65,6 +71,7 @@ public class DuowanCos implements MultiPicturePattern {
 
     @Override
     public String getContentNext(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+        currentUrl = currentUrl.replace("5037", "*");
         Pattern pattern = Pattern.compile("[0-9]\\d*");
         Matcher matcher = pattern.matcher(currentUrl);
         if (matcher.find()) {
@@ -77,12 +84,11 @@ public class DuowanCos implements MultiPicturePattern {
 
     @Override
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
-        Log.e("DuowanCos", "getDetailContent: " + currentUrl);
-        List<String> urls = new ArrayList<>();
+        List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("span.pic-box-item");
         for (Element element : elements)
-            urls.add(element.attr("data-img"));
+            urls.add(new PicInfo(element.attr("data-img")));
 
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);

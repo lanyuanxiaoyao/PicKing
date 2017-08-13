@@ -1,6 +1,11 @@
 package com.lanyuan.picking.util;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.lanyuan.picking.common.bean.PicInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -14,18 +19,18 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class FavoriteUtil {
 
-    public static List<String> favorites = new ArrayList<>();
+    public static List<PicInfo> favorites = new ArrayList<>();
 
     public static void init(Context context) {
         favorites = loadFavorites(context);
     }
 
-    public static void remove(Context context, String item) {
+    public static void remove(Context context, PicInfo item) {
         favorites.remove(item);
         saveFavorites(context, favorites);
     }
 
-    public static boolean add(Context context, String item) {
+    public static boolean add(Context context, PicInfo item) {
         if (favorites.contains(item))
             return false;
         favorites.add(item);
@@ -33,10 +38,10 @@ public class FavoriteUtil {
         return true;
     }
 
-    public static void saveFavorites(Context context, String s) {
+    public static void saveFavorites(Context context, String jsonData) {
         try {
-            FileOutputStream outputStream = context.openFileOutput("favorite.ini", MODE_PRIVATE);
-            outputStream.write(s.getBytes());
+            FileOutputStream outputStream = context.openFileOutput("favoritePic.ini", MODE_PRIVATE);
+            outputStream.write(jsonData.getBytes());
             outputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -45,15 +50,15 @@ public class FavoriteUtil {
         }
     }
 
-    public static void saveFavorites(Context context, List<String> favoriteList) {
+    public static void saveFavorites(Context context, List<PicInfo> favoriteList) {
         String json = JsonUtil.getInstance().toJson(favoriteList);
         saveFavorites(context, json);
     }
 
-    public static List<String> loadFavorites(Context context) {
+    public static List<PicInfo> loadFavorites(Context context) {
         String s = null;
         try {
-            FileInputStream inputStream = context.openFileInput("favorite.ini");
+            FileInputStream inputStream = context.openFileInput("favoritePic.ini");
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int length = -1;
@@ -69,7 +74,7 @@ public class FavoriteUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return JsonUtil.getInstance().fromJson(s, ArrayList.class);
+        return JsonUtil.getInstance().fromJson(s, new TypeToken<List<PicInfo>>() {
+        }.getType());
     }
-
 }

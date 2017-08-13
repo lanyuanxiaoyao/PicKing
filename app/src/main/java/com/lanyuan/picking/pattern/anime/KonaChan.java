@@ -2,11 +2,10 @@ package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
 
-import com.lanyuan.picking.common.AlbumInfo;
-import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.common.bean.AlbumInfo;
+import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
-import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 
 import org.jsoup.Jsoup;
@@ -83,12 +82,12 @@ public class KonaChan implements SinglePicturePattern {
     }
 
     @Override
-    public String getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
+    public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("#image");
         if (elements.size() > 0) {
-            return "https:" + elements.get(0).attr("src");
+            return new PicInfo("https:" + elements.get(0).attr("src"));
         }
-        return "";
+        return null;
     }
 }

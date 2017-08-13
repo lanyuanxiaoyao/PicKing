@@ -2,7 +2,6 @@ package com.lanyuan.picking.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -17,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.config.AppConfig;
@@ -32,6 +30,7 @@ import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.SnackbarUtils;
 import com.lanyuan.picking.util.UpdateUtil;
 import com.litesuits.common.assist.Network;
+import com.litesuits.common.utils.PackageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +66,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        CategoryPagerAdapter categoryPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), getFragmentList(), getTitleList());
+        viewPager.setAdapter(categoryPagerAdapter);
+        viewPager.setOffscreenPageLimit(5);
+        tabLayout.setupWithViewPager(viewPager);
+
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -75,33 +79,34 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         else if (!Network.isWifiConnected(this))
             SnackbarUtils.Custom(getWindow().getDecorView(), "当前不在WiFi连接下，请注意流量使用！！", 5000).warning().show();
 
-        showTips();
+        firstLaunchAfterUpdate();
 
         FavoriteUtil.init(this);
     }
 
-    private void showTips() {
-        if ((boolean) SPUtils.get(this, AppConfig.show_tips, true)) {
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("提示")
-                    .setMessage(getResources().getString(R.string.tips))
-                    .setPositiveButton("知道了", null)
-                    .setNegativeButton("不再提示", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            SPUtils.put(MainActivity.this, AppConfig.show_tips, false);
-                        }
-                    })
-                    .create();
-            dialog.show();
+    private void firstLaunchAfterUpdate() {
+        Integer versionCode = (Integer) SPUtils.get(this, AppConfig.version_code, 0);
+        Integer versionCodeNow = PackageUtil.getAppVersionCode(this);
+        if (versionCode.compareTo(versionCodeNow) < 0) {
+            showTips();
         }
+        SPUtils.put(this, AppConfig.version_code, versionCodeNow);
+    }
+
+    private void showTips() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("关于木瓜")
+                .setMessage(getResources().getString(R.string.tips))
+                .setPositiveButton("知道了", null)
+                .create();
+        dialog.show();
     }
 
     private List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new CategoryFragment().init(AppConfig.anime_patterns));
         fragmentList.add(new CategoryFragment().init(AppConfig.girls_patterns));
-        fragmentList.add(new CategoryFragment().init(AppConfig.boys_patterns));
+        fragmentList.add(new CategoryFragment().init(AppConfig.others_patterns));
         return fragmentList;
     }
 
@@ -111,15 +116,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         titleList.add("三次元区");
         titleList.add("四次元区");
         return titleList;
-    }
-
-    @Override
-    protected void onResume() {
-        CategoryPagerAdapter categoryPagerAdapter = new CategoryPagerAdapter(getSupportFragmentManager(), getFragmentList(), getTitleList());
-        viewPager.setAdapter(categoryPagerAdapter);
-        viewPager.setOffscreenPageLimit(5);
-        tabLayout.setupWithViewPager(viewPager);
-        super.onResume();
     }
 
     @Override

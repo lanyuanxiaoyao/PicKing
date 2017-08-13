@@ -8,8 +8,8 @@ android {
         applicationId "com.lanyuan.picking"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 20
-        versionName "1.0.2 bugly"
+        versionCode 22
+        versionName "1.0.3 bugly"
     }
     buildTypes {
         release {
@@ -47,9 +47,7 @@ dependencies {
     compile 'com.zhy.base:fileprovider:1.0.0'
     compile 'com.just.agentweb:agentweb:1.2.6'
     compile 'com.google.code.gson:gson:2.8.1'
-
     compile 'com.tencent.bugly:crashreport:latest.release'
-
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
 }
 
