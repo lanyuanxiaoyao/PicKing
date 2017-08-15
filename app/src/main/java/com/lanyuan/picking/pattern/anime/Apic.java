@@ -1,6 +1,7 @@
 package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
@@ -15,9 +16,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Apic implements MultiPicturePattern {
     @Override
@@ -57,14 +61,29 @@ public class Apic implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select(".content a");
+        Elements elements = document.select(".content a:has(img)");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
             temp.setAlbumUrl(element.attr("href") + "/1");
             Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+            if (elements1.size() > 0) {
+                temp.setCoverUrl(elements1.get(0).attr("src").trim());
+            }
             data.add(temp);
+        }
+
+        if (data.size() == 0) {
+            Elements elements1 = document.select(".postlists a.block-image");
+            for (Element element : elements1) {
+                AlbumInfo temp = new AlbumInfo();
+                temp.setAlbumUrl(element.attr("href").trim());
+                String s = element.attr("style");
+                Pattern pattern = Pattern.compile("http.*jpg");
+                Matcher matcher = pattern.matcher(s);
+                if (matcher.find())
+                    temp.setCoverUrl(matcher.group());
+                data.add(temp);
+            }
         }
 
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
@@ -87,8 +106,16 @@ public class Apic implements MultiPicturePattern {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select(".post img");
         for (Element element : elements) {
-            urls.add(new PicInfo(element.attr("src")));
+            urls.add(new PicInfo(element.attr("src").trim()));
         }
+
+        if (urls.size() == 0) {
+            Elements elements1 = document.select(".entry-content p a:has(img)");
+            for (Element element : elements) {
+                urls.add(new PicInfo(element.attr("href").trim()));
+            }
+        }
+
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);
         return resultMap;
@@ -99,17 +126,29 @@ public class Apic implements MultiPicturePattern {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("#page-links a");
 
-        int pageCount, index;
-        if (elements.size() > 0)
-            pageCount = elements.size() + 1;
-        else
-            return "";
-        int length = currentUrl.length();
-        String prefix = currentUrl.substring(0, length - 1);
-        index = Integer.parseInt(currentUrl.substring(length - 1, length));
-        if (++index > pageCount)
-            return "";
-        else
-            return prefix + index;
+        String url = "";
+
+        Elements elements1 = document.select("nav a:containsOwn(下一页)");
+        if (elements1.size() > 0) {
+            url = elements1.get(0).attr("href");
+        }
+
+
+        if ("".equals(url)) {
+            int pageCount = 0, index;
+            if (elements.size() > 0)
+                pageCount = elements.size() + 1;
+            else
+                url = "";
+            int length = currentUrl.length();
+            String prefix = currentUrl.substring(0, length - 1);
+            index = Integer.parseInt(currentUrl.substring(length - 1, length));
+            if (++index > pageCount)
+                url = "";
+            else
+                url = prefix + index;
+        }
+
+        return url;
     }
 }

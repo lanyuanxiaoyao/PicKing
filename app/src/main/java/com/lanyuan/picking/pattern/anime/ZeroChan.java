@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ZeroChan implements SinglePicturePattern {
     @Override
@@ -86,11 +87,14 @@ public class ZeroChan implements SinglePicturePattern {
 
     @Override
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
+        if (Pattern.matches("http://www\\.zerochan\\.net/\\?p.*", baseUrl))
+            baseUrl = "http://www.zerochan.net";
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("ul#thumbs2 li > a:has(img)");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
+            Log.e("ZeroChan", "getContent: " + baseUrl + "/full" + element.attr("href"));
             temp.setAlbumUrl(baseUrl + "/full" + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
@@ -120,6 +124,7 @@ public class ZeroChan implements SinglePicturePattern {
         // Elements elements = document.select("div#large img");
         Elements elements = document.select("div#fullsize img");
         if (elements.size() > 0) {
+            Log.e("ZeroChan", "getSinglePicContent: " + elements.get(0).attr("src"));
             return new PicInfo(elements.get(0).attr("src"));
         }
         return null;

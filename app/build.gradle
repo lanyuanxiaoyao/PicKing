@@ -8,8 +8,8 @@ android {
         applicationId "com.lanyuan.picking"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 22
-        versionName "1.0.3 bugly"
+        versionCode 23
+        versionName "1.0.4 bugly"
     }
     buildTypes {
         release {
