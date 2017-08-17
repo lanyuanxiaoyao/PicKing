@@ -1591,9 +1591,21 @@ public class Meizi4493 implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gb2312"));
+        PicInfo info = new PicInfo();
         Elements elements = document.select("div.picsbox p img");
         if (elements.size() > 0)
-            urls.add(new PicInfo(elements.get(0).attr("src")));
+            info.setPicUrl(elements.get(0).attr("src"));
+        Elements title = document.select(".picmainer h1");
+        if (title.size() > 0)
+            info.setTitle(title.text());
+        Elements tags = document.select(".pleft a");
+        if (tags.size() > 0) {
+            List<String> tagList = new ArrayList<>();
+            for (Element element : tags)
+                tagList.add(element.text());
+            info.setTags(tagList);
+        }
+        urls.add(info);
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);
         return resultMap;

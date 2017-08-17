@@ -48,6 +48,8 @@ dependencies {
     compile 'com.just.agentweb:agentweb:1.2.6'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'cn.lankton:flowlayout:1.0.1'
+    compile 'org.greenrobot:eventbus:3.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
 }
 

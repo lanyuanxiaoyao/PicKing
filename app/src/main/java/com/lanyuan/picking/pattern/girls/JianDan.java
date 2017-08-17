@@ -54,8 +54,6 @@ public class JianDan implements SinglePicturePattern {
             if (elements1.size() > 0) {
                 String picOrgSrc = elements1.get(0).attr("org_src");
                 String picSrc = elements1.get(0).attr("src");
-                Log.e("JianDan", "getContent: picOrgSrc" + picOrgSrc);
-                Log.e("JianDan", "getContent: picSrc" + picSrc);
                 if (picOrgSrc == null || "".equals(picOrgSrc)) {
                     temp.setAlbumUrl("http:" + picSrc);
                     temp.setCoverUrl("http:" + picSrc);

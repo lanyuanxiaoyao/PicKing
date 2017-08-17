@@ -59,13 +59,25 @@ public class Aitaotu implements MultiPicturePattern {
         Document document = Jsoup.parse(new String(result, "utf-8"));
 
         // 方案1
-        Elements elements = document.select("div.img a:has(img)");
+        Elements elements = document.select("div.item");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(baseUrl + element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("data-original"));
+            Elements album = element.select(".img a");
+            if (album.size() > 0) {
+                temp.setAlbumUrl(baseUrl + album.attr("href"));
+            }
+            Elements cover = element.select("img");
+            if (cover.size() > 0)
+                temp.setCoverUrl(cover.get(0).attr("data-original"));
+
+            Elements title = element.select("div.title");
+            if (title.size() > 0)
+                temp.setTitle(title.get(0).text());
+
+            Elements time = element.select("div.items_likes");
+            if (time.size() > 0)
+                temp.setTime(time.get(0).text().substring(5, 24));
+
             urls.add(temp);
         }
 
@@ -100,9 +112,19 @@ public class Aitaotu implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        Elements title = document.select("#photos h1");
+        String sTitle = "";
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
+        Elements time = document.select(".tsmaincont-desc span");
+        String sTime = "";
+        if (time.size() > 0)
+            sTime = time.get(0).text();
+
         Elements elements = document.select("#big-pic img");
         for (Element element : elements) {
-            urls.add(new PicInfo(element.attr("src")));
+            urls.add(new PicInfo(element.attr("src")).setTitle(sTitle).setTime(sTime));
         }
 
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);

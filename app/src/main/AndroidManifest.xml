@@ -43,7 +43,6 @@
         <activity
             android:name=".ui.favorite.FavoriteActivity"
             android:theme="@style/AppNoActionBarTheme" />
-
     </application>
 
 </manifest>

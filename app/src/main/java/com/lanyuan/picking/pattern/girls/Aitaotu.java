@@ -156,10 +156,21 @@ public class Aitaotu implements MultiPicturePattern {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("#big-pic img");
-        for (Element element : elements) {
-            urls.add(new PicInfo(element.attr("src")));
+        Elements title = document.select("#photos h1");
+        String sTitle = title.size() > 0 ? title.get(0).text() : "";
+        Elements tags = document.select(".fbl a");
+        List<String> tagList = new ArrayList<>();
+        if (tags.size() > 0) {
+            for (Element tag : tags)
+                tagList.add(tag.text());
         }
-
+        for (Element element : elements) {
+            PicInfo picInfo = new PicInfo()
+                    .setTags(tagList)
+                    .setTitle(sTitle)
+                    .setPicUrl(element.attr("src"));
+            urls.add(picInfo);
+        }
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);
         return resultMap;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pic_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
@@ -9,48 +10,118 @@
         android:id="@+id/pic_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        fresco:placeholderImage="@mipmap/ic_papaya" />
+        app:placeholderImage="@mipmap/ic_papaya" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal"
-        fresco:layout_anchor="@+id/pic_view"
-        fresco:layout_anchorGravity="bottom|right">
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="50dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/love_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/love_selector"
-            android:scaleType="center" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="right"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/download_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/download_selector"
-            android:scaleType="center" />
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/love_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/love_selector"
+                    android:scaleType="center" />
 
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/share_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/share_selector"
-            android:scaleType="center" />
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/download_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/download_selector"
+                    android:scaleType="center" />
 
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/wallpaper_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/wallpaper_selector"
-            android:scaleType="center" />
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/share_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/share_selector"
+                    android:scaleType="center" />
 
-    </LinearLayout>
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/wallpaper_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/wallpaper_selector"
+                    android:scaleType="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="标题"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/pic_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="似乎木有标题……"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="时间"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/pic_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="似乎木有时间……"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="标签"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="15sp" />
+
+                <cn.lankton.flowlayout.FlowLayout
+                    android:id="@+id/tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    app:lineSpacing="5dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

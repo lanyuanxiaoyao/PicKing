@@ -1,6 +1,7 @@
 package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
@@ -61,8 +62,9 @@ public class MM131 implements MultiPicturePattern {
             temp.setCoverUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
             Pattern pattern = Pattern.compile("/\\d{3,4}");
             Matcher matcher = pattern.matcher(element.attr("src"));
-            if (matcher.find())
+            if (matcher.find()) {
                 temp.setAlbumUrl(baseUrl + matcher.group().substring(1) + ".html");
+            }
             data.add(temp);
         }
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
@@ -83,9 +85,14 @@ public class MM131 implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gbk"));
+        PicInfo info = new PicInfo();
         Elements elements = document.select("div.content-pic img");
         if (elements.size() > 0)
-            urls.add(new PicInfo(elements.get(0).attr("src")));
+            info.setPicUrl(elements.get(0).attr("src"));
+        Elements title = document.select("div.content h5");
+        if (title.size() > 0)
+            info.setTitle(title.get(0).text());
+        urls.add(info);
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);
         return resultMap;

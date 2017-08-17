@@ -112,9 +112,19 @@ public class Aitaotu implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        Elements title = document.select("#photos h1");
+        String sTitle = "";
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
+        Elements time = document.select(".tsmaincont-desc span");
+        String sTime = "";
+        if (time.size() > 0)
+            sTime = time.get(0).text();
+
         Elements elements = document.select("#big-pic img");
         for (Element element : elements) {
-            urls.add(new PicInfo(element.attr("src")));
+            urls.add(new PicInfo(element.attr("src")).setTitle(sTitle).setTime(sTime));
         }
 
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);

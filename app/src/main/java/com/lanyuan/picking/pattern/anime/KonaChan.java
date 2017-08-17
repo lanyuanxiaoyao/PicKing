@@ -84,10 +84,30 @@ public class KonaChan implements SinglePicturePattern {
     @Override
     public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        PicInfo info = new PicInfo();
+        Elements time = document.select("#stats li a[title]");
+        if (time.size() > 0) {
+            info.setTime(time.attr("title"));
+        }
+
         Elements elements = document.select("#image");
         if (elements.size() > 0) {
-            return new PicInfo("https:" + elements.get(0).attr("src"));
+            info.setPicUrl("https:" + elements.get(0).attr("src"));
         }
-        return null;
+
+        Elements tags = document.select("#tag-sidebar li a");
+        if (tags.size() > 0) {
+            List<String> tagList = new ArrayList<>();
+            for (Element element : tags) {
+                if (element.text().equals("?"))
+                    continue;
+                else
+                    tagList.add(element.text());
+            }
+            info.setTags(tagList);
+        }
+
+
+        return info;
     }
 }

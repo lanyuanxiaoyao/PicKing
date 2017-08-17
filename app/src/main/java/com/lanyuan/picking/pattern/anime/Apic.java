@@ -61,14 +61,26 @@ public class Apic implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select(".content a:has(img)");
+
+        Elements elements = document.select("div.loop");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href") + "/1");
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0) {
-                temp.setCoverUrl(elements1.get(0).attr("src").trim());
-            }
+            Elements album = element.select(".content a:has(img)");
+            if (album.size() > 0)
+                temp.setAlbumUrl(album.attr("href") + "/1");
+
+            Elements pic = album.select("img");
+            if (pic.size() > 0)
+                temp.setCoverUrl(pic.get(0).attr("src").trim());
+
+            Elements title = element.select("h2 a");
+            if (title.size() > 0)
+                temp.setTitle(title.get(0).attr("title"));
+
+            Elements time = element.select(".date");
+            if (time.size() > 0)
+                temp.setTime(time.get(0).text());
+
             data.add(temp);
         }
 
@@ -104,15 +116,20 @@ public class Apic implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        Elements title = document.select("#title h2");
+        String sTitle = "";
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
         Elements elements = document.select(".post img");
         for (Element element : elements) {
-            urls.add(new PicInfo(element.attr("src").trim()));
+            urls.add(new PicInfo(element.attr("src").trim()).setTitle(sTitle));
         }
 
         if (urls.size() == 0) {
             Elements elements1 = document.select(".entry-content p a:has(img)");
             for (Element element : elements) {
-                urls.add(new PicInfo(element.attr("href").trim()));
+                urls.add(new PicInfo(element.attr("href").trim()).setTitle(sTitle));
             }
         }
 

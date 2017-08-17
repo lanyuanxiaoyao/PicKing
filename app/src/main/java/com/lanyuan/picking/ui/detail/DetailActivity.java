@@ -7,13 +7,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lanyuan.picking.R;
+import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
 import com.lanyuan.picking.ui.BaseActivity;
@@ -44,6 +50,10 @@ public class DetailActivity extends BaseActivity {
 
     @BindView(R.id.detail_recycle_view)
     RecyclerView recyclerView;
+    @BindView(R.id.pic_title)
+    TextView picTitle;
+    @BindView(R.id.pic_time)
+    TextView picTime;
 
     private DetailAdapter adapter;
 
@@ -56,6 +66,8 @@ public class DetailActivity extends BaseActivity {
     private boolean hasMore = true;
 
     private BasePattern pattern;
+
+    private AlbumInfo albumInfo;
 
     private PicDialog picDialog;
 
@@ -82,9 +94,10 @@ public class DetailActivity extends BaseActivity {
         snackbar = SnackbarUtils.Long(getWindow().getDecorView(), "").info().getSnackbar();
 
         Intent intent = getIntent();
+        albumInfo = (AlbumInfo) intent.getSerializableExtra("albumInfo");
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
         baseUrl = intent.getStringExtra("baseUrl");
-        currentUrl = intent.getStringExtra("currentUrl");
+        currentUrl = albumInfo.getAlbumUrl();
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         if (!(boolean) SPUtils.get(this, AppConfig.load_pic_swipe, false))
@@ -116,6 +129,11 @@ public class DetailActivity extends BaseActivity {
             }
         });
         recyclerView.setAdapter(adapter);
+
+        if (albumInfo.getTitle() != null)
+            picTitle.setText(albumInfo.getTitle());
+        if (albumInfo.getTime() != null)
+            picTime.setText(albumInfo.getTime());
     }
 
     public Map<parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<parameter, Object> resultMap) throws UnsupportedEncodingException {

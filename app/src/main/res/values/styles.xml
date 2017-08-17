@@ -6,6 +6,14 @@
         <item name="@android:windowExitAnimation">@anim/dialog_exit</item>
     </style>
 
+    <style name="bottomDailog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="@android:windowEnterAnimation">@anim/dialog_bottom_enter</item>
+        <item name="@android:windowExitAnimation">@anim/dialog_bottom_out</item>
+    </style>
+
     <style name="ToolbarTheme">
         <item name="titleTextColor">@color/white</item>
         <item name="colorControlNormal">@color/white</item>

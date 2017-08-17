@@ -24,6 +24,7 @@ public class AboutActivity extends BaseActivity {
         setContentView(R.layout.activity_about);
 
         ButterKnife.bind(this);
+
         toolbar.setTitle("关于  v " + PackageUtil.getAppPackageInfo(this).versionName);
         setSupportActionBar(toolbar);
 

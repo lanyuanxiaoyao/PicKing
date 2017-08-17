@@ -7,10 +7,13 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageButton;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.lanyuan.picking.R;
@@ -29,6 +32,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import cn.lankton.flowlayout.FlowLayout;
 
 public class PicDialog extends Dialog implements View.OnClickListener {
 
@@ -36,6 +40,14 @@ public class PicDialog extends Dialog implements View.OnClickListener {
 
     @BindView(R.id.pic_view)
     PhotoDraweeView photoDraweeView;
+    @BindView(R.id.pic_title)
+    TextView picTitle;
+    @BindView(R.id.pic_time)
+    TextView picTime;
+    @BindView(R.id.tags)
+    FlowLayout tags;
+
+    private BottomSheetBehavior behavior;
 
     @BindViews({R.id.love_button, R.id.download_button, R.id.share_button, R.id.wallpaper_button})
     List<AppCompatImageButton> imageButtons;
@@ -72,6 +84,8 @@ public class PicDialog extends Dialog implements View.OnClickListener {
             imageButton.setOnClickListener(this);
 
         getWindow().setWindowAnimations(R.style.dialogStyle);
+
+        behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_view));
     }
 
 
@@ -81,7 +95,39 @@ public class PicDialog extends Dialog implements View.OnClickListener {
             photoDraweeView.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
             photoDraweeView.setPhotoUri(Uri.parse(picInfo.getPicUrl()));
         }
+        if (picInfo.getTitle() != null)
+            picTitle.setText(picInfo.getTitle());
+        if (picInfo.getTime() != null)
+            picTime.setText(picInfo.getTime());
+        if (picInfo.getTags() != null) {
+            tags.removeAllViews();
+            for (String s : picInfo.getTags()) {
+                TextView t = new TextView(getOwnerActivity());
+                t.setText(s);
+                ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMarginEnd(15);
+                t.setLayoutParams(layoutParams);
+                t.setPadding(10, 10, 10, 10);
+                t.setBackgroundColor(Color.GRAY);
+                t.setTextColor(Color.WHITE);
+                tags.addView(t);
+            }
+        }
         this.show();
+    }
+
+    @Override
+    public void dismiss() {
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        super.dismiss();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        else
+            super.onBackPressed();
     }
 
     @Override

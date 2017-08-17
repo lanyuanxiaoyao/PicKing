@@ -85,10 +85,22 @@ public class Mntu92 implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        PicInfo picInfo = new PicInfo();
         Elements elements = document.select("#bigpic img");
         for (Element element : elements) {
-            urls.add(new PicInfo(baseUrl + element.attr("src")));
+            picInfo.setPicUrl(baseUrl + element.attr("src"));
         }
+        Elements title = document.select("#entry h1");
+        if (title.size() > 0)
+            picInfo.setTitle(title.text());
+        Elements tags = document.select(".postinfo a");
+        if (tags.size() > 0) {
+            List<String> tagList = new ArrayList<>();
+            for (Element t : tags)
+                tagList.add(t.text());
+            picInfo.setTags(tagList);
+        }
+        urls.add(picInfo);
 
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);

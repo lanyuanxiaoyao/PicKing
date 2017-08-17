@@ -45,13 +45,18 @@ public class AoJiao implements SinglePicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("section a:has(img)");
+        Elements elements = document.select("section");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("data-src"));
+
+            Elements album = element.select("a:has(img)");
+            if (album.size() > 0) {
+                temp.setAlbumUrl(album.attr("href"));
+                Elements pic = album.select("img");
+                if (pic.size() > 0)
+                    temp.setCoverUrl(pic.get(0).attr("data-src"));
+            }
+
             data.add(temp);
         }
 
@@ -72,9 +77,19 @@ public class AoJiao implements SinglePicturePattern {
     @Override
     public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        PicInfo info = new PicInfo();
+        Elements title = document.select("h1.entry-title");
+        if (title.size() > 0)
+            info.setTitle(title.get(0).text());
+
+        Elements time = document.select("time.post-time");
+        if (time.size() > 0)
+            info.setTime(time.get(0).attr("datetime"));
+
         Elements elements = document.select(".entry-content img");
         if (elements.size() > 0) {
-            return new PicInfo(elements.get(0).attr("src"));
+            info.setPicUrl(elements.get(0).attr("src"));
+            return info;
         }
         return null;
     }

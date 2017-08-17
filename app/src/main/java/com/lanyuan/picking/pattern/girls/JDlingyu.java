@@ -1,6 +1,7 @@
 package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
@@ -89,7 +90,7 @@ public class JDlingyu implements MultiPicturePattern {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select(".main-body a:has(img)");
         for (Element element : elements) {
-            urls.add(new PicInfo(element.attr("data-img")));
+            urls.add(new PicInfo(element.attr("href")));
         }
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);

@@ -46,7 +46,7 @@ public class MyApplication extends Application {
         String processName = getProcessName(android.os.Process.myPid());
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", true, strategy);
+        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", false, strategy);
 
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
     }

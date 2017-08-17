@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
@@ -44,6 +47,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,12 +57,12 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ContentsActivity extends BaseActivity {
+public class ContentsActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.swipe_target)
     RecyclerView recyclerView;
-    @BindView(R.id.menu_recycle_view)
-    RecyclerView menuRecycleView;
+    @BindView(R.id.menu_view)
+    NavigationView menuView;
     @BindView(R.id.swipe_layout)
     SwipeToLoadLayout refreshLayout;
     @BindView(R.id.content_drawer)
@@ -115,25 +119,12 @@ public class ContentsActivity extends BaseActivity {
 
         // 加载分类侧边栏
         menuList = getMenuList() == null ? new ArrayList<Menu>() : getMenuList();
-        MenuAdapter menuAdapter = new MenuAdapter(this, menuList);
-        menuAdapter.setOnClickListener(new MenuAdapter.OnItemClickListener() {
-            @Override
-            public void ItemClickListener(View view, int position) {
-                adapter.removeAll();
-                baseUrl = getBaseUrl(menuList, position);
-                currentUrl = menuList.get(position).getUrl();
-                firstUrl = currentUrl;
-                refreshLayout.setRefreshing(true);
-                drawerLayout.closeDrawer(GravityCompat.END);
-            }
-
-            @Override
-            public void ItemLongClickListener(View view, int position) {
-
-            }
-        });
-        menuRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        menuRecycleView.setAdapter(menuAdapter);
+        menuView.setItemIconTintList(null);
+        menuView.setNavigationItemSelectedListener(this);
+        menuView.getMenu().setGroupCheckable(0, true, true);
+        for (int i = 0; i < menuList.size(); i++) {
+            menuView.getMenu().add(0, i, 0, menuList.get(i).getName());
+        }
 
         // 初始化访问地址
         baseUrl = getBaseUrl(menuList, 0);
@@ -164,7 +155,7 @@ public class ContentsActivity extends BaseActivity {
                 } else if (pattern instanceof MultiPicturePattern) {
                     Intent intent = new Intent(ContentsActivity.this, DetailActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("currentUrl", albumInfo.getAlbumUrl());
+                    bundle.putSerializable("albumInfo", albumInfo);
                     bundle.putString("baseUrl", baseUrl);
                     bundle.putSerializable("pattern", pattern);
                     intent.putExtras(bundle);
@@ -206,6 +197,18 @@ public class ContentsActivity extends BaseActivity {
             isSinglePic = false;
         if (pattern instanceof NeedHttpHeader)
             isNeedHttpHeader = true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int position = item.getItemId();
+        adapter.removeAll();
+        baseUrl = getBaseUrl(menuList, position);
+        currentUrl = menuList.get(position).getUrl();
+        firstUrl = currentUrl;
+        refreshLayout.setRefreshing(true);
+        drawerLayout.closeDrawer(GravityCompat.END);
+        return false;
     }
 
     public String getBaseUrl(List<Menu> menuList, int position) {

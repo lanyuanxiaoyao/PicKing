@@ -112,7 +112,6 @@ public class ZeroChan implements SinglePicturePattern {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         Elements elements = document.select("p.pagination a[rel=next]");
         if (elements.size() > 0) {
-            Log.e("ZeroChan", "getContentNext: " + baseUrl + elements.get(0).attr("href"));
             return baseUrl + elements.get(0).attr("href");
         }
         return "";
@@ -121,13 +120,12 @@ public class ZeroChan implements SinglePicturePattern {
     @Override
     public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        // Elements elements = document.select("div#large img");
+        PicInfo info = new PicInfo();
         Elements elements = document.select("div#fullsize img");
         if (elements.size() > 0) {
-            Log.e("ZeroChan", "getSinglePicContent: " + elements.get(0).attr("src"));
-            return new PicInfo(elements.get(0).attr("src"));
+            info.setPicUrl(elements.get(0).attr("src"));
         }
-        return null;
+        return info;
     }
 
 }

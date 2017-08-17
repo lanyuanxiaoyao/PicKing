@@ -56,13 +56,26 @@ public class Acg12 implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("section .card-bg > a:has(img)");
+        Elements elements = document.select("section");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("data-src"));
+
+            Elements album = element.select(".card-bg > a:has(img)");
+            if (album.size() > 0) {
+                temp.setAlbumUrl(album.attr("href"));
+                Elements pic = album.select("img");
+                if (pic.size() > 0)
+                    temp.setCoverUrl(pic.get(0).attr("data-src"));
+            }
+
+            Elements title = element.select("h3.title");
+            if (title.size() > 0)
+                temp.setTitle(title.get(0).text());
+
+            Elements time = element.select("time");
+            if (time.size() > 0)
+                temp.setTime(time.attr("title") + " " + time.text());
+
             data.add(temp);
         }
 
@@ -84,6 +97,16 @@ public class Acg12 implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        Elements title = document.select("h1.entry-title");
+        String sTitle = "";
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
+        Elements time = document.select(".entry-header time");
+        String sTime = "";
+        if (time.size() > 0)
+            sTime = time.get(0).attr("title");
+
         Elements elements = document.select(".entry-content a:has(img)");
         for (Element element : elements) {
             String url = element.attr("href");
@@ -94,7 +117,7 @@ public class Acg12 implements MultiPicturePattern {
             }
             if (!Pattern.matches("https:.*.jpg", url))
                 url = "https:" + url;
-            urls.add(new PicInfo(url));
+            urls.add(new PicInfo(url).setTitle(sTitle).setTime(sTime));
         }
         if (urls.size() == 0) {
             Elements elements1 = document.select(".entry-content p:has(img) img");
