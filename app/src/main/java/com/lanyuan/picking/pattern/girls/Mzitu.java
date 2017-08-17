@@ -6,7 +6,6 @@ import android.util.Log;
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
-import com.lanyuan.picking.pattern.NeedHttpHeader;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -18,11 +17,10 @@ import org.jsoup.select.Elements;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Mzitu implements MultiPicturePattern, NeedHttpHeader {
+public class Mzitu implements MultiPicturePattern {
 
     @Override
     public String getCategoryCoverUrl() {
@@ -96,14 +94,5 @@ public class Mzitu implements MultiPicturePattern, NeedHttpHeader {
         if (elements.size() > 0)
             return elements.get(0).attr("href");
         return "";
-    }
-
-    @Override
-    public Map<String, String> getHeaders() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Referer", "http://www.mzitu.com/");
-        headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.109 Safari/537.36");
-        headers.put("Host", "www.mzitu.com");
-        return headers;
     }
 }

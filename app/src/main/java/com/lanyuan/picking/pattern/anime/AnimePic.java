@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
+import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AnimePic implements SinglePicturePattern {
+public class AnimePic implements SinglePicturePattern, Searchable {
     @Override
     public String getCategoryCoverUrl() {
         return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/anime-pic.png";
@@ -81,10 +82,27 @@ public class AnimePic implements SinglePicturePattern {
     @Override
     public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
+
+        String sTitle = "";
+        Elements title = document.select(".post_content h1");
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
+        List<String> tagList = new ArrayList<>();
+        Elements tags = document.select("ul.tags li a");
+        if (tags.size() > 0)
+            for (Element tag : tags)
+                tagList.add(tag.text());
+
         Elements elements = document.select("#big_preview_cont a");
         if (elements.size() > 0) {
-            return new PicInfo(baseUrl + elements.get(0).attr("href"));
+            return new PicInfo(baseUrl + elements.get(0).attr("href")).setTitle(sTitle).setTags(tagList);
         }
         return null;
+    }
+
+    @Override
+    public String getSearch(String query) {
+        return "https://anime-pictures.net/pictures/view_posts/0?search_tag=" + query + "&order_by=date&ldate=0&lang=en";
     }
 }

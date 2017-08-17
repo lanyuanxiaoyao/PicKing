@@ -5,6 +5,7 @@ import android.graphics.Color;
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
+import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;

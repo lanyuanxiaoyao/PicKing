@@ -54,6 +54,7 @@ public class AppConfig {
     public static final String share_model = "shareModel";
     public static final String hide_pic = "hidePic";
     public static final String auto_gif_play = "autoGifPlay";
+    public static final String ancdslknsdlnv = "anclsdncklsa";
 
     public static final String anime_patterns = "animePatterns";
     public static final String others_patterns = "boysPatterns";

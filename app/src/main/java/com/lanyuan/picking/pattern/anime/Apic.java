@@ -6,6 +6,7 @@ import android.util.Log;
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
+import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Apic implements MultiPicturePattern {
+public class Apic implements MultiPicturePattern, Searchable {
     @Override
     public String getCategoryCoverUrl() {
         return "http://www.apic.in/wp-content/themes/AZone/big-logo.png";
@@ -167,5 +168,10 @@ public class Apic implements MultiPicturePattern {
         }
 
         return url;
+    }
+
+    @Override
+    public String getSearch(String query) {
+        return "http://www.apic.in/?s=" + query;
     }
 }

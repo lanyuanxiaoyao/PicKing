@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -54,6 +56,8 @@ public class DetailActivity extends BaseActivity {
     TextView picTitle;
     @BindView(R.id.pic_time)
     TextView picTime;
+    @BindView(R.id.drawer_detail)
+    DrawerLayout drawerLayout;
 
     private DetailAdapter adapter;
 
@@ -134,6 +138,15 @@ public class DetailActivity extends BaseActivity {
             picTitle.setText(albumInfo.getTitle());
         if (albumInfo.getTime() != null)
             picTime.setText(albumInfo.getTime());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public Map<parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<parameter, Object> resultMap) throws UnsupportedEncodingException {

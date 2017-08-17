@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
+import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class KonaChan implements SinglePicturePattern {
+public class KonaChan implements SinglePicturePattern, Searchable {
     @Override
     public String getCategoryCoverUrl() {
         return "http://konachan.net/images/konachan_net_lg_std.png";
@@ -106,8 +107,11 @@ public class KonaChan implements SinglePicturePattern {
             }
             info.setTags(tagList);
         }
-
-
         return info;
+    }
+
+    @Override
+    public String getSearch(String query) {
+        return "https://konachan.net/post?tags=" + query;
     }
 }

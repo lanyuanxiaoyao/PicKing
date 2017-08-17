@@ -94,7 +94,6 @@ public class ZeroChan implements SinglePicturePattern {
         Elements elements = document.select("ul#thumbs2 li > a:has(img)");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            Log.e("ZeroChan", "getContent: " + baseUrl + "/full" + element.attr("href"));
             temp.setAlbumUrl(baseUrl + "/full" + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
@@ -121,9 +120,19 @@ public class ZeroChan implements SinglePicturePattern {
     public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
         PicInfo info = new PicInfo();
-        Elements elements = document.select("div#fullsize img");
-        if (elements.size() > 0) {
-            info.setPicUrl(elements.get(0).attr("src"));
+        Elements title = document.select("#content p[style]");
+        if (title.size() > 0)
+            info.setTitle(title.get(0).text());
+
+        Elements pic = document.select("div#fullsize img");
+        if (pic.size() > 0) {
+            info.setPicUrl(pic.get(0).attr("src"));
+            String sTag = pic.attr("alt").substring(5);
+            String[] tags = sTag.split(",");
+            List<String> tagList = new ArrayList<>();
+            for (String s : tags)
+                tagList.add(s);
+            info.setTags(tagList);
         }
         return info;
     }

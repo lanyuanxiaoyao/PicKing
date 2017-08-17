@@ -46,13 +46,22 @@ public class AKabe implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("#main figure a");
+        Elements elements = document.select("#main article.entry");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+
+            Elements pic = element.select("figure a");
+            if (pic.size() > 0) {
+                temp.setAlbumUrl(pic.attr("href"));
+                Elements cover = pic.select("img");
+                if (cover.size() > 0)
+                    temp.setCoverUrl(cover.get(0).attr("src"));
+            }
+
+            Elements title = element.select("h2");
+            if (title.size() > 0)
+                temp.setTitle(title.get(0).text());
+
             data.add(temp);
         }
 
@@ -74,9 +83,21 @@ public class AKabe implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+
+        String sTitle = "";
+        Elements title = document.select("#header h1");
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
+        List<String> tagList = new ArrayList<>();
+        Elements tags = document.select("ul.tagList a");
+        if (tags.size() > 0)
+            for (Element tag : tags)
+                tagList.add(tag.text());
+
         Elements elements = document.select("ul.gallery li:has(img)");
         for (Element element : elements) {
-            urls.add(new PicInfo(element.attr("data-src")));
+            urls.add(new PicInfo(element.attr("data-src")).setTitle(sTitle).setTags(tagList));
         }
 
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);

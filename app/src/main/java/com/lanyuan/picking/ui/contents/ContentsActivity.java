@@ -12,12 +12,16 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
@@ -28,13 +32,12 @@ import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.common.WebViewTask;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
-import com.lanyuan.picking.pattern.NeedHttpHeader;
+import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.dialog.PicDialog;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
-import com.lanyuan.picking.ui.menu.MenuAdapter;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
 import com.lanyuan.picking.util.OkHttpClientUtil;
@@ -47,7 +50,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +59,7 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ContentsActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ContentsActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.swipe_target)
     RecyclerView recyclerView;
@@ -67,6 +69,9 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
     SwipeToLoadLayout refreshLayout;
     @BindView(R.id.content_drawer)
     DrawerLayout drawerLayout;
+
+    SearchView searchView;
+    EditText searchText;
 
     private String baseUrl;
     private String currentUrl;
@@ -86,7 +91,7 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
     private Snackbar picDialogSnackBar;
 
     private boolean isSinglePic = false;
-    private boolean isNeedHttpHeader = false;
+    private boolean isSearchable = false;
 
     public enum parameter {
         RESULT, CURRENT_URL, GIF_THUMB
@@ -124,6 +129,18 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
         menuView.getMenu().setGroupCheckable(0, true, true);
         for (int i = 0; i < menuList.size(); i++) {
             menuView.getMenu().add(0, i, 0, menuList.get(i).getName());
+        }
+        CardView cardView = ButterKnife.findById(menuView.getHeaderView(0), R.id.search_card);
+        if (isSearchable) {
+            cardView.setVisibility(View.VISIBLE);
+            searchView = ButterKnife.findById(cardView, R.id.search_tags);
+            searchView.setOnQueryTextListener(this);
+            searchText = ButterKnife.findById(searchView, android.support.v7.appcompat.R.id.search_src_text);
+            searchText.setTextColor(Color.BLACK);
+            ImageView searchButton = ButterKnife.findById(searchView, android.support.v7.appcompat.R.id.search_mag_icon);
+            searchButton.setImageResource(R.mipmap.search);
+            ImageView deleteButton = ButterKnife.findById(searchView, android.support.v7.appcompat.R.id.search_close_btn);
+            deleteButton.setImageResource(R.mipmap.delete);
         }
 
         // 初始化访问地址
@@ -195,8 +212,30 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
             isSinglePic = true;
         else if (pattern instanceof MultiPicturePattern)
             isSinglePic = false;
-        if (pattern instanceof NeedHttpHeader)
-            isNeedHttpHeader = true;
+        if (pattern instanceof Searchable)
+            isSearchable = true;
+        else
+            Log.e("ContentsActivity", "initPattern: false");
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if ("".equals(query))
+            SnackbarUtils.Short(getWindow().getDecorView(), "搜索内容不能为空").gravityFrameLayout(Gravity.TOP).danger().show();
+        else {
+            SnackbarUtils.Long(getWindow().getDecorView(), "正在搜索：" + query).gravityFrameLayout(Gravity.TOP).info().show();
+            drawerLayout.closeDrawer(GravityCompat.END);
+            adapter.removeAll();
+            currentUrl = ((Searchable) pattern).getSearch(query);
+            firstUrl = currentUrl;
+            refreshLayout.setRefreshing(true);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 
     @Override
@@ -208,6 +247,8 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
         firstUrl = currentUrl;
         refreshLayout.setRefreshing(true);
         drawerLayout.closeDrawer(GravityCompat.END);
+        if (isSearchable)
+            searchView.clearFocus();
         return false;
     }
 

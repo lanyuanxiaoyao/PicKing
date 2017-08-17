@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.aitangba.swipeback.ActivityLifecycleHelper;
 import com.facebook.cache.disk.DiskCacheConfig;
@@ -13,20 +12,14 @@ import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
-import com.lanyuan.picking.pattern.NeedHttpHeader;
-import com.lanyuan.picking.pattern.girls.Mzitu;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MyApplication extends Application {
 
@@ -46,7 +39,7 @@ public class MyApplication extends Application {
         String processName = getProcessName(android.os.Process.myPid());
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", false, strategy);
+        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", true, strategy);
 
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
     }

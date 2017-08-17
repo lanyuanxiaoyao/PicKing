@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
+import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -73,10 +74,28 @@ public class MiniTokyo implements SinglePicturePattern {
     @Override
     public PicInfo getSinglePicContent(String baseUrl, String currentUrl, byte[] result) throws UnsupportedEncodingException {
         Document document = Jsoup.parse(new String(result, "utf-8"));
+
+        String sTitle = "";
+        Elements title = document.select("#breadcrumbs i");
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
+        String sTime = "";
+        Elements time = document.select("#menu dd span");
+        if (time.size() > 0)
+            sTime = time.get(0).attr("title");
+
+        List<String> tagList = new ArrayList<>();
+        Elements tags = document.select("#tag-cloud a");
+        if (tags.size() > 0)
+            for (Element tag : tags)
+                tagList.add(tag.text());
+
         Elements elements = document.select("#preview a");
         if (elements.size() > 0) {
-            return new PicInfo(elements.get(0).attr("href"));
+            return new PicInfo(elements.get(0).attr("href")).setTitle(sTitle).setTime(sTime).setTags(tagList);
         }
         return null;
     }
+
 }
