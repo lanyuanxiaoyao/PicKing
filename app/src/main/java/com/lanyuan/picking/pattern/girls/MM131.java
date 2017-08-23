@@ -24,6 +24,11 @@ import java.util.regex.Pattern;
 
 public class MM131 implements MultiPicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "MM131美女";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=50538304,1525126075&fm=58&s=7C00763384B06D8210E8B5CE03004021&bpow=200&bpoh=75";
     }
@@ -59,6 +64,7 @@ public class MM131 implements MultiPicturePattern {
         Elements elements = document.select("dd a img:not([border])");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
+            temp.setTitle(element.attr("alt"));
             temp.setCoverUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
             Pattern pattern = Pattern.compile("/\\d{3,4}");
             Matcher matcher = pattern.matcher(element.attr("src"));

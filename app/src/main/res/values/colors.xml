@@ -5,7 +5,13 @@
     <color name="red">#FF0000</color>
     <color name="gray">#d1797979</color>
     <color name="black">#000000</color>
+    <color name="blurBlack">#28000000</color>
     <color name="transparent">#00ffffff</color>
+
+    <color name="google_blue">#4285F4</color>
+    <color name="google_red">#EA4335</color>
+    <color name="google_green">#34A853</color>
+    <color name="google_yellow">#FBBC05</color>
 
     <!-- 200 500 700-->
 

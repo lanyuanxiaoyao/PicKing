@@ -8,7 +8,8 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/fresco"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="300dp"
+        android:padding="2dp"
         fresco:placeholderImage="@mipmap/ic_papaya" />
 
     <TextView

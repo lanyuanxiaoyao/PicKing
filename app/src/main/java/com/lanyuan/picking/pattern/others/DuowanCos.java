@@ -24,6 +24,11 @@ import java.util.regex.Pattern;
 
 public class DuowanCos implements MultiPicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "多玩图库";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://tu.duowan.com/images/logo_v1.7.png";
     }
@@ -35,9 +40,9 @@ public class DuowanCos implements MultiPicturePattern {
 
     @Override
     public String getBaseUrl(List<Menu> menuList, int position) {
-        String temp = menuList.get(position).getUrl();
         if (menuList == null)
             return "http://tu.duowan.com";
+        String temp = menuList.get(position).getUrl();
         return temp.substring(0, temp.length() - 1);
     }
 

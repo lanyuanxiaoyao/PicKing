@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class Yesky implements MultiPicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "天极图片";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://www.yesky.com/TLimages2009/yesky/images/pic2015/pic_logo.jpg";
     }
@@ -61,7 +66,6 @@ public class Yesky implements MultiPicturePattern {
         menuList.add(new Menu("女色图片", "http://pic.yesky.com/c/6_61100.shtml"));
         menuList.add(new Menu("霓裳", "http://pic.yesky.com/c/6_61103.shtml"));
         menuList.add(new Menu("妆容", "http://pic.yesky.com/c/6_61107.shtml"));
-        menuList.add(new Menu("妆容", "http://pic.yesky.com/c/6_61107.shtml"));
         return menuList;
     }
 
@@ -69,13 +73,23 @@ public class Yesky implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gb2312"));
-        Elements elements = document.select(".lb_box dt a");
+        Elements elements = document.select(".lb_box dl");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+
+            Elements title = element.select("dd a");
+            if (title.size() > 0)
+                temp.setTitle(title.text());
+
+            Elements time = element.select(".nmark .date");
+            if (time.size() > 0)
+                temp.setTime(time.get(0).text());
+
+            Elements album = element.select("dt a");
+            temp.setAlbumUrl(album.attr("href"));
+            Elements pic = album.select("img");
+            if (pic.size() > 0)
+                temp.setCoverUrl(pic.get(0).attr("src"));
             data.add(temp);
         }
         if (data.size() == 0) {
@@ -109,9 +123,27 @@ public class Yesky implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gb2312"));
+
+        String sTitle = "";
+        Elements title = document.select("div.ll_img h1 a");
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
+        String sTime = "";
+        Elements time = document.select("div.l_con_title_right0 .a4");
+        if (time.size() > 0)
+            sTime = time.get(0).text();
+
+        List<String> tagList = new ArrayList<>();
+        Elements tags = document.select("div.keymark a");
+        if (tags.size() > 0) {
+            for (Element tag : tags)
+                tagList.add(tag.text());
+        }
+
         Elements elements = document.select(".l_effect_img_mid img");
         if (elements.size() > 0)
-            data.add(new PicInfo(elements.get(0).attr("src")));
+            data.add(new PicInfo(elements.get(0).attr("src")).setTitle(sTitle).setTime(sTime).setTags(tagList));
 
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, data);

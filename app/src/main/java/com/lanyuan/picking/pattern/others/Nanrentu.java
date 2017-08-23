@@ -24,6 +24,11 @@ import java.util.regex.Pattern;
 public class Nanrentu implements MultiPicturePattern {
 
     @Override
+    public String getWebsiteName() {
+        return "男人图";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://www.nanrentu.cc/images/logo.png";
     }

@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class MiniTokyo implements SinglePicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "MINITOKYO";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/minitokyo2.png";
     }

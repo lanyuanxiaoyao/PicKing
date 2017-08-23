@@ -22,6 +22,11 @@ import java.util.Map;
 public class Aitaotu implements MultiPicturePattern {
 
     @Override
+    public String getWebsiteName() {
+        return "爱套图";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "https://www.aitaotu.com/Style/img/newlogo.png";
     }

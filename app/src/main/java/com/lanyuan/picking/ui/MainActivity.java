@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.lanyuan.picking.R;
@@ -121,12 +120,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return false;
     }
 
+    long LastTime = 0, NowTime = 0;
+
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            NowTime = System.currentTimeMillis();
+            if (NowTime - LastTime < 1000) {
+                super.onBackPressed();
+            } else {
+                SnackbarUtils.Short(getWindow().getDecorView(), "再点一次返回键退出").show();
+            }
+            LastTime = NowTime;
         }
     }
 
@@ -157,22 +164,5 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    long LastTime = 0, NowTime = 0;
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            NowTime = System.currentTimeMillis();
-            if (NowTime - LastTime < 1000) {
-                finish();
-            } else {
-                SnackbarUtils.Short(getWindow().getDecorView(), "再点一次返回键退出").show();
-            }
-            LastTime = NowTime;
-        }
-
-        return false;
     }
 }

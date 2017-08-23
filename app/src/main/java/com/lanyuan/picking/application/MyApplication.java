@@ -11,6 +11,7 @@ import com.facebook.common.disk.NoOpDiskTrimmableRegistry;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
+import com.facebook.imagepipeline.backends.okhttp3.OkHttpNetworkFetcher;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -30,6 +31,7 @@ public class MyApplication extends Application {
                 .build();
         ImagePipelineConfig config = OkHttpImagePipelineConfigFactory.newBuilder(this, okHttpClient)
                 .setMainDiskCacheConfig(getDiskCacheConfig())
+                .setNetworkFetcher(new OkHttpNetworkFetcher(okHttpClient))
                 .setDownsampleEnabled(true)
                 .build();
         Fresco.initialize(this, config);
@@ -39,7 +41,7 @@ public class MyApplication extends Application {
         String processName = getProcessName(android.os.Process.myPid());
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", true, strategy);
+        CrashReport.initCrashReport(getApplicationContext(), "0a6e92fb70", false, strategy);
 
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
     }

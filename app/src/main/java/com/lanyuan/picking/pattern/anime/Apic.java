@@ -26,6 +26,11 @@ import java.util.regex.Pattern;
 
 public class Apic implements MultiPicturePattern, Searchable {
     @Override
+    public String getWebsiteName() {
+        return "A区";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://www.apic.in/wp-content/themes/AZone/big-logo.png";
     }
@@ -43,6 +48,7 @@ public class Apic implements MultiPicturePattern, Searchable {
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
+        menuList.add(new Menu("首页", "http://www.apic.in/"));
         menuList.add(new Menu("动漫区", "http://www.apic.in/anime"));
         menuList.add(new Menu("制服控", "http://www.apic.in/zhifu"));
         menuList.add(new Menu("Hentai", "http://www.apic.in/hentai"));
@@ -62,6 +68,7 @@ public class Apic implements MultiPicturePattern, Searchable {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> data = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+        Log.e("Apic", "getContent: " + document.html());
 
         Elements elements = document.select("div.loop");
         for (Element element : elements) {
@@ -85,8 +92,9 @@ public class Apic implements MultiPicturePattern, Searchable {
             data.add(temp);
         }
 
-        if (data.size() == 0) {
-            Elements elements1 = document.select(".postlists a.block-image");
+        /*if (data.size() == 0) {
+            Elements elements1 = document.select(".postlists article a.block-image");
+            Log.e("Apic", "getContent: " + elements1.html());
             for (Element element : elements1) {
                 AlbumInfo temp = new AlbumInfo();
                 temp.setAlbumUrl(element.attr("href").trim());
@@ -97,7 +105,7 @@ public class Apic implements MultiPicturePattern, Searchable {
                     temp.setCoverUrl(matcher.group());
                 data.add(temp);
             }
-        }
+        }*/
 
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(ContentsActivity.parameter.RESULT, data);

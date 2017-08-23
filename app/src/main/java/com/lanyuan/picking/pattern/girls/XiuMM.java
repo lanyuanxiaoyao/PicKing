@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class XiuMM implements MultiPicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "秀美眉";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://www.xiumm.org/themes/sense/images/logo.png";
     }
@@ -38,6 +43,7 @@ public class XiuMM implements MultiPicturePattern {
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
+        menuList.add(new Menu("首页", "http://www.xiumm.org/"));
         menuList.add(new Menu("尤果", "http://www.xiumm.org/albums/UGirls.html"));
         menuList.add(new Menu("菠萝社", "http://www.xiumm.org/albums/BoLoli.html"));
         menuList.add(new Menu("萌缚", "http://www.xiumm.org/albums/MF.html"));
@@ -64,13 +70,19 @@ public class XiuMM implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select(".pic_box a");
+        Elements elements = document.select("div.album");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+
+            Elements title = element.select("span.name");
+            if (title.size() > 0)
+                temp.setTitle(title.get(0).text());
+
+            Elements album = element.select(".pic_box a");
+            temp.setAlbumUrl(album.attr("href"));
+            Elements pic = album.select("img");
+            if (pic.size() > 0)
+                temp.setCoverUrl(pic.get(0).attr("src"));
             urls.add(temp);
         }
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);
@@ -91,9 +103,15 @@ public class XiuMM implements MultiPicturePattern {
     public Map<DetailActivity.parameter, Object> getDetailContent(String baseUrl, String currentUrl, byte[] result, Map<DetailActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<PicInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
+
+        Elements title = document.select("div.album_desc div.inline");
+        String sTitle = "";
+        if (title.size() > 0)
+            sTitle = title.get(0).text();
+
         Elements elements = document.select(".gallary_item .pic_box img");
         for (Element element : elements) {
-            urls.add(new PicInfo(baseUrl + element.attr("src")));
+            urls.add(new PicInfo(baseUrl + element.attr("src")).setTitle(sTitle));
         }
         resultMap.put(DetailActivity.parameter.CURRENT_URL, currentUrl);
         resultMap.put(DetailActivity.parameter.RESULT, urls);

@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class AnimePic implements SinglePicturePattern, Searchable {
     @Override
+    public String getWebsiteName() {
+        return "Anime Picture";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/anime-pic.png";
     }

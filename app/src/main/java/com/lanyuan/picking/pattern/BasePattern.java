@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface BasePattern extends Serializable {
+
+    String getWebsiteName();
+
     String getCategoryCoverUrl();
 
     int getBackgroundColor();

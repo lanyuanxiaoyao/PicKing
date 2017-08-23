@@ -11,6 +11,9 @@ import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.postprocessors.IterativeBoxBlurPostProcessor;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 public class FrescoUtil {
     /**
@@ -54,4 +57,20 @@ public class FrescoUtil {
         simpleDraweeView.setController(controller);
     }
 
+    public static void setBlurFrescoController(SimpleDraweeView simpleDraweeView, String url, int iterations, int blurRadius) {
+        try {
+            Uri uri = Uri.parse(url);
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setPostprocessor(new IterativeBoxBlurPostProcessor(iterations, blurRadius))
+                    .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setOldController(simpleDraweeView.getController())
+                    .setImageRequest(request)
+                    .build();
+            simpleDraweeView.setController(controller);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }

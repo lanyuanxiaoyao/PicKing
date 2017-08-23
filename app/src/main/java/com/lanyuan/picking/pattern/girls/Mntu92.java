@@ -24,6 +24,11 @@ import java.util.regex.Pattern;
 public class Mntu92 implements MultiPicturePattern {
 
     @Override
+    public String getWebsiteName() {
+        return "92美女图";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://92mntu.com/templets/edc/images/logo.png";
     }
@@ -41,6 +46,7 @@ public class Mntu92 implements MultiPicturePattern {
     @Override
     public List<Menu> getMenuList() {
         List<Menu> menuList = new ArrayList<>();
+        menuList.add(new Menu("首页", "http://92mntu.com/"));
         menuList.add(new Menu("清纯美女", "http://92mntu.com/qcmn/"));
         menuList.add(new Menu("性感美女", "http://92mntu.com/xgmn/"));
         menuList.add(new Menu("丝袜美腿", "http://92mntu.com/swmt/"));
@@ -54,13 +60,23 @@ public class Mntu92 implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select("#container a:has(img)");
+        Elements elements = document.select("#container div.post");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(baseUrl + element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(baseUrl + elements1.get(0).attr("src"));
+
+            Elements title = element.select("h2");
+            if (title.size() > 0)
+                temp.setTitle(title.get(0).text());
+
+            Elements time = element.select("div.pac");
+            if (time.size() > 0)
+                temp.setTime(time.get(0).text());
+
+            Elements album = element.select("a:has(img)");
+            temp.setAlbumUrl(baseUrl + album.attr("href"));
+            Elements pic = element.select("img");
+            if (pic.size() > 0)
+                temp.setCoverUrl(baseUrl + pic.get(0).attr("src"));
             urls.add(temp);
         }
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);

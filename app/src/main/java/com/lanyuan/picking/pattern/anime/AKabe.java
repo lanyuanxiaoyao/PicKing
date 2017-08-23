@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class AKabe implements MultiPicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "a-kabe.com";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://www.a-kabe.com/common/img/hnav_logo.png";
     }

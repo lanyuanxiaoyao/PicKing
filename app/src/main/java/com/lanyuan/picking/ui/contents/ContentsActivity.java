@@ -8,9 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -22,11 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
-import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
@@ -40,6 +43,7 @@ import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.util.FrescoUtil;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.ScreenUtil;
@@ -59,7 +63,7 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ContentsActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
+public class ContentsActivity extends BaseActivity implements AppBarLayout.OnOffsetChangedListener, NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.swipe_target)
     RecyclerView recyclerView;
@@ -69,6 +73,16 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
     SwipeToLoadLayout refreshLayout;
     @BindView(R.id.content_drawer)
     DrawerLayout drawerLayout;
+    @BindView(R.id.detail_title_image)
+    SimpleDraweeView titleImage;
+    @BindView(R.id.toolbar_layout)
+    CollapsingToolbarLayout toolbarLayout;
+    @BindView(R.id.appbar_detail)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.title_detaill)
+    TextView title;
+    @BindView(R.id.time_detail)
+    TextView time;
 
     SearchView searchView;
     EditText searchText;
@@ -92,6 +106,16 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
 
     private boolean isSinglePic = false;
     private boolean isSearchable = false;
+
+    private CollapsingToolbarLayoutState appBarState;
+
+    private boolean needRefresh = true;
+
+    private enum CollapsingToolbarLayoutState {
+        EXPANDED,
+        COLLAPSED,
+        MIDDLE
+    }
 
     public enum parameter {
         RESULT, CURRENT_URL, GIF_THUMB
@@ -121,6 +145,12 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
         Intent intent = getIntent();
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
         initPattern(pattern);
+
+        FrescoUtil.setBlurFrescoController(titleImage, pattern.getCategoryCoverUrl(), 1, 1);
+        titleImage.setBackgroundColor(pattern.getBackgroundColor());
+        title.setText(pattern.getWebsiteName());
+        time.setText(pattern.getBaseUrl(null, 0));
+        appBarLayout.addOnOffsetChangedListener(this);
 
         // 加载分类侧边栏
         menuList = getMenuList() == null ? new ArrayList<Menu>() : getMenuList();
@@ -190,21 +220,31 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(adapter);
 
+        // 是否自动加载更多
+        if ((boolean) SPUtils.get(this, AppConfig.auto_load_more, false))
+            recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (!ViewCompat.canScrollVertically(recyclerView, 1)) {
+                            refreshLayout.setLoadingMore(true);
+                        }
+                    }
+                }
+            });
+
         // 设置下拉刷新和上拉加载
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                adapter.removeAll();
-                new GetContent().execute(firstUrl);
-            }
+        refreshLayout.setOnRefreshListener(() -> {
+            Log.e("ContentsActivity", "onCreate: refresh");
+            adapter.removeAll();
+            new GetContent().execute(firstUrl);
         });
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                new GetContentNext().execute(currentUrl);
-            }
+        refreshLayout.setOnLoadMoreListener(() -> {
+            new GetContentNext().execute(currentUrl);
         });
-        refreshLayout.setRefreshing(true);
+        refreshLayout.post(() -> {
+            refreshLayout.setRefreshing(true);
+        });
     }
 
     private void initPattern(BasePattern pattern) {
@@ -219,6 +259,37 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
     }
 
     @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+        if (verticalOffset == 0) {
+            if (appBarState != CollapsingToolbarLayoutState.EXPANDED) {
+                Log.e("ContentsActivity", "onOffsetChanged: EXPANDED");
+                refreshLayout.setRefreshEnabled(true);
+                refreshLayout.setLoadMoreEnabled(false);
+                if (needRefresh) {
+                    refreshLayout.setRefreshing(true);
+                    needRefresh = false;
+                }
+                appBarState = CollapsingToolbarLayoutState.EXPANDED; // 展开
+            }
+        } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
+            Log.e("ContentsActivity", "onOffsetChanged: COLLAPSED");
+            refreshLayout.setLoadMoreEnabled(true);
+            refreshLayout.setRefreshEnabled(false);
+            appBarState = CollapsingToolbarLayoutState.COLLAPSED; // 折叠
+        } else {
+            if (appBarState != CollapsingToolbarLayoutState.MIDDLE) {
+                if (appBarState == CollapsingToolbarLayoutState.COLLAPSED) {
+                    Log.e("ContentsActivity", "onOffsetChanged: MIDDLE + COLLAPSED");
+                }
+                Log.e("ContentsActivity", "onOffsetChanged: MIDDLE");
+                appBarState = CollapsingToolbarLayoutState.MIDDLE; // 中间
+            }
+        }
+
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         if ("".equals(query))
             SnackbarUtils.Short(getWindow().getDecorView(), "搜索内容不能为空").gravityFrameLayout(Gravity.TOP).danger().show();
@@ -228,7 +299,13 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
             adapter.removeAll();
             currentUrl = ((Searchable) pattern).getSearch(query);
             firstUrl = currentUrl;
-            refreshLayout.setRefreshing(true);
+
+            // refreshLayout.setRefreshing(true);
+            if (appBarState != CollapsingToolbarLayoutState.EXPANDED) {
+                needRefresh = true;
+                appBarLayout.setExpanded(true);
+            } else
+                refreshLayout.setRefreshing(true);
         }
         return false;
     }
@@ -245,10 +322,18 @@ public class ContentsActivity extends BaseActivity implements NavigationView.OnN
         baseUrl = getBaseUrl(menuList, position);
         currentUrl = menuList.get(position).getUrl();
         firstUrl = currentUrl;
-        refreshLayout.setRefreshing(true);
+
+        // refreshLayout.setRefreshing(true);
+        if (appBarState != CollapsingToolbarLayoutState.EXPANDED) {
+            needRefresh = true;
+            appBarLayout.setExpanded(true);
+        } else
+            refreshLayout.setRefreshing(true);
+
         drawerLayout.closeDrawer(GravityCompat.END);
         if (isSearchable)
             searchView.clearFocus();
+
         return false;
     }
 

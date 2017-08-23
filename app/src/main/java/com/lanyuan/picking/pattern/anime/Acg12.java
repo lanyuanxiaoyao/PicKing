@@ -1,6 +1,7 @@
 package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
@@ -22,6 +23,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Acg12 implements MultiPicturePattern {
+    @Override
+    public String getWebsiteName() {
+        return "ACG调查小队";
+    }
+
     @Override
     public String getCategoryCoverUrl() {
         return "https://static.acg12.com/uploads/2017/06/7cc936d8c0258f17b7ca86309d919490.png";
@@ -65,8 +71,10 @@ public class Acg12 implements MultiPicturePattern {
             if (album.size() > 0) {
                 temp.setAlbumUrl(album.attr("href"));
                 Elements pic = album.select("img");
-                if (pic.size() > 0)
+                if (pic.size() > 0) {
+                    Log.e("Acg12", "getContent: " + pic.get(0).attr("data-src"));
                     temp.setCoverUrl(pic.get(0).attr("data-src"));
+                }
             }
 
             Elements title = element.select("h3.title");

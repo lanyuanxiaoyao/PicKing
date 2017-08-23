@@ -20,6 +20,11 @@ import java.util.Map;
 
 public class AoJiao implements SinglePicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "傲娇零次元";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "https://www.aojiao.org/wp-content/uploads/2016/10/439c8112e53379d73724e80c93eccd0c.png";
     }

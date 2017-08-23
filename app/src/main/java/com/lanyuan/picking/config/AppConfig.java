@@ -8,8 +8,11 @@ import com.lanyuan.picking.pattern.anime.Acg12;
 import com.lanyuan.picking.pattern.anime.AnimePic;
 import com.lanyuan.picking.pattern.anime.AoJiao;
 import com.lanyuan.picking.pattern.anime.Apic;
+import com.lanyuan.picking.pattern.anime.E926;
 import com.lanyuan.picking.pattern.anime.KonaChan;
 import com.lanyuan.picking.pattern.anime.MiniTokyo;
+import com.lanyuan.picking.pattern.anime.MoeimgNormal;
+import com.lanyuan.picking.pattern.anime.SafeBooru;
 import com.lanyuan.picking.pattern.anime.ZeroChan;
 import com.lanyuan.picking.pattern.girls.Meizi4493;
 import com.lanyuan.picking.pattern.girls.Mntu92;
@@ -51,9 +54,13 @@ public class AppConfig {
     public static final String click_to_back = "clickToBack";
     public static final String download_path = "downloadPath";
     public static final String cache_size = "cacheSize";
+    public static final String clean_cache = "cleanCache";
     public static final String share_model = "shareModel";
     public static final String hide_pic = "hidePic";
     public static final String auto_gif_play = "autoGifPlay";
+    public static final String auto_load_more = "autoLoadMore";
+    public static final String cols_detail = "colsDetail";
+
     public static final String ancdslknsdlnv = "anclsdncklsa";
 
     public static final String anime_patterns = "animePatterns";
@@ -66,10 +73,13 @@ public class AppConfig {
     static {
         categoryList = new HashMap();
         List<BasePattern> animePatterns = new ArrayList<BasePattern>() {{
+            add(new MoeimgNormal());
+            add(new E926());
+            add(new SafeBooru());
             add(new com.lanyuan.picking.pattern.anime.Aitaotu());
             add(new KonaChan());
             add(new Apic());
-            add(new Acg12());
+            // add(new Acg12());
             add(new AoJiao());
             add(new ZeroChan());
             add(new AKabe());

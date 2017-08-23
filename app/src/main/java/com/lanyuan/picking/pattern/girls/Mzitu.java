@@ -23,6 +23,11 @@ import java.util.Map;
 public class Mzitu implements MultiPicturePattern {
 
     @Override
+    public String getWebsiteName() {
+        return "妹子图";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://i.meizitu.net/pfiles/img/logo.png";
     }

@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class KonaChan implements SinglePicturePattern, Searchable {
     @Override
+    public String getWebsiteName() {
+        return "Konachan.net";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://konachan.net/images/konachan_net_lg_std.png";
     }

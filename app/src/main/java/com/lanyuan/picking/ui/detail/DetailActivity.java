@@ -2,11 +2,14 @@ package com.lanyuan.picking.ui.detail;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -16,10 +19,12 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
@@ -28,6 +33,7 @@ import com.lanyuan.picking.ui.BaseActivity;
 import com.lanyuan.picking.ui.dialog.PicDialog;
 import com.lanyuan.picking.config.AppConfig;
 import com.lanyuan.picking.pattern.BasePattern;
+import com.lanyuan.picking.util.FrescoUtil;
 import com.lanyuan.picking.util.OkHttpClientUtil;
 import com.lanyuan.picking.util.PicUtil;
 import com.lanyuan.picking.util.SPUtils;
@@ -48,16 +54,20 @@ import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DetailActivity extends BaseActivity {
+public class DetailActivity extends BaseActivity implements AppBarLayout.OnOffsetChangedListener {
 
     @BindView(R.id.detail_recycle_view)
     RecyclerView recyclerView;
-    @BindView(R.id.pic_title)
-    TextView picTitle;
-    @BindView(R.id.pic_time)
-    TextView picTime;
-    @BindView(R.id.drawer_detail)
-    DrawerLayout drawerLayout;
+    @BindView(R.id.detail_title_image)
+    SimpleDraweeView titleImage;
+    @BindView(R.id.toolbar_layout)
+    CollapsingToolbarLayout toolbarLayout;
+    @BindView(R.id.appbar_detail)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.title_detaill)
+    TextView title;
+    @BindView(R.id.time_detail)
+    TextView time;
 
     private DetailAdapter adapter;
 
@@ -77,8 +87,18 @@ public class DetailActivity extends BaseActivity {
 
     private Snackbar snackbar;
 
+    private int cols = 1;
+
     public enum parameter {
         RESULT, CURRENT_URL, GIF_THUMB
+    }
+
+    private CollapsingToolbarLayoutState appBarState;
+
+    private enum CollapsingToolbarLayoutState {
+        EXPANDED,
+        COLLAPSED,
+        MIDDLE
     }
 
     @Override
@@ -94,6 +114,8 @@ public class DetailActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
         picDialog = new PicDialog(this);
         snackbar = SnackbarUtils.Long(getWindow().getDecorView(), "").info().getSnackbar();
 
@@ -102,8 +124,13 @@ public class DetailActivity extends BaseActivity {
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
         baseUrl = intent.getStringExtra("baseUrl");
         currentUrl = albumInfo.getAlbumUrl();
+        FrescoUtil.setBlurFrescoController(titleImage, albumInfo.getCoverUrl(), 1, 1);
+        toolbarLayout.setTitle("");
+        title.setText(albumInfo.getTitle());
+        time.setText(albumInfo.getTime());
 
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+        cols = (int) SPUtils.get(this, AppConfig.cols_detail, 1) + 1;
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(cols, StaggeredGridLayoutManager.VERTICAL));
         if (!(boolean) SPUtils.get(this, AppConfig.load_pic_swipe, false))
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -115,7 +142,7 @@ public class DetailActivity extends BaseActivity {
                         Fresco.getImagePipeline().resume();
                 }
             });
-        adapter = new DetailAdapter(this, new ArrayList<PicInfo>(), ScreenUtil.getScreenWidth(this));
+        adapter = new DetailAdapter(this, new ArrayList<PicInfo>(), ScreenUtil.getScreenWidth(this) / cols);
         adapter.setOnLoveClickListener(new DetailAdapter.OnLoveClickListener() {
             @Override
             public void LoveClickListener(View view, int position, PicInfo picInfo) {
@@ -133,20 +160,25 @@ public class DetailActivity extends BaseActivity {
             }
         });
         recyclerView.setAdapter(adapter);
-
-        if (albumInfo.getTitle() != null)
-            picTitle.setText(albumInfo.getTitle());
-        if (albumInfo.getTime() != null)
-            picTime.setText(albumInfo.getTime());
     }
 
     @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-            drawerLayout.closeDrawer(GravityCompat.END);
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+        if (verticalOffset == 0) {
+            if (appBarState != CollapsingToolbarLayoutState.EXPANDED) {
+                appBarState = CollapsingToolbarLayoutState.EXPANDED; // 展开
+            }
+        } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
+            appBarState = CollapsingToolbarLayoutState.COLLAPSED; // 折叠
         } else {
-            super.onBackPressed();
+            if (appBarState != CollapsingToolbarLayoutState.MIDDLE) {
+                if (appBarState == CollapsingToolbarLayoutState.COLLAPSED) {
+                }
+                appBarState = CollapsingToolbarLayoutState.MIDDLE; // 中间
+            }
         }
+
     }
 
     public Map<parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<parameter, Object> resultMap) throws UnsupportedEncodingException {

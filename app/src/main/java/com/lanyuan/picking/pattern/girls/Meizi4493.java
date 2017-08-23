@@ -24,6 +24,11 @@ import java.util.regex.Pattern;
 public class Meizi4493 implements MultiPicturePattern {
 
     @Override
+    public String getWebsiteName() {
+        return "4493美图";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/4493.png";
     }
@@ -1557,13 +1562,23 @@ public class Meizi4493 implements MultiPicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "gb2312"));
-        Elements elements = document.select(".piclist li a:has(img)");
+        Elements elements = document.select(".piclist li");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
-            temp.setAlbumUrl(baseUrl + element.attr("href"));
-            Elements elements1 = element.select("img");
-            if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+
+            Elements title = element.select("a:has(img) span");
+            if (title.size() > 0)
+                temp.setTitle(title.get(0).text());
+
+            Elements time = element.select(".b1");
+            if (time.size() > 0)
+                temp.setTime(time.get(0).text());
+
+            Elements album = element.select("a:has(img)");
+            temp.setAlbumUrl(baseUrl + album.attr("href"));
+            Elements pic = album.select("img");
+            if (pic.size() > 0)
+                temp.setCoverUrl(pic.get(0).attr("src"));
             urls.add(temp);
         }
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);

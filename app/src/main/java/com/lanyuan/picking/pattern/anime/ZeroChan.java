@@ -22,6 +22,11 @@ import java.util.regex.Pattern;
 
 public class ZeroChan implements SinglePicturePattern {
     @Override
+    public String getWebsiteName() {
+        return "ZeroChan";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "https://raw.githubusercontent.com/lanyuanxiaoyao/GitGallery/master/header-1.png";
     }

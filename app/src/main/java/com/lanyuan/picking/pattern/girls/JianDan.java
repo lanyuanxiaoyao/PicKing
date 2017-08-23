@@ -22,6 +22,11 @@ import java.util.Map;
 public class JianDan implements SinglePicturePattern {
 
     @Override
+    public String getWebsiteName() {
+        return "煎蛋";
+    }
+
+    @Override
     public String getCategoryCoverUrl() {
         return "http://cdn.jandan.net/wp-content/themes/egg/images/logo-2015.gif";
     }
