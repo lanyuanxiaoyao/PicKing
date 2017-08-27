@@ -1,7 +1,6 @@
 package com.lanyuan.picking.pattern.anime;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
@@ -102,7 +101,7 @@ public class ZeroChan implements SinglePicturePattern {
             temp.setAlbumUrl(baseUrl + "/full" + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+                temp.setPicUrl(elements1.get(0).attr("src"));
             data.add(temp);
         }
 

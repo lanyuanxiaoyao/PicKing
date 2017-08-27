@@ -4,7 +4,6 @@ import android.graphics.Color;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
-import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.pattern.SinglePicturePattern;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -57,7 +56,7 @@ public class MiniTokyo implements SinglePicturePattern {
             temp.setAlbumUrl(element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+                temp.setPicUrl(elements1.get(0).attr("src"));
             data.add(temp);
         }
 

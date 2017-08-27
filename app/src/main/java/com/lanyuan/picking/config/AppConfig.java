@@ -14,6 +14,7 @@ import com.lanyuan.picking.pattern.anime.MiniTokyo;
 import com.lanyuan.picking.pattern.anime.MoeimgNormal;
 import com.lanyuan.picking.pattern.anime.SafeBooru;
 import com.lanyuan.picking.pattern.anime.ZeroChan;
+import com.lanyuan.picking.pattern.girls.GankIO;
 import com.lanyuan.picking.pattern.girls.Meizi4493;
 import com.lanyuan.picking.pattern.girls.Mntu92;
 import com.lanyuan.picking.pattern.others.Aitaotu;
@@ -87,6 +88,7 @@ public class AppConfig {
             add(new MiniTokyo());
         }};
         List<BasePattern> girlsPatterns = new ArrayList<BasePattern>() {{
+            add(new GankIO());
             add(new Meizi4493());
             add(new Mntu92());
             add(new com.lanyuan.picking.pattern.girls.Aitaotu());

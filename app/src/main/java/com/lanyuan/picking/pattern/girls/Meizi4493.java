@@ -1578,7 +1578,7 @@ public class Meizi4493 implements MultiPicturePattern {
             temp.setAlbumUrl(baseUrl + album.attr("href"));
             Elements pic = album.select("img");
             if (pic.size() > 0)
-                temp.setCoverUrl(pic.get(0).attr("src"));
+                temp.setPicUrl(pic.get(0).attr("src"));
             urls.add(temp);
         }
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);

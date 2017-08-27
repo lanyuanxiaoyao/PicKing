@@ -52,7 +52,7 @@ public class JianDan implements SinglePicturePattern {
     public Map<ContentsActivity.parameter, Object> getContent(String baseUrl, String currentUrl, byte[] result, Map<ContentsActivity.parameter, Object> resultMap) throws UnsupportedEncodingException {
         List<AlbumInfo> urls = new ArrayList<>();
         Document document = Jsoup.parse(new String(result, "utf-8"));
-        Elements elements = document.select(".commentlist div.text p");
+        Elements elements = document.select(".commentlist div.text p:has(img)");
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
             Elements elements1 = element.select("img");
@@ -61,10 +61,10 @@ public class JianDan implements SinglePicturePattern {
                 String picSrc = elements1.get(0).attr("src");
                 if (picOrgSrc == null || "".equals(picOrgSrc)) {
                     temp.setAlbumUrl("http:" + picSrc);
-                    temp.setCoverUrl("http:" + picSrc);
+                    temp.setPicUrl("http:" + picSrc);
                 } else {
                     temp.setAlbumUrl("http:" + picOrgSrc);
-                    temp.setCoverUrl("http:" + picOrgSrc);
+                    temp.setPicUrl("http:" + picOrgSrc);
                     temp.setGifThumbUrl("http:" + picSrc);
                 }
             }

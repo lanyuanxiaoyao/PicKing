@@ -14,16 +14,19 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.postprocessors.IterativeBoxBlurPostProcessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.lanyuan.picking.common.bean.BaseInfo;
+import com.lanyuan.picking.common.bean.PicInfo;
 
 public class FrescoUtil {
+
     /**
      * 按照图片宽度适应高度
      *
      * @param simpleDraweeView
-     * @param imagePath
+     * @param baseInfo
      * @param imageWidth
      */
-    public static void setControllerListener(final SimpleDraweeView simpleDraweeView, final String imagePath, final int imageWidth) {
+    public static void setControllerListener(final SimpleDraweeView simpleDraweeView, final BaseInfo baseInfo, final int imageWidth, boolean isGif) {
         final ViewGroup.LayoutParams layoutParams = simpleDraweeView.getLayoutParams();
         ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
@@ -35,8 +38,10 @@ public class FrescoUtil {
                 int width = imageInfo.getWidth();
                 layoutParams.width = imageWidth;
                 layoutParams.height = (int) ((float) (imageWidth * height) / (float) width);
+                baseInfo.setWidth(layoutParams.width);
+                baseInfo.setHeight(layoutParams.height);
                 simpleDraweeView.setLayoutParams(layoutParams);
-                simpleDraweeView.setTag(imagePath);
+                simpleDraweeView.setTag(baseInfo.getPicUrl());
             }
 
             @Override
@@ -51,7 +56,7 @@ public class FrescoUtil {
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setOldController(simpleDraweeView.getController())
                 .setControllerListener(controllerListener)
-                .setUri(Uri.parse(imagePath))
+                .setUri(Uri.parse(isGif ? baseInfo.getPicUrl() : baseInfo.getGifThumbUrl()))
                 .setAutoPlayAnimations(true)
                 .build();
         simpleDraweeView.setController(controller);

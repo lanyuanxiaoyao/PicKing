@@ -60,12 +60,12 @@ public class AnimePic implements SinglePicturePattern, Searchable {
                 String coverUrl = elements1.get(0).attr("src");
                 if (coverUrl != null && !"".equals(coverUrl)) {
                     if (coverUrl.startsWith("https:"))
-                        temp.setCoverUrl(coverUrl);
+                        temp.setPicUrl(coverUrl);
                     else
-                        temp.setCoverUrl("https:" + coverUrl);
+                        temp.setPicUrl("https:" + coverUrl);
                 }
             }
-            if (temp.getCoverUrl() != null && !"".equals(temp.getCoverUrl()))
+            if (temp.getPicUrl() != null && !"".equals(temp.getPicUrl()))
                 data.add(temp);
         }
 

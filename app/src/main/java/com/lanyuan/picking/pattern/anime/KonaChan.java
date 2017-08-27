@@ -68,7 +68,7 @@ public class KonaChan implements SinglePicturePattern, Searchable {
             temp.setAlbumUrl(baseUrl + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
-                temp.setCoverUrl("https:" + elements1.get(0).attr("src"));
+                temp.setPicUrl("https:" + elements1.get(0).attr("src"));
             data.add(temp);
         }
 

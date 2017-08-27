@@ -85,7 +85,12 @@ public class OkHttpNetworkFetcher extends BaseNetworkFetcher<OkHttpNetworkFetche
                         if (Looper.myLooper() != Looper.getMainLooper()) {
                             call.cancel();
                         } else {
-                            mCancellationExecutor.execute(() -> call.cancel());
+                            mCancellationExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    call.cancel();
+                                }
+                            });
                         }
                     }
                 });

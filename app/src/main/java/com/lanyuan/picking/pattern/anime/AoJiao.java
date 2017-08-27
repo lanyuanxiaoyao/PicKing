@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AoJiao implements SinglePicturePattern {
+
     @Override
     public String getWebsiteName() {
         return "傲娇零次元";
@@ -59,7 +60,7 @@ public class AoJiao implements SinglePicturePattern {
                 temp.setAlbumUrl(album.attr("href"));
                 Elements pic = album.select("img");
                 if (pic.size() > 0)
-                    temp.setCoverUrl(pic.get(0).attr("data-src"));
+                    temp.setPicUrl(pic.get(0).attr("data-src"));
             }
 
             data.add(temp);

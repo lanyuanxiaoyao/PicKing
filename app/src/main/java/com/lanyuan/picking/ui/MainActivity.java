@@ -26,8 +26,8 @@ import com.lanyuan.picking.util.FavoriteUtil;
 import com.lanyuan.picking.util.SPUtils;
 import com.lanyuan.picking.util.SnackbarUtils;
 import com.lanyuan.picking.util.UpdateUtil;
-import com.litesuits.common.assist.Network;
-import com.litesuits.common.utils.PackageUtil;
+import com.lanyuan.picking.util.common.common.assist.Network;
+import com.lanyuan.picking.util.common.common.utils.PackageUtil;
 
 import java.util.ArrayList;
 import java.util.List;

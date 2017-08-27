@@ -86,8 +86,11 @@ public class CategoryFragment extends Fragment {
             }
         });
         relativeLayout.setBackgroundColor(pattern.getBackgroundColor());
-        relativeLayout.setOnClickListener((v) -> {
-            startActivity(pattern);
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(pattern);
+            }
         });
         return view;
     }

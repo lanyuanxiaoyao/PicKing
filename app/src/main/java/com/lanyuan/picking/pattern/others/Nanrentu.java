@@ -63,7 +63,7 @@ public class Nanrentu implements MultiPicturePattern {
             temp.setAlbumUrl(baseUrl + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0) {
-                temp.setCoverUrl(baseUrl + elements1.get(0).attr("src"));
+                temp.setPicUrl(baseUrl + elements1.get(0).attr("src"));
             }
             urls.add(temp);
         }

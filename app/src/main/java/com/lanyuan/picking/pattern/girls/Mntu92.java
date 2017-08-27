@@ -76,7 +76,7 @@ public class Mntu92 implements MultiPicturePattern {
             temp.setAlbumUrl(baseUrl + album.attr("href"));
             Elements pic = element.select("img");
             if (pic.size() > 0)
-                temp.setCoverUrl(baseUrl + pic.get(0).attr("src"));
+                temp.setPicUrl(baseUrl + pic.get(0).attr("src"));
             urls.add(temp);
         }
         resultMap.put(ContentsActivity.parameter.CURRENT_URL, currentUrl);

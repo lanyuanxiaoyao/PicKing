@@ -70,17 +70,17 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        if (!lists.get(position).equals(holder.simpleDraweeView.getTag())) {
+        AlbumInfo a = lists.get(position);
+        if (!a.getPicUrl().equals(holder.simpleDraweeView.getTag())) {
             if (autoGifPlay)
-                FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getCoverUrl(), width);
+                setFresco(holder.simpleDraweeView, a, width, true);
             else {
-                AlbumInfo albumInfo = lists.get(position);
-                if (albumInfo.getGifThumbUrl() != null && !"".equals(albumInfo.getGifThumbUrl())) {
+                if (a.getGifThumbUrl() != null && !"".equals(a.getGifThumbUrl())) {
                     holder.gifTip.setVisibility(View.VISIBLE);
-                    FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getGifThumbUrl(), width);
+                    setFresco(holder.simpleDraweeView, a, width, false);
                 } else {
                     holder.gifTip.setVisibility(View.INVISIBLE);
-                    FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getCoverUrl(), width);
+                    setFresco(holder.simpleDraweeView, a, width, true);
                 }
             }
             if (itemClickListener != null) {
@@ -101,6 +101,21 @@ public class ContentsAdapter extends RecyclerView.Adapter<ContentsAdapter.MyView
                 });
             }
         }
+
+    }
+
+    private void setFresco(SimpleDraweeView simpleDraweeView, AlbumInfo albumInfo, int width, boolean isGif) {
+        if (albumInfo.getWidth() != null && albumInfo.getHeight() != null) {
+            if (isGif)
+                simpleDraweeView.setImageURI(albumInfo.getPicUrl());
+            else
+                simpleDraweeView.setImageURI(albumInfo.getGifThumbUrl());
+            ViewGroup.LayoutParams l = simpleDraweeView.getLayoutParams();
+            l.width = albumInfo.getWidth();
+            l.height = albumInfo.getHeight();
+            simpleDraweeView.setLayoutParams(l);
+        } else
+            FrescoUtil.setControllerListener(simpleDraweeView, albumInfo, width, isGif);
 
     }
 

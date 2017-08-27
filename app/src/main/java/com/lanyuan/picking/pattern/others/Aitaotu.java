@@ -78,9 +78,9 @@ public class Aitaotu implements MultiPicturePattern {
             temp.setAlbumUrl(baseUrl + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0) {
-                temp.setCoverUrl(elements1.get(0).attr("data-original"));
-                if (temp.getCoverUrl() == null || "".equals(temp.getCoverUrl()))
-                    temp.setCoverUrl(elements1.get(0).attr("src"));
+                temp.setPicUrl(elements1.get(0).attr("data-original"));
+                if (temp.getPicUrl() == null || "".equals(temp.getPicUrl()))
+                    temp.setPicUrl(elements1.get(0).attr("src"));
             }
             urls.add(temp);
         }
@@ -93,7 +93,7 @@ public class Aitaotu implements MultiPicturePattern {
                 temp.setAlbumUrl(baseUrl + element.attr("href"));
                 Elements elements3 = element.select("img");
                 if (elements3.size() > 0) {
-                    temp.setCoverUrl(elements3.get(0).attr("data-original"));
+                    temp.setPicUrl(elements3.get(0).attr("data-original"));
                 }
                 urls.add(temp);
             }

@@ -27,6 +27,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -234,16 +236,25 @@ public class ContentsActivity extends BaseActivity implements AppBarLayout.OnOff
             });
 
         // 设置下拉刷新和上拉加载
-        refreshLayout.setOnRefreshListener(() -> {
-            Log.e("ContentsActivity", "onCreate: refresh");
-            adapter.removeAll();
-            new GetContent().execute(firstUrl);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.e("ContentsActivity", "onCreate: refresh");
+                adapter.removeAll();
+                new GetContent().execute(firstUrl);
+            }
         });
-        refreshLayout.setOnLoadMoreListener(() -> {
-            new GetContentNext().execute(currentUrl);
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                new GetContentNext().execute(currentUrl);
+            }
         });
-        refreshLayout.post(() -> {
-            refreshLayout.setRefreshing(true);
+        refreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.setRefreshing(true);
+            }
         });
     }
 

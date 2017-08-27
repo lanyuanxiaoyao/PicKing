@@ -81,7 +81,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         if (!lists.get(position).equals(holder.simpleDraweeView.getTag())) {
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getPicUrl(), width);
+            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position), width, true);
             if (itemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

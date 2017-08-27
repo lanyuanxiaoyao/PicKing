@@ -1,7 +1,6 @@
 package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
@@ -65,7 +64,7 @@ public class MM131 implements MultiPicturePattern {
         for (Element element : elements) {
             AlbumInfo temp = new AlbumInfo();
             temp.setTitle(element.attr("alt"));
-            temp.setCoverUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
+            temp.setPicUrl(element.attr("src").replaceAll("0.jpg", "m.jpg"));
             Pattern pattern = Pattern.compile("/\\d{3,4}");
             Matcher matcher = pattern.matcher(element.attr("src"));
             if (matcher.find()) {

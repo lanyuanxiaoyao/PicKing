@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.lanyuan.picking.config.AppConfig;
-import com.litesuits.common.utils.PackageUtil;
+import com.lanyuan.picking.util.common.common.utils.PackageUtil;
 
 public class AliPayUtil {
 

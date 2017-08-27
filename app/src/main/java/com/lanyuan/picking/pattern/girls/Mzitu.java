@@ -60,7 +60,7 @@ public class Mzitu implements MultiPicturePattern {
             Elements elements1 = element.select("img");
             if (elements1.size() > 0) {
                 Log.e("Mzitu", "getContent: " + elements1.get(0).attr("data-original"));
-                temp.setCoverUrl(elements1.get(0).attr("data-original").replace("http", "https"));
+                temp.setPicUrl(elements1.get(0).attr("data-original").replace("http", "https"));
             }
             data.add(temp);
         }

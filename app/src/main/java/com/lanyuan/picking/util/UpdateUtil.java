@@ -7,7 +7,8 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.Toast;
 
-import com.litesuits.common.utils.PackageUtil;
+import com.lanyuan.picking.util.common.common.utils.PackageUtil;
+
 
 public class UpdateUtil {
 

@@ -67,7 +67,7 @@ public class Yande implements SinglePicturePattern {
             temp.setAlbumUrl(baseUrl + element.attr("href"));
             Elements elements1 = element.select("img");
             if (elements1.size() > 0)
-                temp.setCoverUrl(elements1.get(0).attr("src"));
+                temp.setPicUrl(elements1.get(0).attr("src"));
             data.add(temp);
         }
 

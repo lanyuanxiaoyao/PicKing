@@ -60,7 +60,7 @@ public class AKabe implements MultiPicturePattern {
                 temp.setAlbumUrl(pic.attr("href"));
                 Elements cover = pic.select("img");
                 if (cover.size() > 0)
-                    temp.setCoverUrl(cover.get(0).attr("src"));
+                    temp.setPicUrl(cover.get(0).attr("src"));
             }
 
             Elements title = element.select("h2");

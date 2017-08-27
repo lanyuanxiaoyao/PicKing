@@ -2,8 +2,6 @@ package com.lanyuan.picking.ui.detail;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,15 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -124,12 +118,12 @@ public class DetailActivity extends BaseActivity implements AppBarLayout.OnOffse
         pattern = (BasePattern) intent.getSerializableExtra("pattern");
         baseUrl = intent.getStringExtra("baseUrl");
         currentUrl = albumInfo.getAlbumUrl();
-        FrescoUtil.setBlurFrescoController(titleImage, albumInfo.getCoverUrl(), 1, 1);
+        FrescoUtil.setBlurFrescoController(titleImage, albumInfo.getPicUrl(), 1, 1);
         toolbarLayout.setTitle("");
         title.setText(albumInfo.getTitle());
         time.setText(albumInfo.getTime());
 
-        cols = (int) SPUtils.get(this, AppConfig.cols_detail, 1) + 1;
+        cols = (int) SPUtils.get(this, AppConfig.cols_detail, 0) + 1;
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(cols, StaggeredGridLayoutManager.VERTICAL));
         if (!(boolean) SPUtils.get(this, AppConfig.load_pic_swipe, false))
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

@@ -1,7 +1,6 @@
 package com.lanyuan.picking.pattern.girls;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
@@ -75,7 +74,7 @@ public class JDlingyu implements MultiPicturePattern, Searchable {
             temp.setAlbumUrl(album.attr("href"));
             Elements pic = album.select("img");
             if (pic.size() > 0) {
-                temp.setCoverUrl(pic.get(0).attr("original"));
+                temp.setPicUrl(pic.get(0).attr("original"));
             }
 
             Elements title = element.select("span.bg");

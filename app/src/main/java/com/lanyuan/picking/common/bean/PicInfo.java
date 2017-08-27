@@ -2,21 +2,33 @@ package com.lanyuan.picking.common.bean;
 
 import java.util.List;
 
-public class PicInfo {
+public class PicInfo extends BaseInfo {
 
-    private String picUrl;
     private String picThumb;
-    private String gifThumbUrl;
-    private String title;
-    private List<String> tags;
-    private String time;
 
-    public String getTime() {
-        return time;
+    public PicInfo() {
     }
 
-    public PicInfo setTime(String time) {
-        this.time = time;
+    public PicInfo(String picUrl) {
+        this.picUrl = picUrl;
+    }
+
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    public PicInfo setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
+        return this;
+
+    }
+
+    public String getGifThumbUrl() {
+        return gifThumbUrl;
+    }
+
+    public PicInfo setGifThumbUrl(String gifThumbUrl) {
+        this.gifThumbUrl = gifThumbUrl;
         return this;
     }
 
@@ -38,28 +50,12 @@ public class PicInfo {
         return this;
     }
 
-    public String getGifThumbUrl() {
-        return gifThumbUrl;
+    public String getTime() {
+        return time;
     }
 
-    public PicInfo setGifThumbUrl(String gifThumbUrl) {
-        this.gifThumbUrl = gifThumbUrl;
-        return this;
-    }
-
-    public PicInfo() {
-    }
-
-    public PicInfo(String picUrl) {
-        this.picUrl = picUrl;
-    }
-
-    public String getPicUrl() {
-        return picUrl;
-    }
-
-    public PicInfo setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
+    public PicInfo setTime(String time) {
+        this.time = time;
         return this;
     }
 
@@ -67,8 +63,7 @@ public class PicInfo {
         return picThumb;
     }
 
-    public PicInfo setPicThumb(String picThumb) {
+    public void setPicThumb(String picThumb) {
         this.picThumb = picThumb;
-        return this;
     }
 }

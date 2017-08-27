@@ -17,12 +17,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Apic implements MultiPicturePattern, Searchable {
     @Override
@@ -79,7 +76,7 @@ public class Apic implements MultiPicturePattern, Searchable {
 
             Elements pic = album.select("img");
             if (pic.size() > 0)
-                temp.setCoverUrl(pic.get(0).attr("src").trim());
+                temp.setPicUrl(pic.get(0).attr("src").trim());
 
             Elements title = element.select("h2 a");
             if (title.size() > 0)
@@ -102,7 +99,7 @@ public class Apic implements MultiPicturePattern, Searchable {
                 Pattern pattern = Pattern.compile("http.*jpg");
                 Matcher matcher = pattern.matcher(s);
                 if (matcher.find())
-                    temp.setCoverUrl(matcher.group());
+                    temp.setPicUrl(matcher.group());
                 data.add(temp);
             }
         }*/

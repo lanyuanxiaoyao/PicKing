@@ -6,7 +6,6 @@ import android.util.Log;
 import com.lanyuan.picking.common.bean.AlbumInfo;
 import com.lanyuan.picking.common.bean.PicInfo;
 import com.lanyuan.picking.pattern.MultiPicturePattern;
-import com.lanyuan.picking.pattern.Searchable;
 import com.lanyuan.picking.ui.contents.ContentsActivity;
 import com.lanyuan.picking.ui.detail.DetailActivity;
 import com.lanyuan.picking.ui.menu.Menu;
@@ -73,7 +72,7 @@ public class Acg12 implements MultiPicturePattern {
                 Elements pic = album.select("img");
                 if (pic.size() > 0) {
                     Log.e("Acg12", "getContent: " + pic.get(0).attr("data-src"));
-                    temp.setCoverUrl(pic.get(0).attr("data-src"));
+                    temp.setPicUrl(pic.get(0).attr("data-src"));
                 }
             }
 

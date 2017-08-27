@@ -3,9 +3,11 @@ package com.lanyuan.picking.ui.detail;
 import android.content.Context;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -72,8 +74,16 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        if (!lists.get(position).equals(holder.simpleDraweeView.getTag())) {
-            FrescoUtil.setControllerListener(holder.simpleDraweeView, lists.get(position).getPicUrl(), width);
+        PicInfo p = lists.get(position);
+        if (!p.getPicUrl().equals(holder.simpleDraweeView.getTag())) {
+            if (p.getWidth() != null && p.getHeight() != null) {
+                holder.simpleDraweeView.setImageURI(p.getPicUrl());
+                ViewGroup.LayoutParams l = holder.simpleDraweeView.getLayoutParams();
+                l.width = p.getWidth();
+                l.height = p.getHeight();
+                holder.simpleDraweeView.setLayoutParams(l);
+            } else
+                FrescoUtil.setControllerListener(holder.simpleDraweeView, p, width, true);
             if (itemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

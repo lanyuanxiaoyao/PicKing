@@ -1,10 +1,11 @@
 package com.lanyuan.picking.util;
 
-import com.litesuits.common.utils.MD5Util;
+
+import com.lanyuan.picking.util.common.common.utils.MD5Util;
 
 public class Md5Util {
     public static String getMD5(String val) {
-        return getString(com.litesuits.common.utils.MD5Util.md5(val));
+        return getString(MD5Util.md5(val));
     }
 
     private static String getString(byte[] b) {

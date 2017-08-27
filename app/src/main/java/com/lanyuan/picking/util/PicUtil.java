@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -23,7 +22,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.lanyuan.picking.config.AppConfig;
-import com.litesuits.common.utils.BitmapUtil;
+import com.lanyuan.picking.util.common.common.utils.BitmapUtil;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.PermissionListener;
@@ -80,39 +79,8 @@ public class PicUtil {
                 .start();
     }
 
-    // 旧的只支持静态图保存的方法
-    /* private static void saveImageFromFresco(final View view, final Context context, final String url, final String path) {
-        SnackbarUtils.Indefinite(view, "正在保存...").info().show();
-        ImageRequest imageRequest = ImageRequest.fromUri(url);
-        DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
-                .fetchDecodedImage(imageRequest, null);
-        dataSource.subscribe(new BaseBitmapDataSubscriber() {
-            @Override
-            public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                if (bitmap != null) {
-                    String filename = Md5Util.getMD5(url) + ".jpg";
-                    String filePath = path + filename;
-                    ifPathNotExistsAndCreate(path);
-                    if (BitmapUtil.saveBitmap(bitmap, filePath)) {
-                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, FileProvider7.getUriForFile(context, new File(filePath))));
-                        SnackbarUtils.Short(view, "保存成功").confirm().show();
-                    } else {
-                        SnackbarUtils.Short(view, "保存失败").danger().show();
-                    }
-                } else {
-                    SnackbarUtils.Short(view, "保存失败").danger().show();
-                }
-            }
-
-            @Override
-            public void onFailureImpl(DataSource dataSource) {
-                SnackbarUtils.Short(view, "保存失败").danger().show();
-            }
-        }, CallerThreadExecutor.getInstance());
-    } */
-
     private static void saveFromFresco(final View view, final Context context, final String url, final String path) {
-        SnackbarUtils.Indefinite(view, "正在保存……").danger().show();
+        SnackbarUtils.Indefinite(view, "正在保存……").info().show();
         ImageRequest imageRequest = ImageRequest.fromUri(url);
         DataSource<CloseableReference<PooledByteBuffer>> dataSource = Fresco.getImagePipeline()
                 .fetchEncodedImage(imageRequest, null);
@@ -163,54 +131,6 @@ public class PicUtil {
             }
         }, CallerThreadExecutor.getInstance());
     }
-
-    /* private static void shareImageFromFresco(final View view, final Context context, final String url, final String path) {
-        ImageRequest imageRequest = ImageRequest.fromUri(url);
-        DataSource<CloseableReference<CloseableImage>> dataSource = Fresco.getImagePipeline()
-                .fetchDecodedImage(imageRequest, null);
-        dataSource.subscribe(new BaseBitmapDataSubscriber() {
-            Snackbar snackbar = SnackbarUtils.Indefinite(view, "正在准备分享...").info().getSnackbar();
-
-            @Override
-            public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                snackbar.show();
-                if (bitmap != null) {
-                    String sharePath = path + "share" + File.separatorChar;
-                    String filePath = sharePath + Md5Util.getMD5(url) + getPictureType(url);
-                    ifPathNotExistsAndCreate(sharePath);
-                    if ((boolean) SPUtils.get(context, AppConfig.share_model, false) == false) {
-                        snackbar.dismiss();
-                        Intent share = new Intent(Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.putExtra(Intent.EXTRA_TEXT, "有人给你分享了一张图片:" + url);
-                        context.startActivity(Intent.createChooser(share, "分享到"));
-                    } else {
-                        if (BitmapUtil.saveBitmap(bitmap, filePath)) {
-                            snackbar.dismiss();
-                            Intent share = new Intent(Intent.ACTION_SEND);
-                            share.putExtra(Intent.EXTRA_SUBJECT, "分享");
-                            share.putExtra(Intent.EXTRA_TEXT, "有人给你分享了一张图片");
-                            share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            share.setType("image/jpg");
-                            File file = new File(filePath);
-                            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                            context.startActivity(Intent.createChooser(share, "分享到"));
-                            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, FileProvider7.getUriForFile(context, new File(filePath))));
-                        } else {
-                            SnackbarUtils.Short(view, "分享失败").danger().show();
-                        }
-                    }
-                } else {
-                    SnackbarUtils.Short(view, "分享失败").danger().show();
-                }
-            }
-
-            @Override
-            public void onFailureImpl(DataSource dataSource) {
-                SnackbarUtils.Short(view, "分享失败").danger().show();
-            }
-        }, CallerThreadExecutor.getInstance());
-    } */
 
     private static void shareImageFromFresco(final View view, final Context context, final String url, final String path) {
         ImageRequest imageRequest = ImageRequest.fromUri(url);

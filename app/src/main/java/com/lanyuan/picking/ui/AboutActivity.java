@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.lanyuan.picking.R;
 import com.lanyuan.picking.util.AliPayUtil;
 import com.lanyuan.picking.util.SnackbarUtils;
-import com.litesuits.common.utils.PackageUtil;
+import com.lanyuan.picking.util.common.common.utils.PackageUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

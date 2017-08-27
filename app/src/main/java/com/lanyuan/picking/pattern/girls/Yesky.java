@@ -89,7 +89,7 @@ public class Yesky implements MultiPicturePattern {
             temp.setAlbumUrl(album.attr("href"));
             Elements pic = album.select("img");
             if (pic.size() > 0)
-                temp.setCoverUrl(pic.get(0).attr("src"));
+                temp.setPicUrl(pic.get(0).attr("src"));
             data.add(temp);
         }
         if (data.size() == 0) {
@@ -99,7 +99,7 @@ public class Yesky implements MultiPicturePattern {
                 temp.setAlbumUrl(element.attr("href"));
                 Elements elements2 = element.select("img");
                 if (elements2.size() > 0)
-                    temp.setCoverUrl(elements2.get(0).attr("src"));
+                    temp.setPicUrl(elements2.get(0).attr("src"));
                 data.add(temp);
             }
         }
